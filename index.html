@@ -7,72 +7,178 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
-    <header class="bg-white shadow-sm border-b border-slate-200">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-black text-indigo-600">InfoHub 🚀</h1>
-            <button onclick="toggleAdmin()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Panel</button>
+            <button onclick="accessAdmin()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Panel 🔒</button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
-        <!-- Admin Panel Form (Hidden by default) -->
-        <div id="admin-panel" class="hidden bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-10">
-            <h3 class="text-xl font-bold mb-4 text-indigo-600">Publish New Article</h3>
-            <input type="text" id="art-title" placeholder="Article Title" class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Technology)" class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <textarea id="art-body" rows="4" placeholder="Write your content here..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-            <button onclick="publishArticle()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">Publish Live</button>
+    <main class="max-w-5xl mx-auto px-6 py-8">
+
+        <!-- Search Box -->
+        <div class="mb-8">
+            <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles by title, category or text..." class="w-full p-4 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700">
         </div>
 
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-extrabold tracking-tight mb-4">Welcome to Knowledge Hub</h2>
-            <p class="text-lg text-slate-600">Clean, fast, and modern articles published by creators worldwide.</p>
-        </div>
-
-        <!-- Articles Container -->
-        <div id="articles-list" class="grid gap-6 md:grid-cols-2">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">Technology</span>
-                <h3 class="text-xl font-bold mt-3 mb-2">Getting Started with Modern Web Dev</h3>
-                <p class="text-slate-600 text-sm">Learn how to build fast, beautiful, and secure information websites easily.</p>
+        <!-- Author Panel Form (Hidden by default) -->
+        <div id="admin-panel" class="hidden bg-white p-6 rounded-xl shadow-lg border border-indigo-100 mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-indigo-600">Publish New Article 📝</h3>
+                <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold">✕ Close</button>
             </div>
+            
+            <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="art-cat" placeholder="Category (e.g., தமிழ், Tech, General)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            
+            <textarea id="art-body" rows="5" placeholder="Write your content here... *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            
+            <!-- Media Links Input -->
+            <div class="grid md:grid-cols-3 gap-3 mb-4">
+                <input type="text" id="art-img" placeholder="Image URL (http://...)" class="p-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="text" id="art-video" placeholder="Video / YouTube URL" class="p-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <input type="text" id="art-audio" placeholder="Audio (.mp3) URL" class="p-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <button onclick="publishArticle()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">Publish Article 🚀</button>
         </div>
+
+        <!-- Articles Grid Container -->
+        <div id="articles-list" class="grid gap-6 md:grid-cols-2">
+            <!-- Articles load here -->
+        </div>
+
     </main>
 
     <script>
+        // 🔒 YOUR AUTHOR PASSWORD (இங்க இருக்குற பாஸ்வேர்ட்டை நீங்க மாத்திக்கலாம்)
+        const ADMIN_PASSWORD = "kesavar";
+
+        // Articles Storage
+        let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
+            {
+                id: Date.now(),
+                title: "முல்லைப்பாட்டு",
+                category: "தமிழ்",
+                body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும். இது 103 அடிகளைக் கொண்டது. இதன் ஆசிரியர் காவிரிப் பூம்பட்டினத்து பொன்வணிகனார் மகன் நப்பூதனார் ஆவார்.",
+                image: "",
+                video: "",
+                audio: ""
+            }
+        ];
+
+        function saveAndRender() {
+            localStorage.setItem('my_info_articles', JSON.stringify(articles));
+            renderArticles(articles);
+        }
+
+        function renderArticles(dataToRender) {
+            const list = document.getElementById('articles-list');
+            list.innerHTML = '';
+
+            if (dataToRender.length === 0) {
+                list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No articles found!</div>';
+                return;
+            }
+
+            dataToRender.forEach(art => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between';
+                
+                let mediaHTML = '';
+                if (art.image) {
+                    mediaHTML += `<img src="${art.image}" class="w-full h-48 object-cover rounded-lg mb-3" alt="Image" onerror="this.style.display='none'">`;
+                }
+                if (art.video) {
+                    if (art.video.includes('youtube.com') || art.video.includes('youtu.be')) {
+                        let embedUrl = art.video.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+                        mediaHTML += `<div class="mb-3 aspect-video"><iframe class="w-full h-full rounded-lg" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                    } else {
+                        mediaHTML += `<video controls class="w-full rounded-lg mb-3"><source src="${art.video}"></video>`;
+                    }
+                }
+                if (art.audio) {
+                    mediaHTML += `<audio controls class="w-full mb-3"><source src="${art.audio}"></audio>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        ${mediaHTML}
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
+                        <h3 class="text-xl font-bold mt-3 mb-2 text-slate-800">${art.title}</h3>
+                        <p class="text-slate-600 text-sm whitespace-pre-line leading-relaxed">${art.body}</p>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function accessAdmin() {
+            const pass = prompt("Enter Author Password:");
+            if (pass === ADMIN_PASSWORD) {
+                toggleAdmin();
+            } else if (pass !== null) {
+                alert("Incorrect Password! Access Denied.");
+            }
+        }
+
         function toggleAdmin() {
             const panel = document.getElementById('admin-panel');
             panel.classList.toggle('hidden');
         }
 
         function publishArticle() {
-            const title = document.getElementById('art-title').value;
-            const category = document.getElementById('art-cat').value;
-            const body = document.getElementById('art-body').value;
+            const title = document.getElementById('art-title').value.trim();
+            const category = document.getElementById('art-cat').value.trim();
+            const body = document.getElementById('art-body').value.trim();
+            const image = document.getElementById('art-img').value.trim();
+            const video = document.getElementById('art-video').value.trim();
+            const audio = document.getElementById('art-audio').value.trim();
 
-            if(!title || !body) {
-                alert('Please fill in title and body!');
+            if (!title || !body) {
+                alert('Please fill in Title and Content!');
                 return;
             }
 
-            const list = document.getElementById('articles-list');
-            const newCard = document.createElement('div');
-            newCard.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200';
-            newCard.innerHTML = `
-                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${category || 'General'}</span>
-                <h3 class="text-xl font-bold mt-3 mb-2">${title}</h3>
-                <p class="text-slate-600 text-sm">${body}</p>
-            `;
-            
-            list.prepend(newCard);
-            
-            // Clear inputs & hide
+            const newArt = {
+                id: Date.now(),
+                title,
+                category,
+                body,
+                image,
+                video,
+                audio
+            };
+
+            articles.unshift(newArt);
+            saveAndRender();
+
+            // Clear Input Fields
             document.getElementById('art-title').value = '';
             document.getElementById('art-cat').value = '';
             document.getElementById('art-body').value = '';
+            document.getElementById('art-img').value = '';
+            document.getElementById('art-video').value = '';
+            document.getElementById('art-audio').value = '';
+
             toggleAdmin();
-            alert('Article Published Successfully!');
+            alert('Article Published Successfully! 🎉');
         }
+
+        function filterArticles() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = articles.filter(art => 
+                art.title.toLowerCase().includes(query) || 
+                art.category.toLowerCase().includes(query) || 
+                art.body.toLowerCase().includes(query)
+            );
+            renderArticles(filtered);
+        }
+
+        // Initial Load
+        renderArticles(articles);
     </script>
 </body>
 </html>
