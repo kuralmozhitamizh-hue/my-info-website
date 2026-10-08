@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Information Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+    <header class="bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black text-indigo-600">InfoHub 🚀</h1>
+            <a href="/admin/" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Admin Panel</a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold tracking-tight mb-4">Welcome to Knowledge Hub</h2>
+            <p class="text-lg text-slate-600">Clean, fast, and modern articles published by creators worldwide.</p>
+        </div>
+
+        <div id="articles-list" class="grid gap-6 md:grid-cols-2">
+            <!-- Dynamic Articles will appear here -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">Technology</span>
+                <h3 class="text-xl font-bold mt-3 mb-2">Getting Started with Modern Web Dev</h3>
+                <p class="text-slate-600 text-sm">Learn how to build fast, beautiful, and secure information websites easily.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
