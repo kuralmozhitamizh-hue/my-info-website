@@ -97,6 +97,19 @@
             }
         ];
 
+        // Global single media playback enforcement (Pause others when one plays)
+        document.addEventListener('play', function(e) {
+            const target = e.target;
+            if (target && (target.tagName === 'VIDEO' || target.tagName === 'AUDIO')) {
+                const allMedia = document.querySelectorAll('video, audio');
+                allMedia.forEach(media => {
+                    if (media !== target) {
+                        media.pause();
+                    }
+                });
+            }
+        }, true);
+
         function saveAndRender() {
             localStorage.setItem('my_info_articles', JSON.stringify(articles));
             renderArticles(articles);
@@ -113,9 +126,11 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels
+            // 1. Process Carousels with Pagination Dots
             text = text.replace(/\[carousel:\s*([^\]]+)\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
+                const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
+                
                 let slidesHTML = urls.map(url => {
                     if (isMediaUrl(url, 'video')) {
                         let embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
@@ -126,13 +141,19 @@
                         return `<div class="flex-none w-full snap-center max-w-full"><img src="${url}" class="w-full h-48 object-cover rounded-xl shadow-sm" onerror="this.src='https://via.placeholder.com/600x300?text=Image'"></div>`;
                     }
                 }).join('');
+
+                let dotsHTML = urls.map((_, idx) => `
+                    <button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>
+                `).join('');
                 
                 return `
                     <div class="relative my-4 w-full max-w-full overflow-hidden">
-                        <div class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
+                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
                             ${slidesHTML}
                         </div>
-                        <p class="text-center text-xs text-slate-400 mt-1">Swipe horizontal ➔</p>
+                        <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">
+                            ${dotsHTML}
+                        </div>
                     </div>
                 `;
             });
@@ -158,6 +179,30 @@
             });
 
             return text;
+        }
+
+        function scrollToSlide(carouselId, index) {
+            const container = document.getElementById(carouselId);
+            if (container) {
+                container.scrollTo({ left: index * container.clientWidth, behavior: 'smooth' });
+            }
+        }
+
+        function updateDots(carouselId, totalSlides) {
+            const container = document.getElementById(carouselId);
+            const dotsContainer = document.getElementById(carouselId + '_dots');
+            if (!container || !dotsContainer) return;
+            const scrollPos = container.scrollLeft;
+            const slideWidth = container.clientWidth;
+            const activeIndex = Math.round(scrollPos / slideWidth);
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === activeIndex) {
+                    dots[i].className = "w-4 h-2 rounded-full transition-all duration-300 bg-indigo-600";
+                } else {
+                    dots[i].className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-300";
+                }
+            }
         }
 
         function renderArticles(dataToRender) {
@@ -205,7 +250,7 @@
             card.innerHTML = `
                 <div class="w-full max-w-full overflow-hidden">
                     <div class="flex justify-between items-center mb-2.5 w-full">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
                         ${actionButtons}
                     </div>
                     <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
