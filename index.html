@@ -117,11 +117,14 @@
                 }
             });
 
-            // Pause all YouTube iframe players
+            // Pause all YouTube iframe players except current playing one
             ytPlayers.forEach(player => {
-                if (player && player.pauseVideo && player.getIframe() !== currentElement) {
+                if (player && player.pauseVideo && player.getIframe) {
                     try {
-                        player.pauseVideo();
+                        const iframe = player.getIframe();
+                        if (iframe !== currentElement) {
+                            player.pauseVideo();
+                        }
                     } catch(err) {}
                 }
             });
@@ -134,21 +137,33 @@
         }
 
         function initYouTubePlayers() {
+            // Clean up existing player instances safely
+            if (ytPlayers && ytPlayers.length > 0) {
+                ytPlayers.forEach(p => {
+                    try { if (p && p.destroy) p.destroy(); } catch(e) {}
+                });
+            }
             ytPlayers = [];
+
             const iframes = document.querySelectorAll('iframe.yt-embed-player');
             iframes.forEach(iframe => {
-                let player = new YT.Player(iframe, {
-                    events: {
-                        'onStateChange': onPlayerStateChange
-                    }
-                });
-                ytPlayers.push(player);
+                try {
+                    let player = new YT.Player(iframe, {
+                        events: {
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                    ytPlayers.push(player);
+                } catch(e) {}
             });
         }
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                pauseAllMedia(event.target.getIframe());
+                try {
+                    const iframe = event.target.getIframe();
+                    pauseAllMedia(iframe);
+                } catch(e) {}
             }
         }
 
@@ -177,7 +192,7 @@
                     let ytId = extractYouTubeId(url);
                     if (ytId || isMediaUrl(url, 'video')) {
                         if (ytId) {
-                            return `<div class="flex-none w-full snap-center aspect-video max-w-full"><iframe id="yt_${Math.random().toString(36).substring(2, 9)}" class="yt-embed-player w-full h-full rounded-xl" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                            return `<div class="flex-none w-full snap-center aspect-video max-w-full"><iframe class="yt-embed-player w-full h-full rounded-xl" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
                         } else {
                             return `<div class="flex-none w-full snap-center aspect-video max-w-full"><video controls class="w-full rounded-xl shadow-sm"><source src="${url}"></video></div>`;
                         }
@@ -214,7 +229,7 @@
                 url = url.trim();
                 let ytId = extractYouTubeId(url);
                 if (ytId) {
-                    return `<div class="my-3 aspect-video w-full max-w-full"><iframe id="yt_${Math.random().toString(36).substring(2, 9)}" class="yt-embed-player w-full h-full rounded-xl shadow-sm" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                    return `<div class="my-3 aspect-video w-full max-w-full"><iframe class="yt-embed-player w-full h-full rounded-xl shadow-sm" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
                 }
                 return `<video controls class="w-full rounded-xl my-3 shadow-sm max-w-full"><source src="${url}"></video>`;
             });
@@ -276,12 +291,12 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
-            // Initialize YouTube API players after DOM load
+            // Re-initialize YouTube API players after DOM load
             setTimeout(() => {
                 if (window.YT && window.YT.Player) {
                     initYouTubePlayers();
                 }
-            }, 500);
+            }, 400);
         }
 
         function createCardHTML(art) {
