@@ -284,7 +284,7 @@
             url = url.trim();
             let ytId = extractYouTubeId(url);
             if (ytId) {
-                return `<div class="aspect-video w-full max-w-full"><iframe class="yt-embed-player w-full h-full rounded-xl shadow-sm" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                return `<div class="w-full aspect-video relative"><iframe class="yt-embed-player w-full h-full rounded-xl shadow-sm absolute inset-0" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
             } else if (isMediaUrl(url, 'video')) {
                 return `<video controls class="w-full rounded-xl shadow-sm max-w-full"><source src="${url}"></video>`;
             } else if (isMediaUrl(url, 'audio')) {
@@ -299,13 +299,13 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels with flex-shrink-0 for perfect rendering
+            // 1. Process Carousels with precise flex sizing
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 
                 let slidesHTML = urls.map(url => {
-                    return `<div class="flex-shrink-0 w-full snap-center max-w-full flex items-center justify-center">${renderMediaItem(url)}</div>`;
+                    return `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(url)}</div>`;
                 }).join('');
 
                 let dotsHTML = urls.map((_, idx) => `
@@ -396,13 +396,16 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
-            setTimeout(() => {
-                if (window.YT && window.YT.Player) {
-                    initYouTubePlayers();
-                } else {
-                    window.onYouTubeIframeAPIReady = initYouTubePlayers;
-                }
-            }, 500);
+            // Robust YouTube players initialization after layout stabilization
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    if (window.YT && window.YT.Player) {
+                        initYouTubePlayers();
+                    } else {
+                        window.onYouTubeIframeAPIReady = initYouTubePlayers;
+                    }
+                }, 400);
+            });
         }
 
         function createCardHTML(art) {
@@ -411,7 +414,7 @@
             
             const parsedBody = parseContent(art.body);
 
-            let actionButtons = '';
+          let actionButtons = '';
             if (isLoggedIn) {
                 actionButtons = `
                     <div class="flex gap-1.5">
