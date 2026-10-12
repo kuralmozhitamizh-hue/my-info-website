@@ -1,70 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>InfoHub - Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden !important;
+        }
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .break-word-custom {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 font-sans overflow-x-hidden w-full">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-black text-indigo-600">InfoHub 🚀</h1>
-            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Panel 🔒</button>
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center w-full">
+            <h1 class="text-xl sm:text-2xl font-black text-indigo-600 truncate">InfoHub 🚀</h1>
+            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">Author Panel 🔒</button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-8">
+    <main class="max-w-5xl mx-auto px-4 py-8 w-full overflow-x-hidden">
 
         <!-- Search Box -->
-        <div class="mb-8">
-            <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles by title, category or content..." class="w-full p-4 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700">
+        <div class="mb-8 w-full">
+            <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles by title, category or content..." class="w-full p-3.5 sm:p-4 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm sm:text-base">
         </div>
 
         <!-- Author Panel Form (Hidden by default) -->
-        <div id="admin-panel" class="hidden bg-white p-6 rounded-xl shadow-lg border border-indigo-100 mb-10">
+        <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-10 w-full">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="form-title" class="text-xl font-bold text-indigo-600">Publish New Article 📝</h3>
-                <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold">✕ Close</button>
+                <h3 id="form-title" class="text-lg sm:text-xl font-bold text-indigo-600">Publish New Article 📝</h3>
+                <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
             </div>
             
             <input type="hidden" id="editing-id" value="">
 
-            <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech, General)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech, General)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
             <!-- Shortcode Helper Guide -->
-            <div class="bg-indigo-50 p-3.5 rounded-xl text-xs text-indigo-900 mb-3 space-y-1.5 border border-indigo-100">
-                <p class="font-bold text-sm">💡 Media Shortcode Rules (Use anywhere in text):</p>
-                <p>• Image: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[img: direct_image_url]</code> or <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[image: direct_image_url]</code></p>
+            <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1.5 border border-indigo-100 break-word-custom">
+                <p class="font-bold text-xs sm:text-sm">💡 Media Shortcode Rules (Use anywhere in text):</p>
+                <p>• Image: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[img: direct_image_url]</code></p>
                 <p>• Video / YouTube: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[video: video_or_youtube_url]</code></p>
                 <p>• Audio: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[audio: mp3_audio_url]</code></p>
-                <p>• Carousel (Images / Videos / Audios): <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2, url3]</code></p>
+                <p>• Carousel: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2, url3]</code></p>
             </div>
 
             <textarea id="art-body" rows="8" placeholder="Write your content here... Use shortcodes anywhere inside text!" class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"></textarea>
 
             <div class="flex gap-3">
-                <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-3 rounded-lg font-bold hover:bg-amber-600 transition">Save as Draft 💾</button>
-                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">Publish Article 🚀</button>
+                <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-3 rounded-lg font-bold hover:bg-amber-600 transition text-xs sm:text-sm">Save as Draft 💾</button>
+                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish Article 🚀</button>
             </div>
         </div>
 
         <!-- Drafts Section for Author -->
-        <div id="drafts-container" class="hidden mb-10">
-            <h2 class="text-xl font-bold mb-4 text-amber-600 flex items-center gap-2">📂 Your Unpublished Drafts</h2>
-            <div id="drafts-list" class="grid gap-6 md:grid-cols-2"></div>
+        <div id="drafts-container" class="hidden mb-10 w-full">
+            <h2 class="text-lg sm:text-xl font-bold mb-4 text-amber-600 flex items-center gap-2">📂 Your Unpublished Drafts</h2>
+            <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
             <hr class="my-8 border-slate-200">
         </div>
 
         <!-- Articles Grid Container -->
-        <div id="articles-list" class="grid gap-6 md:grid-cols-2">
+        <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full">
             <!-- Articles load dynamically -->
         </div>
 
@@ -110,13 +118,13 @@
                     } else if (isMediaUrl(url, 'audio')) {
                         return `<div class="flex-none w-full snap-center bg-slate-100 p-4 rounded-xl flex items-center"><audio controls class="w-full"><source src="${url}"></audio></div>`;
                     } else {
-                        return `<div class="flex-none w-full snap-center"><img src="${url}" class="w-full h-52 object-cover rounded-xl shadow-sm" onerror="this.src='https://via.placeholder.com/600x300?text=Invalid+Image+URL'"></div>`;
+                        return `<div class="flex-none w-full snap-center"><img src="${url}" class="w-full h-48 sm:h-52 object-cover rounded-xl shadow-sm" onerror="this.src='https://via.placeholder.com/600x300?text=Invalid+Image+URL'"></div>`;
                     }
                 }).join('');
                 
                 return `
-                    <div class="relative my-4">
-                        <div class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth">
+                    <div class="relative my-4 w-full overflow-hidden">
+                        <div class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
                             ${slidesHTML}
                         </div>
                         <p class="text-center text-xs text-slate-400 mt-1.5"> Swipe horizontal for carousel ➔</p>
@@ -134,7 +142,7 @@
                 url = url.trim();
                 if (url.includes('youtube.com') || url.includes('youtu.be')) {
                     let embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
-                    return `<div class="my-4 aspect-video"><iframe class="w-full h-full rounded-xl shadow-sm" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                    return `<div class="my-4 aspect-video w-full"><iframe class="w-full h-full rounded-xl shadow-sm" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
                 }
                 return `<video controls class="w-full rounded-xl my-4 shadow-sm"><source src="${url}"></video>`;
             });
@@ -175,7 +183,7 @@
 
         function createCardHTML(art) {
             const card = document.createElement('div');
-            card.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative';
+            card.className = 'bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full overflow-hidden';
             
             const parsedBody = parseContent(art.body);
 
@@ -183,20 +191,20 @@
             if (isLoggedIn) {
                 actionButtons = `
                     <div class="flex gap-2">
-                        <button onclick="editArticle(${art.id})" class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs font-bold transition">✏️ Edit</button>
-                        <button onclick="deleteArticle(${art.id})" class="text-red-500 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-lg text-xs font-bold transition">🗑 Delete</button>
+                        <button onclick="editArticle(${art.id})" class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold transition">✏️ Edit</button>
+                        <button onclick="deleteArticle(${art.id})" class="text-red-500 hover:text-red-700 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold transition">🗑 Delete</button>
                     </div>
                 `;
             }
 
             card.innerHTML = `
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                <div class="w-full overflow-hidden">
+                    <div class="flex justify-between items-center mb-3 w-full">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded truncate max-w-[60%]">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
                         ${actionButtons}
                     </div>
-                    <h3 class="text-xl font-bold mb-2 text-slate-800">${art.title}</h3>
-                    <div class="text-slate-600 text-sm whitespace-pre-line leading-relaxed">${parsedBody}</div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 text-slate-800 break-word-custom">${art.title}</h3>
+                    <div class="text-slate-600 text-sm whitespace-pre-line leading-relaxed break-word-custom overflow-hidden">${parsedBody}</div>
                 </div>
             `;
             return card;
@@ -209,7 +217,7 @@
                 const pass = prompt("Enter Author Password:");
                 if (pass === ADMIN_PASSWORD) {
                     isLoggedIn = true;
-                    document.getElementById('author-btn').innerText = 'Author Dashboard 🔓';
+                    document.getElementById('author-btn').innerText = 'Dashboard 🔓';
                     toggleAdmin();
                     renderArticles(articles);
                 } else if (pass !== null) {
