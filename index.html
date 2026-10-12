@@ -160,16 +160,23 @@
             }
             ytPlayers = [];
 
-            const iframes = document.querySelectorAll('iframe.yt-embed-player');
-            iframes.forEach(iframe => {
-                try {
-                    let player = new YT.Player(iframe, {
-                        events: {
-                            'onStateChange': onPlayerStateChange
-                        }
-                    });
-                    ytPlayers.push(player);
-                } catch(e) {}
+            const containers = document.querySelectorAll('.yt-player-container');
+            containers.forEach(container => {
+                const ytId = container.getAttribute('data-yt-id');
+                if (ytId && window.YT && window.YT.Player) {
+                    try {
+                        let player = new YT.Player(container, {
+                            height: '100%',
+                            width: '100%',
+                            videoId: ytId,
+                            playerVars: { 'enablejsapi': 1, 'rel': 0 },
+                            events: {
+                                'onStateChange': onPlayerStateChange
+                            }
+                        });
+                        ytPlayers.push(player);
+                    } catch(e) {}
+                }
             });
         }
 
@@ -284,7 +291,9 @@
             url = url.trim();
             let ytId = extractYouTubeId(url);
             if (ytId) {
-                return `<div class="w-full aspect-video relative"><iframe class="yt-embed-player w-full h-full rounded-xl shadow-sm absolute inset-0" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                // Stable container div for YT.Player mounting
+                const boxId = 'yt_box_' + Math.random().toString(36).substring(2, 9);
+                return `<div class="w-full aspect-video rounded-xl overflow-hidden shadow-sm yt-player-container" id="${boxId}" data-yt-id="${ytId}"></div>`;
             } else if (isMediaUrl(url, 'video')) {
                 return `<video controls class="w-full rounded-xl shadow-sm max-w-full"><source src="${url}"></video>`;
             } else if (isMediaUrl(url, 'audio')) {
@@ -299,7 +308,7 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels with precise flex sizing
+            // 1. Process Carousels
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
@@ -396,7 +405,7 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
-            // Robust YouTube players initialization after layout stabilization
+            // Stable initialization after DOM paint
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     if (window.YT && window.YT.Player) {
@@ -404,9 +413,9 @@
                     } else {
                         window.onYouTubeIframeAPIReady = initYouTubePlayers;
                     }
-                }, 400);
+                }, 300);
             });
-        }
+          }
 
         function createCardHTML(art) {
             const card = document.createElement('div');
@@ -414,7 +423,7 @@
             
             const parsedBody = parseContent(art.body);
 
-          let actionButtons = '';
+            let actionButtons = '';
             if (isLoggedIn) {
                 actionButtons = `
                     <div class="flex gap-1.5">
