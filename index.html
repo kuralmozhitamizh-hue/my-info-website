@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>InfoHub - Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- YouTube Player API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
         * { box-sizing: border-box; }
         html, body {
@@ -86,6 +88,7 @@
     <script>
         const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
+        let ytPlayers = [];
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -97,18 +100,57 @@
             }
         ];
 
-        // Global single media playback enforcement (Pause others when one plays)
+        // Global single media playback enforcement for HTML video/audio
         document.addEventListener('play', function(e) {
             const target = e.target;
             if (target && (target.tagName === 'VIDEO' || target.tagName === 'AUDIO')) {
-                const allMedia = document.querySelectorAll('video, audio');
-                allMedia.forEach(media => {
-                    if (media !== target) {
-                        media.pause();
-                    }
-                });
+                pauseAllMedia(target);
             }
         }, true);
+
+        function pauseAllMedia(currentElement = null) {
+            // Pause HTML video and audio elements
+            const allMedia = document.querySelectorAll('video, audio');
+            allMedia.forEach(media => {
+                if (media !== currentElement) {
+                    media.pause();
+                }
+            });
+
+            // Pause all YouTube iframe players
+            ytPlayers.forEach(player => {
+                if (player && player.pauseVideo && player.getIframe() !== currentElement) {
+                    try {
+                        player.pauseVideo();
+                    } catch(err) {}
+                }
+            });
+        }
+
+        function extractYouTubeId(url) {
+            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function initYouTubePlayers() {
+            ytPlayers = [];
+            const iframes = document.querySelectorAll('iframe.yt-embed-player');
+            iframes.forEach(iframe => {
+                let player = new YT.Player(iframe, {
+                    events: {
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+                ytPlayers.push(player);
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                pauseAllMedia(event.target.getIframe());
+            }
+        }
 
         function saveAndRender() {
             localStorage.setItem('my_info_articles', JSON.stringify(articles));
@@ -126,15 +168,19 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels with Pagination Dots
+            // 1. Process Carousels
             text = text.replace(/\[carousel:\s*([^\]]+)\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 
                 let slidesHTML = urls.map(url => {
-                    if (isMediaUrl(url, 'video')) {
-                        let embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
-                        return `<div class="flex-none w-full snap-center aspect-video max-w-full"><iframe class="w-full h-full rounded-xl" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                    let ytId = extractYouTubeId(url);
+                    if (ytId || isMediaUrl(url, 'video')) {
+                        if (ytId) {
+                            return `<div class="flex-none w-full snap-center aspect-video max-w-full"><iframe id="yt_${Math.random().toString(36).substring(2, 9)}" class="yt-embed-player w-full h-full rounded-xl" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                        } else {
+                            return `<div class="flex-none w-full snap-center aspect-video max-w-full"><video controls class="w-full rounded-xl shadow-sm"><source src="${url}"></video></div>`;
+                        }
                     } else if (isMediaUrl(url, 'audio')) {
                         return `<div class="flex-none w-full snap-center bg-slate-100 p-3 rounded-xl flex items-center max-w-full"><audio controls class="w-full"><source src="${url}"></audio></div>`;
                     } else {
@@ -166,9 +212,9 @@
             // 3. Process Videos
             text = text.replace(/\[video:\s*([^\]]+)\]/gi, function(match, url) {
                 url = url.trim();
-                if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                    let embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
-                    return `<div class="my-3 aspect-video w-full max-w-full"><iframe class="w-full h-full rounded-xl shadow-sm" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                let ytId = extractYouTubeId(url);
+                if (ytId) {
+                    return `<div class="my-3 aspect-video w-full max-w-full"><iframe id="yt_${Math.random().toString(36).substring(2, 9)}" class="yt-embed-player w-full h-full rounded-xl shadow-sm" src="https://www.youtube.com/embed/${ytId}?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
                 }
                 return `<video controls class="w-full rounded-xl my-3 shadow-sm max-w-full"><source src="${url}"></video>`;
             });
@@ -229,6 +275,13 @@
             }
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
+
+            // Initialize YouTube API players after DOM load
+            setTimeout(() => {
+                if (window.YT && window.YT.Player) {
+                    initYouTubePlayers();
+                }
+            }, 500);
         }
 
         function createCardHTML(art) {
@@ -346,6 +399,10 @@
                 art.body.toLowerCase().includes(query)
             );
             renderArticles(filtered);
+        }
+
+        function onYouTubeIframeAPIReady() {
+            initYouTubePlayers();
         }
 
         // Initial Load
