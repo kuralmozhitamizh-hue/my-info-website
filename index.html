@@ -16,7 +16,7 @@
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-black text-indigo-600">InfoHub 🚀</h1>
-            <button onclick="accessAdmin()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Panel 🔒</button>
+            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition">Author Panel 🔒</button>
         </div>
     </header>
 
@@ -30,25 +30,37 @@
         <!-- Author Panel Form (Hidden by default) -->
         <div id="admin-panel" class="hidden bg-white p-6 rounded-xl shadow-lg border border-indigo-100 mb-10">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-indigo-600">Publish New Article 📝</h3>
+                <h3 id="form-title" class="text-xl font-bold text-indigo-600">Publish New Article 📝</h3>
                 <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold">✕ Close</button>
             </div>
             
+            <input type="hidden" id="editing-id" value="">
+
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech, General)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             
             <!-- Shortcode Helper Guide -->
-            <div class="bg-indigo-50 p-3.5 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100">
-                <p class="font-bold">💡 Content-la enge venum-naalum media insert pannalaam:</p>
-                <p>• Image: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[img: https://url.com/image.jpg]</code></p>
-                <p>• Video / YouTube: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[video: https://youtube.com/watch?v=xxx]</code></p>
-                <p>• Audio: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[audio: https://url.com/audio.mp3]</code></p>
-                <p>• Carousel Slider: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2, url3]</code></p>
+            <div class="bg-indigo-50 p-3.5 rounded-xl text-xs text-indigo-900 mb-3 space-y-1.5 border border-indigo-100">
+                <p class="font-bold text-sm">💡 Media Shortcode Rules (Use anywhere in text):</p>
+                <p>• Image: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[img: direct_image_url]</code> or <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[image: direct_image_url]</code></p>
+                <p>• Video / YouTube: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[video: video_or_youtube_url]</code></p>
+                <p>• Audio: <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[audio: mp3_audio_url]</code></p>
+                <p>• Carousel (Images / Videos / Audios): <code class="bg-white px-1.5 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2, url3]</code></p>
             </div>
 
             <textarea id="art-body" rows="8" placeholder="Write your content here... Use shortcodes anywhere inside text!" class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"></textarea>
 
-            <button onclick="publishArticle()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">Publish Article 🚀</button>
+            <div class="flex gap-3">
+                <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-3 rounded-lg font-bold hover:bg-amber-600 transition">Save as Draft 💾</button>
+                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">Publish Article 🚀</button>
+            </div>
+        </div>
+
+        <!-- Drafts Section for Author -->
+        <div id="drafts-container" class="hidden mb-10">
+            <h2 class="text-xl font-bold mb-4 text-amber-600 flex items-center gap-2">📂 Your Unpublished Drafts</h2>
+            <div id="drafts-list" class="grid gap-6 md:grid-cols-2"></div>
+            <hr class="my-8 border-slate-200">
         </div>
 
         <!-- Articles Grid Container -->
@@ -60,13 +72,15 @@
 
     <script>
         const ADMIN_PASSWORD = "1234";
+        let isLoggedIn = false;
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
                 id: 1,
-                title: "முல்லைப்பாட்டு",
+                title: "முல்லைப்பாட்டு Demo",
                 category: "தமிழ்",
-                body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும். இது 103 அடிகளைக் கொண்டது.\n\n[carousel: https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800, https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800]\n\nஇதன் ஆசிரியர் காவிரிப் பூம்பட்டினத்து பொன்வணிகனார் மகன் நப்பூதனார் ஆவார்."
+                isDraft: false,
+                body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும்.\n\n[carousel: https://picsum.photos/id/1018/800/400, https://picsum.photos/id/1015/800/400]\n\nஇது 103 அடிகளைக் கொண்டது."
             }
         ];
 
@@ -75,34 +89,47 @@
             renderArticles(articles);
         }
 
+        function isMediaUrl(url, type) {
+            url = url.trim();
+            if (type === 'image') return url.match(/\.(jpeg|jpg|gif|png|webp|svg)/i) || url.includes('picsum.photos') || url.includes('unsplash.com');
+            if (type === 'video') return url.match(/\.(mp4|webm|ogg)/i) || url.includes('youtube.com') || url.includes('youtu.be');
+            if (type === 'audio') return url.match(/\.(mp3|wav|ogg|aac)/i);
+            return false;
+        }
+
         function parseContent(text) {
             if (!text) return '';
 
             // 1. Process Carousels [carousel: url1, url2, url3]
             text = text.replace(/\[carousel:\s*([^\]]+)\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
-                let slidesHTML = urls.map(url => `
-                    <div class="flex-none w-full snap-center">
-                        <img src="${url}" class="w-full h-52 object-cover rounded-xl shadow-sm" onerror="this.style.display='none'">
-                    </div>
-                `).join('');
+                let slidesHTML = urls.map(url => {
+                    if (isMediaUrl(url, 'video')) {
+                        let embedUrl = url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/');
+                        return `<div class="flex-none w-full snap-center aspect-video"><iframe class="w-full h-full rounded-xl" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+                    } else if (isMediaUrl(url, 'audio')) {
+                        return `<div class="flex-none w-full snap-center bg-slate-100 p-4 rounded-xl flex items-center"><audio controls class="w-full"><source src="${url}"></audio></div>`;
+                    } else {
+                        return `<div class="flex-none w-full snap-center"><img src="${url}" class="w-full h-52 object-cover rounded-xl shadow-sm" onerror="this.src='https://via.placeholder.com/600x300?text=Invalid+Image+URL'"></div>`;
+                    }
+                }).join('');
                 
                 return `
                     <div class="relative my-4">
                         <div class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth">
                             ${slidesHTML}
                         </div>
-                        <p class="text-center text-xs text-slate-400 mt-1">Swipe horizontal for more ➔</p>
+                        <p class="text-center text-xs text-slate-400 mt-1.5"> Swipe horizontal for carousel ➔</p>
                     </div>
                 `;
             });
 
-            // 2. Process Single Images [img: url]
-            text = text.replace(/\[img:\s*([^\]]+)\]/gi, function(match, url) {
-                return `<img src="${url.trim()}" class="w-full max-h-80 object-cover rounded-xl my-4 shadow-sm" onerror="this.style.display='none'">`;
+            // 2. Process Images [img: url] or [image: url]
+            text = text.replace(/\[(?:img\vert{}image):\s*([^\]]+)\]/gi, function(match, url) {
+                return `<img src="${url.trim()}" class="w-full max-h-80 object-cover rounded-xl my-4 shadow-sm" onerror="this.src='https://via.placeholder.com/600x300?text=Invalid+Image+URL'">`;
             });
 
-            // 3. Process Videos / YouTube [video: url]
+            // 3. Process Videos [video: url]
             text = text.replace(/\[video:\s*([^\]]+)\]/gi, function(match, url) {
                 url = url.trim();
                 if (url.includes('youtube.com') || url.includes('youtu.be')) {
@@ -122,39 +149,72 @@
 
         function renderArticles(dataToRender) {
             const list = document.getElementById('articles-list');
-            list.innerHTML = '';
+            const draftsList = document.getElementById('drafts-list');
+            const draftsContainer = document.getElementById('drafts-container');
 
-            if (dataToRender.length === 0) {
-                list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No articles found!</div>';
+            list.innerHTML = '';
+            draftsList.innerHTML = '';
+
+            const publishedArts = dataToRender.filter(a => !a.isDraft);
+            const draftArts = articles.filter(a => a.isDraft);
+
+            if (isLoggedIn && draftArts.length > 0) {
+                draftsContainer.classList.remove('hidden');
+                draftArts.forEach(art => draftsList.appendChild(createCardHTML(art)));
+            } else {
+                draftsContainer.classList.add('hidden');
+            }
+
+            if (publishedArts.length === 0) {
+                list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No published articles yet!</div>';
                 return;
             }
 
-            dataToRender.forEach(art => {
-                const card = document.createElement('div');
-                card.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative';
-                
-                const parsedBody = parseContent(art.body);
-
-                card.innerHTML = `
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
-                            <button onclick="deleteArticle(${art.id})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg text-xs font-bold transition">🗑 Delete</button>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2 text-slate-800">${art.title}</h3>
-                        <div class="text-slate-600 text-sm whitespace-pre-line leading-relaxed">${parsedBody}</div>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
+            publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
         }
 
-        function accessAdmin() {
-            const pass = prompt("Enter Author Password:");
-            if (pass === ADMIN_PASSWORD) {
+        function createCardHTML(art) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative';
+            
+            const parsedBody = parseContent(art.body);
+
+            let actionButtons = '';
+            if (isLoggedIn) {
+                actionButtons = `
+                    <div class="flex gap-2">
+                        <button onclick="editArticle(${art.id})" class="text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-lg text-xs font-bold transition">✏️ Edit</button>
+                        <button onclick="deleteArticle(${art.id})" class="text-red-500 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-lg text-xs font-bold transition">🗑 Delete</button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                        ${actionButtons}
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-800">${art.title}</h3>
+                    <div class="text-slate-600 text-sm whitespace-pre-line leading-relaxed">${parsedBody}</div>
+                </div>
+            `;
+            return card;
+        }
+
+        function handleAuthorAccess() {
+            if (isLoggedIn) {
                 toggleAdmin();
-            } else if (pass !== null) {
-                alert("Incorrect Password! Access Denied.");
+            } else {
+                const pass = prompt("Enter Author Password:");
+                if (pass === ADMIN_PASSWORD) {
+                    isLoggedIn = true;
+                    document.getElementById('author-btn').innerText = 'Author Dashboard 🔓';
+                    toggleAdmin();
+                    renderArticles(articles);
+                } else if (pass !== null) {
+                    alert("Incorrect Password!");
+                }
             }
         }
 
@@ -163,45 +223,61 @@
             panel.classList.toggle('hidden');
         }
 
-        function publishArticle() {
+        function saveArticle(isDraft) {
             const title = document.getElementById('art-title').value.trim();
             const category = document.getElementById('art-cat').value.trim();
             const body = document.getElementById('art-body').value.trim();
+            const editingId = document.getElementById('editing-id').value;
 
             if (!title || !body) {
                 alert('Please fill in Title and Content!');
                 return;
             }
 
-            const newArt = {
-                id: Date.now(),
-                title,
-                category,
-                body
-            };
+            if (editingId) {
+                const index = articles.findIndex(a => a.id == editingId);
+                if (index !== -1) {
+                    articles[index] = { ...articles[index], title, category, body, isDraft };
+                }
+            } else {
+                const newArt = { id: Date.now(), title, category, body, isDraft };
+                articles.unshift(newArt);
+            }
 
-            articles.unshift(newArt);
             saveAndRender();
-
-            document.getElementById('art-title').value = '';
-            document.getElementById('art-cat').value = '';
-            document.getElementById('art-body').value = '';
-
+            resetForm();
             toggleAdmin();
-            alert('Article Published Successfully! 🎉');
+            alert(isDraft ? 'Draft Saved Successfully! 💾' : 'Article Published Live! 🚀');
+        }
+
+        function editArticle(id) {
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+
+            document.getElementById('editing-id').value = art.id;
+            document.getElementById('art-title').value = art.title;
+            document.getElementById('art-cat').value = art.category;
+            document.getElementById('art-body').value = art.body;
+            document.getElementById('form-title').innerText = 'Edit Article ✏️';
+
+            const panel = document.getElementById('admin-panel');
+            panel.classList.remove('hidden');
+            window.scrollTo({ top: panel.offsetTop - 100, behavior: 'smooth' });
         }
 
         function deleteArticle(id) {
-            const pass = prompt("Enter Author Password to Delete:");
-            if (pass === ADMIN_PASSWORD) {
-                if (confirm("Are you sure you want to delete this article?")) {
-                    articles = articles.filter(art => art.id !== id);
-                    saveAndRender();
-                    alert("Article deleted successfully!");
-                }
-            } else if (pass !== null) {
-                alert("Incorrect Password! Delete cancelled.");
+            if (confirm("Are you sure you want to delete this article?")) {
+                articles = articles.filter(art => art.id !== id);
+                saveAndRender();
             }
+        }
+
+        function resetForm() {
+            document.getElementById('editing-id').value = '';
+            document.getElementById('art-title').value = '';
+            document.getElementById('art-cat').value = '';
+            document.getElementById('art-body').value = '';
+            document.getElementById('form-title').innerText = 'Publish New Article 📝';
         }
 
         function filterArticles() {
