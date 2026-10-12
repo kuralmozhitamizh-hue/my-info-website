@@ -299,13 +299,13 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels (Handles videos, images, audios accurately inside slides)
+            // 1. Process Carousels with flex-shrink-0 for perfect rendering
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 
                 let slidesHTML = urls.map(url => {
-                    return `<div class="flex-none w-full snap-center max-w-full flex items-center justify-center">${renderMediaItem(url)}</div>`;
+                    return `<div class="flex-shrink-0 w-full snap-center max-w-full flex items-center justify-center">${renderMediaItem(url)}</div>`;
                 }).join('');
 
                 let dotsHTML = urls.map((_, idx) => `
@@ -396,7 +396,6 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
-            // Re-bind YouTube Player API for all embedded videos including carousel items
             setTimeout(() => {
                 if (window.YT && window.YT.Player) {
                     initYouTubePlayers();
@@ -414,7 +413,7 @@
 
             let actionButtons = '';
             if (isLoggedIn) {
-     actionButtons = `
+                actionButtons = `
                     <div class="flex gap-1.5">
                         <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
                         <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
