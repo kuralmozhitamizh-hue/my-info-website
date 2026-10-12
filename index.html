@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- YouTube Player API -->
     <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- PDF.js for in-site PDF rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
     <style>
         * { box-sizing: border-box; }
         html, body {
@@ -22,6 +27,18 @@
             word-break: break-all;
             overflow-wrap: break-word;
             max-width: 100%;
+        }
+        .pdf-viewer-container {
+            max-height: 500px;
+            overflow-y: auto;
+            background: #525659;
+        }
+        .pdf-canvas {
+            display: block;
+            margin: 10px auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto !important;
         }
     </style>
 </head>
@@ -57,11 +74,11 @@
             <!-- Shortcode Helper Guide -->
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
                 <p class="font-bold text-xs">💡 Universal Media & Document Shortcodes:</p>
-                <p>• Images (JPG, PNG, JPEG, WEBP, GIF, SVG, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
+                <p>• Images (JPG, PNG, WEBP, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
                 <p>• Videos / YouTube: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
-                <p>• Audios (MP3, WAV, AAC, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
+                <p>• Audios (MP3, WAV, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
                 <p>• PDF Documents: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[pdf: url]</code></p>
-                <p>• Carousel (Mix any formats): <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2]</code></p>
+                <p>• Carousel: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2]</code></p>
             </div>
 
             <textarea id="art-body" rows="6" placeholder="Write content here..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm strict-break"></textarea>
@@ -183,9 +200,87 @@
                 return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
             }
             if (type === 'pdf') {
-                return url.match(/\.pdf(\?.*)?$/i);
+                return url.match(/\.pdf(\?.*)?$/i) || url.includes('pdf');
             }
             return false;
+        }
+
+        // Render PDF directly inside a scrollable fixed container with page numbers, download & share buttons
+        function renderPDFViewer(url) {
+            url = url.trim();
+            const canvasId = 'pdf_canvas_' + Math.random().toString(36.substring(2, 9));
+            const containerId = 'pdf_container_' + Math.random().toString(36.substring(2, 9));
+            const infoId = 'pdf_info_' + Math.random().toString(36.substring(2, 9));
+
+            setTimeout(() => {
+                loadPDFIntoContainer(url, containerId, infoId);
+            }, 100);
+
+            return `
+                <div class="w-full max-w-full bg-slate-800 rounded-xl overflow-hidden border border-slate-700 my-3 shadow-md">
+                    <!-- PDF Toolbar / Controls -->
+                    <div class="bg-slate-900 text-white px-3 py-2 flex flex-wrap justify-between items-center text-xs gap-2 border-b border-slate-700">
+                        <span id="${infoId}" class="font-semibold text-slate-300">📄 Loading PDF...</span>
+                        <div class="flex items-center gap-2">
+                            <a href="${url}" download target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">📥 Download</a>
+                            <button onclick="sharePDF('${url}')" class="bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">🔗 Share</button>
+                        </div>
+                    </div>
+                    <!-- Scrollable Fixed Container -->
+                    <div id="${containerId}" class="pdf-viewer-container w-full p-2 flex flex-col items-center">
+                        <div class="text-slate-400 py-10 text-xs">Rendering pages...</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadPDFIntoContainer(url, containerId, infoId) {
+            const container = document.getElementById(containerId);
+            const infoSpan = document.getElementById(infoId);
+            if (!container) return;
+
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdfDoc = await loadingTask.promise;
+                const numPages = pdfDoc.numPages;
+                
+                container.innerHTML = '';
+                if (infoSpan) infoSpan.innerText = `📄 Total Pages: ${numPages}`;
+
+                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1.2 });
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'pdf-canvas rounded';
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    container.appendChild(canvas);
+
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                }
+            } catch (err) {
+                if (container) {
+                    container.innerHTML = `<div class="text-red-400 p-4 text-xs text-center">Failed to load PDF. <a href="${url}" target="_blank" class="underline text-indigo-300">Open directly</a></div>`;
+                }
+            }
+        }
+
+        function sharePDF(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Shared PDF Document',
+                    url: url
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url);
+                alert("PDF Link copied to clipboard!");
+            }
         }
 
         function renderMediaItem(url) {
@@ -197,10 +292,9 @@
                 return `<video controls class="w-full rounded-xl shadow-sm max-w-full"><source src="${url}"></video>`;
             } else if (isMediaUrl(url, 'audio')) {
                 return `<div class="bg-slate-100 p-3 rounded-xl flex items-center max-w-full"><audio controls class="w-full"><source src="${url}"></audio></div>`;
-            } else if (isMediaUrl(url, 'pdf') || url.toLowerCase().includes('.pdf')) {
-                return `<div class="w-full max-w-full"><iframe src="${url}" class="w-full h-96 rounded-xl border border-slate-200"></iframe><div class="mt-1 text-right"><a href="${url}" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline">📥 Open PDF in New Tab</a></div></div>`;
+            } else if (isMediaUrl(url, 'pdf')) {
+                return renderPDFViewer(url);
             } else {
-                // Original photo size preserved without cropping (h-auto instead of object-cover)
                 return `<img src="${url}" class="w-full h-auto rounded-xl shadow-sm max-w-full" onerror="this.src='https://via.placeholder.com/600x300?text=Image+Load+Error'">`;
             }
         }
@@ -305,11 +399,12 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
+            // Immediately and reliably initialize YouTube players after DOM render
             setTimeout(() => {
                 if (window.YT && window.YT.Player) {
                     initYouTubePlayers();
                 }
-            }, 400);
+            }, 300);
         }
 
         function createCardHTML(art) {
@@ -413,7 +508,7 @@
 
         function resetForm() {
             document.getElementById('editing-id').value = '';
-            document.getElementById('art-title').value = '';
+            document.getElementById('art-title').value = ''
             document.getElementById('art-cat').value = '';
             document.getElementById('art-body').value = '';
             document.getElementById('form-title').innerText = 'Publish New Article 📝';
