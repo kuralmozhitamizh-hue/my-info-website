@@ -217,12 +217,12 @@
                 }).join('');
 
                 let dotsHTML = urls.map((_, idx) => `
-                    <button onclick="scrollToSlide('${carouselId}',${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>
+                    <button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>
                 `).join('');
                 
                 return `
                     <div class="relative my-4 w-full max-w-full overflow-hidden">
-                        <div id="${carouselId}" onscroll="updateDots('${carouselId}',${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
+                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
                             ${slidesHTML}
                         </div>
                         <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">
@@ -233,7 +233,7 @@
             });
 
             // 2. Process Images ([img: url] or [ image : url ])
-            text = text.replace(/\[\s*(?:img|image)\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
+            text = text.replace(/\[\s*(?:img\vert{}image)\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
@@ -330,7 +330,7 @@
             card.innerHTML = `
                 <div class="w-full max-w-full overflow-hidden">
                     <div class="flex justify-between items-center mb-2.5 w-full">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category \vert{}\vert{} 'General'}${art.isDraft ? '• DRAFT' : ''}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
                         ${actionButtons}
                     </div>
                     <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
@@ -412,7 +412,7 @@
 
         function resetForm() {
             document.getElementById('editing-id').value = '';
-            document.getElementById('art-title`').value = '';
+            document.getElementById('art-title').value = '';
             document.getElementById('art-cat').value = '';
             document.getElementById('art-body').value = '';
             document.getElementById('form-title').innerText = 'Publish New Article 📝';
