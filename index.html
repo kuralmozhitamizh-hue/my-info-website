@@ -146,6 +146,7 @@
         }
 
         function extractYouTubeId(url) {
+            if (!url) return null;
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             let match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
@@ -200,7 +201,7 @@
                 return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
             }
             if (type === 'pdf') {
-                return url.match(/\.pdf(\?.*)?$/i) || url.includes('pdf');
+                return url.match(/\.pdf(\?.*)?$/i) || url.includes('.pdf');
             }
             return false;
         }
@@ -298,13 +299,13 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels
+            // 1. Process Carousels (Handles videos, images, audios accurately inside slides)
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 
                 let slidesHTML = urls.map(url => {
-                    return `<div class="flex-none w-full snap-center max-w-full">${renderMediaItem(url)}</div>`;
+                    return `<div class="flex-none w-full snap-center max-w-full flex items-center justify-center">${renderMediaItem(url)}</div>`;
                 }).join('');
 
                 let dotsHTML = urls.map((_, idx) => `
@@ -395,11 +396,14 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
+            // Re-bind YouTube Player API for all embedded videos including carousel items
             setTimeout(() => {
                 if (window.YT && window.YT.Player) {
                     initYouTubePlayers();
+                } else {
+                    window.onYouTubeIframeAPIReady = initYouTubePlayers;
                 }
-            }, 300);
+            }, 500);
         }
 
         function createCardHTML(art) {
@@ -410,7 +414,7 @@
 
             let actionButtons = '';
             if (isLoggedIn) {
-                actionButtons = `
+     actionButtons = `
                     <div class="flex gap-1.5">
                         <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
                         <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
