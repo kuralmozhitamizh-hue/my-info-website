@@ -207,8 +207,8 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels (Highly flexible whitespace matching)
-            text = text.replace(/\[\s*carousel\s*:\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
+            // 1. Process Carousels (Ultra-flexible regex supporting any spaces around tags)
+            text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 
@@ -232,23 +232,23 @@
                 `;
             });
 
-            // 2. Process Images ([img: url] or [ image : url ])
-            text = text.replace(/\[\s*(?:img\vert{}image)\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
+            // 2. Process Images ([img: url] or [ img : url ] or [img : url])
+            text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
             // 3. Process Videos ([video: url])
-            text = text.replace(/\[\s*video\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
+            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
             // 4. Process Audio ([audio: url])
-            text = text.replace(/\[\s*audio\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
+            text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
             // 5. Process PDF ([pdf: url])
-            text = text.replace(/\[\s*pdf\s*:\s*([^\]]+?)\s*\]/gi, function(match, url) {
+            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
@@ -398,7 +398,7 @@
             document.getElementById('art-body').value = art.body;
             document.getElementById('form-title').innerText = 'Edit Article ✏️';
 
-            const panel = document.getElementById('admin-panel');
+            The panel = document.getElementById('admin-panel');
             panel.classList.remove('hidden');
             window.scrollTo({ top: panel.offsetTop - 50, behavior: 'smooth' });
         }
