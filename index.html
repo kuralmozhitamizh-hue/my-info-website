@@ -207,7 +207,7 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels (Ultra-flexible regex supporting any spaces around tags)
+            // 1. Process Carousels
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
@@ -232,22 +232,22 @@
                 `;
             });
 
-            // 2. Process Images ([img: url] or [ img : url ] or [img : url])
+            // 2. Process Images
             text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 3. Process Videos ([video: url])
+            // 3. Process Videos
             text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 4. Process Audio ([audio: url])
+            // 4. Process Audio
             text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 5. Process PDF ([pdf: url])
+            // 5. Process PDF
             text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
@@ -398,7 +398,7 @@
             document.getElementById('art-body').value = art.body;
             document.getElementById('form-title').innerText = 'Edit Article ✏️';
 
-            The panel = document.getElementById('admin-panel');
+            const panel = document.getElementById('admin-panel');
             panel.classList.remove('hidden');
             window.scrollTo({ top: panel.offsetTop - 50, behavior: 'smooth' });
         }
@@ -415,7 +415,7 @@
             document.getElementById('art-title').value = '';
             document.getElementById('art-cat').value = '';
             document.getElementById('art-body').value = '';
-            document.getElementById('form-title').innerText = 'Publish New Article 📝';
+ document.getElementById('form-title').innerText = 'Publish New Article 📝';
         }
 
         function filterArticles() {
