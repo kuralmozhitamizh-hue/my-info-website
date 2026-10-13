@@ -42,7 +42,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden">
+<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-20">
 
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
@@ -53,11 +53,6 @@
     </header>
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
-
-        <!-- Search Box -->
-        <div class="mb-6 w-full max-w-full">
-            <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
-        </div>
 
         <!-- Author Panel Form (Hidden by default) -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
@@ -89,24 +84,95 @@
             </div>
         </div>
 
-        <!-- Drafts Section for Author -->
-        <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
-            <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Unpublished Drafts</h2>
-            <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
-            <hr class="my-6 border-slate-200">
+        <!-- PAGE 1: HOME / FEED PAGE -->
+        <div id="page-home" class="page-view space-y-6">
+            <!-- Global Search Bar in Feed -->
+            <div class="w-full max-w-full">
+                <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+            </div>
+
+            <!-- Drafts Section for Author -->
+            <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
+                <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Unpublished Drafts</h2>
+                <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
+                <hr class="my-6 border-slate-200">
+            </div>
+
+            <!-- Articles Grid Container -->
+            <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full">
+                <!-- Articles load dynamically -->
+            </div>
         </div>
 
-        <!-- Articles Grid Container -->
-        <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full">
-            <!-- Articles load dynamically -->
+        <!-- PAGE 2: SEARCH & CATEGORIES PAGE -->
+        <div id="page-search" class="page-view hidden space-y-6">
+            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & Categories</h2>
+            <div class="w-full">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search by keywords or categories..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+            </div>
+            <div>
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Popular Categories</h3>
+                <div id="categories-badges" class="flex flex-wrap gap-2">
+                    <!-- Badges load dynamically -->
+                </div>
+            </div>
+            <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4">
+                <!-- Filtered articles appear here -->
+            </div>
+        </div>
+
+        <!-- PAGE 3: SETTINGS PAGE -->
+        <div id="page-settings" class="page-view hidden space-y-6">
+            <h2 class="text-xl font-bold text-indigo-600">⚙️ Settings</h2>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                    <div>
+                        <p class="font-bold text-sm text-slate-800">Author Authentication</p>
+                        <p class="text-xs text-slate-500">Manage author dashboard session</p>
+                    </div>
+                    <button onclick="handleAuthorAccess()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg">Panel 🔒</button>
+                </div>
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                    <div>
+                        <p class="font-bold text-sm text-slate-800">Data Storage</p>
+                        <p class="text-xs text-slate-500">Local browser storage status</p>
+                    </div>
+                    <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
+                </div>
+                <div class="text-center pt-2">
+                    <p class="text-xs text-slate-400">InfoHub v2.0 • Hosted on GitHub Pages</p>
+                </div>
+            </div>
         </div>
 
     </main>
+
+    <!-- FLOATING NAVIGATION SYSTEM (BOTTOM LEFT) -->
+    <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
+        <!-- Main Floating Mark/Trigger Button -->
+        <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100">
+            🧭
+        </button>
+
+        <!-- Navigation Bar (Appears/Disappears on click) -->
+        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-3 py-1.5 flex items-center gap-1">
+            <button onclick="switchTab('home')" id="tab-btn-home" class="px-3 py-1.5 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 transition flex items-center gap-1">
+                <span>🏠</span> Home
+            </button>
+            <button onclick="switchTab('search')" id="tab-btn-search" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
+                <span>🔍</span> Search
+            </button>
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
+                <span>⚙️</span> Settings
+            </button>
+        </div>
+    </div>
 
     <script>
         const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
         let ytPlayers = [];
+        let currentTab = 'home';
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -145,6 +211,93 @@
             });
         }
 
+        /* NAVIGATION BAR LOGIC */
+        function toggleNavMenu() {
+            const navBar = document.getElementById('floating-nav-bar');
+            navBar.classList.toggle('hidden');
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            
+            // Reset Tab Button styles
+            ['home', 'search', 'settings'].forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) {
+                    btn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1";
+                }
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 transition flex items-center gap-1";
+            }
+
+            if (tabName === 'home') {
+                document.getElementById('page-home').classList.remove('hidden');
+                renderArticles(articles);
+            } else if (tabName === 'search') {
+                document.getElementById('page-search').classList.remove('hidden');
+                renderCategoriesPage();
+            } else if (tabName === 'settings') {
+                document.getElementById('page-settings').classList.remove('hidden');
+            }
+        }
+
+        function renderCategoriesPage() {
+            const badgesContainer = document.getElementById('categories-badges');
+            const categories = [...new Set(articles.filter(a => !a.isDraft).map(a => a.category || 'General'))];
+            
+            badgesContainer.innerHTML = `<button onclick="filterArticlesByCatSearch('')" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">All (${articles.filter(a => !a.isDraft).length})</button>`;
+            
+            categories.forEach(cat => {
+                const count = articles.filter(a => !a.isDraft && (a.category || 'General') === cat).length;
+                badgesContainer.innerHTML += `
+                    <button onclick="filterArticlesByCatSearch('${cat}')" class="bg-white border border-slate-200 hover:border-indigo-500 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full transition shadow-sm">
+                        ${cat} (${count})
+                    </button>
+                `;
+            });
+
+            filterArticlesByCatSearch('');
+        }
+
+        function filterArticlesByCatSearch(catQuery) {
+            const searchInput = document.getElementById('cat-search-input');
+            if (catQuery !== undefined && searchInput && catQuery !== '') {
+                searchInput.value = catQuery;
+            }
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            const resultsContainer = document.getElementById('search-page-results');
+            resultsContainer.innerHTML = '';
+
+            const filtered = articles.filter(a => !a.isDraft && (
+                a.title.toLowerCase().includes(query) ||
+                (a.category || 'General').toLowerCase().includes(query) ||
+                a.body.toLowerCase().includes(query)
+            ));
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching articles found!</div>';
+                return;
+            }
+
+            filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
+
+            requestAnimationFrame(() => {
+                setTimeout(initYouTubePlayers, 300);
+            });
+        }
+
+        function clearLocalStorageData() {
+            if (confirm("Reset all local storage data?")) {
+                localStorage.removeItem('my_info_articles');
+                location.reload();
+            }
+        }
+
+        /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -238,7 +391,7 @@
             `;
         }
 
-        async function loadPDFIntoContainer(url, containerId, infoId) {
+   async function loadPDFIntoContainer(url, containerId, infoId) {
             const container = document.getElementById(containerId);
             const infoSpan = document.getElementById(infoId);
             if (!container) return;
@@ -291,7 +444,6 @@
             url = url.trim();
             let ytId = extractYouTubeId(url);
             if (ytId) {
-                // Stable container div for YT.Player mounting
                 const boxId = 'yt_box_' + Math.random().toString(36).substring(2, 9);
                 return `<div class="w-full aspect-video rounded-xl overflow-hidden shadow-sm yt-player-container" id="${boxId}" data-yt-id="${ytId}"></div>`;
             } else if (isMediaUrl(url, 'video')) {
@@ -385,16 +537,17 @@
             const draftsList = document.getElementById('drafts-list');
             const draftsContainer = document.getElementById('drafts-container');
 
+            if (!list) return;
             list.innerHTML = '';
-            draftsList.innerHTML = '';
+            if (draftsList) draftsList.innerHTML = '';
 
             const publishedArts = dataToRender.filter(a => !a.isDraft);
             const draftArts = articles.filter(a => a.isDraft);
 
-            if (isLoggedIn && draftArts.length > 0) {
+            if (isLoggedIn && draftArts.length > 0 && draftsContainer) {
                 draftsContainer.classList.remove('hidden');
                 draftArts.forEach(art => draftsList.appendChild(createCardHTML(art)));
-            } else {
+            } else if (draftsContainer) {
                 draftsContainer.classList.add('hidden');
             }
 
@@ -405,7 +558,6 @@
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
 
-            // Stable initialization after DOM paint
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     if (window.YT && window.YT.Player) {
@@ -415,7 +567,7 @@
                     }
                 }, 300);
             });
-          }
+        }
 
         function createCardHTML(art) {
             const card = document.createElement('div');
