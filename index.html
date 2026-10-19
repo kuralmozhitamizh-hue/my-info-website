@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Animation & Knowledge Hub</title>
+    <title>InfoHub - 2D Animation Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- YouTube Player API -->
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -40,9 +40,13 @@
             max-width: 100%;
             height: auto !important;
         }
+        .drawing-canvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-20">
+<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-24">
 
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
@@ -54,7 +58,7 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Author Panel Form (Hidden by default) -->
+        <!-- Author Panel Form -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="form-title" class="text-lg font-bold text-indigo-600">Publish New Article 📝</h3>
@@ -62,16 +66,15 @@
             </div>
             
             <input type="hidden" id="editing-id" value="">
-
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             <input type="text" id="art-cat" placeholder="Category (e.g., Animation, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
-                <p class="font-bold text-xs">💡 Universal Media & Animation Shortcodes:</p>
+                <p class="font-bold text-xs">💡 Universal Shortcodes:</p>
                 <p>• Images: <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
-                <p>• Videos / Animation: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
+                <p>• Videos: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
                 <p>• Audios: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
-                <p>• PDF Documents: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[pdf: url]</code></p>
+                <p>• PDF: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[pdf: url]</code></p>
                 <p>• Carousel: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2]</code></p>
             </div>
 
@@ -95,16 +98,14 @@
                 <hr class="my-6 border-slate-200">
             </div>
 
-            <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full">
-                <!-- Articles load dynamically -->
-            </div>
+            <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
 
         <!-- PAGE 2: SEARCH & CATEGORIES PAGE -->
         <div id="page-search" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & Categories</h2>
             <div class="w-full">
-                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search by keywords or categories..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search keywords..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
             <div>
                 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Popular Categories</h3>
@@ -113,22 +114,54 @@
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
 
-        <!-- PAGE 3: ANIMATION STUDIO PAGE (NEW CHARACTER & ANIMATION TOOL) -->
+        <!-- PAGE 3: 2D FLIPACLIP / BLENDER STYLE ANIMATION STUDIO -->
         <div id="page-studio" class="page-view hidden space-y-6">
-            <h2 class="text-xl font-bold text-indigo-600">🎨 Character & Animation Studio</h2>
-            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                <p class="text-xs text-slate-600">Create your character shape, position, and preview simple frame animations right here!</p>
-                <div class="flex flex-wrap gap-3 items-center">
-                    <button onclick="addCharacterPart('circle')" class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-2 rounded-lg">+ Add Head (Circle)</button>
-                    <button onclick="addCharacterPart('body')" class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-2 rounded-lg">+ Add Body</button>
-                    <button onclick="clearCanvas()" class="bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg">Clear Canvas</button>
-                    <button onclick="toggleAnimationPlay()" id="play-anim-btn" class="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-lg">▶ Play Animation</button>
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
+                    <h2 class="text-lg font-bold text-indigo-600">🎬 2D Animation Studio (FlipaClip Mode)</h2>
+                    <div class="flex items-center gap-2">
+                        <button onclick="playAnimation()" id="play-btn" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition">▶ Play</button>
+                        <button onclick="clearCurrentFrame()" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition">🗑 Clear Frame</button>
+                    </div>
                 </div>
-                <!-- Canvas Workspace -->
-                <div class="w-full bg-slate-900 rounded-xl overflow-hidden flex justify-center items-center p-4">
-                    <canvas id="anim-canvas" width="500" height="300" class="bg-slate-950 rounded-lg shadow-inner max-w-full"></canvas>
+
+                <!-- Drawing Controls Toolbar -->
+                <div class="flex flex-wrap items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-slate-600">Tool:</span>
+                        <button onclick="setTool('brush')" id="tool-brush" class="px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white">✏️ Brush</button>
+                        <button onclick="setTool('eraser')" id="tool-eraser" class="px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300">🧹 Eraser</button>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-slate-600">Color:</span>
+                        <input type="color" id="brush-color" value="#4f46e5" class="w-8 h-8 rounded border cursor-pointer">
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-slate-600">Size:</span>
+                        <input type="range" id="brush-size" min="2" max="30" value="5" class="w-24 accent-indigo-600">
+                    </div>
                 </div>
-                <div class="text-xs text-slate-500 text-center">Tip: You can use your custom animated screen recordings or character exports in articles using [video: url]!</div>
+
+                <!-- Main Drawing Canvas Container -->
+                <div class="relative w-full bg-slate-900 rounded-xl overflow-hidden flex justify-center items-center shadow-inner border border-slate-800" style="height: 340px;">
+                    <canvas id="anim-canvas" width="600" height="340" class="drawing-canvas bg-white rounded-lg shadow-lg"></canvas>
+                </div>
+
+                <!-- Timeline / Frame Manager Bar -->
+                <div class="space-y-2 pt-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-700">Timeline Frames (<span id="frame-counter">1 / 1</span>)</span>
+                        <div class="flex gap-2">
+                            <button onclick="addNewFrame()" class="bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition">+ Add Frame</button>
+                            <button onclick="duplicateFrame()" class="bg-slate-100 text-slate-700 font-bold px-3 py-1.5 rounded-lg hover:bg-slate-200 transition">📋 Duplicate</button>
+                            <button onclick="deleteCurrentFrame()" class="bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg hover:bg-red-100 transition">🗑 Delete</button>
+                        </div>
+                    </div>
+                    <!-- Horizontal Frame Thumbnails Scroller -->
+                    <div id="frames-scroller" class="flex gap-2 overflow-x-auto py-2 px-1 bg-slate-100 rounded-xl border border-slate-200 min-h-[75px] items-center">
+                        <!-- Frame thumbnails load here -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -151,7 +184,7 @@
                     <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v2.5 • Animation Studio Enabled</p>
+                    <p class="text-xs text-slate-400">InfoHub v3.0 • FlipaClip Animation Studio</p>
                 </div>
             </div>
         </div>
@@ -172,25 +205,27 @@
                 <span>🔍</span> Search
             </button>
             <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
-                <span>🎨</span> Studio
+                <span>🎬</span> Studio
             </button>
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
                 <span>⚙️</span> Settings
             </button>
         </div>
     </div>
-
     <script>
         const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
         let ytPlayers = [];
         let currentTab = 'home';
 
-        // Animation Studio State
-        let characterParts = [];
-        let isAnimating = false;
-        let animFrameId = null;
-        let animOffset = 0;
+        // 2D Animation Studio Core State (FlipaClip / Cartoonz 2D style)
+        let frames = [null]; // Array storing frame image data URLs
+        let currentFrameIndex = 0;
+        let isDrawing = false;
+        let currentTool = 'brush';
+        let isPlayingAnimation = false;
+        let animPlayInterval = null;
+        let canvas, ctx;
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -212,18 +247,14 @@
         function pauseAllMedia(currentElement = null) {
             const allMedia = document.querySelectorAll('video, audio');
             allMedia.forEach(media => {
-                if (media !== currentElement) {
-                    media.pause();
-                }
+                if (media !== currentElement) media.pause();
             });
 
             ytPlayers.forEach(player => {
                 if (player && player.pauseVideo && player.getIframe) {
                     try {
                         const iframe = player.getIframe();
-                        if (iframe !== currentElement) {
-                            player.pauseVideo();
-                        }
+                        if (iframe !== currentElement) player.pauseVideo();
                     } catch(err) {}
                 }
             });
@@ -259,100 +290,235 @@
                 renderCategoriesPage();
             } else if (tabName === 'studio') {
                 document.getElementById('page-studio').classList.remove('hidden');
-                initCanvasStudio();
+                initAnimationStudio();
             } else if (tabName === 'settings') {
                 document.getElementById('page-settings').classList.remove('hidden');
             }
         }
 
-        /* ANIMATION STUDIO LOGIC */
-        function initCanvasStudio() {
-            const canvas = document.getElementById('anim-canvas');
+        /* 2D ANIMATION STUDIO ENGINE */
+        function initAnimationStudio() {
+            canvas = document.getElementById('anim-canvas');
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            drawStudioScene(ctx);
+            ctx = canvas.getContext('2d');
+
+            // Setup drawing event listeners
+            canvas.onmousedown = startDrawing;
+            canvas.onmousemove = drawOnCanvas;
+            canvas.onmouseup = stopDrawing;
+            canvas.onmouseleave = stopDrawing;
+
+            // Touch support for mobile phones
+            canvas.ontouchstart = (e) => { startDrawing(e.touches[0]); e.preventDefault(); };
+            canvas.ontouchmove = (e) => { drawOnCanvas(e.touches[0]); e.preventDefault(); };
+            canvas.ontouchend = stopDrawing;
+
+            if (frames[0] === null) {
+                saveCurrentFrameState();
+            }
+            renderTimelineThumbnails();
+            loadFrameToCanvas(currentFrameIndex);
         }
 
-        function addCharacterPart(type) {
-            characterParts.push({ type, x: 250 + (Math.random() * 40 - 20), y: 150 + (Math.random() * 40 - 20) });
-            redrawCanvas();
+        function setTool(tool) {
+            currentTool = tool;
+            document.getElementById('tool-brush').className = tool === 'brush' ? "px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white" : "px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300";
+            document.getElementById('tool-eraser').className = tool === 'eraser' ? "px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white" : "px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300";
         }
 
-        function clearCanvas() {
-            characterParts = [];
-            isAnimating = false;
-            if (animFrameId) cancelAnimationFrame(animFrameId);
-            document.getElementById('play-anim-btn').innerText = '▶ Play Animation';
-            redrawCanvas();
+        function getCanvasCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (canvas.width / rect.width),
+                y: (e.clientY - rect.top) * (canvas.height / rect.height)
+            };
         }
 
-        function redrawCanvas() {
-            const canvas = document.getElementById('anim-canvas');
+        function startDrawing(e) {
+            if (isPlayingAnimation) return;
+            isDrawing = true;
+            const pos = getCanvasCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        function drawOnCanvas(e) {
+            if (!isDrawing || isPlayingAnimation) return;
+            const pos = getCanvasCoordinates(e);
+            const color = document.getElementById('brush-color').value;
+            const size = document.getElementById('brush-size').value;
+
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (currentTool === 'brush') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = color;
+            } else {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+            }
+
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+        }
+
+        function saveCurrentFrameState() {
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+            frames[currentFrameIndex] = canvas.toDataURL();
+        }
+
+        function loadFrameToCanvas(index) {
+            if (!canvas || !ctx) return;
+            ctx.globalCompositeOperation = 'source-over';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw grid background
-            ctx.strokeStyle = '#1e293b';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < canvas.width; i += 30) {
-                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
-            }
-
-            // Draw Character Parts with animation offset if active
-            characterParts.forEach((part, idx) => {
-                ctx.save();
-                let currentY = part.y + (isAnimating ? Math.sin(animOffset + idx) * 10 : 0);
-                if (part.type === 'circle') {
-                    ctx.fillStyle = '#818cf8';
-                    ctx.beginPath();
-                    ctx.arc(part.x, currentY - 20, 25, 0, Math.PI * 2);
-                    ctx.fill();
-                } else if (part.type === 'body') {
-                    ctx.fillStyle = '#34d399';
-                    ctx.fillRect(part.x - 20, currentY, 40, 60);
-                }
-                ctx.restore();
-            });
-
-            if (characterParts.length === 0) {
-                ctx.fillStyle = '#64748b';
-                ctx.font = '14px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('Click buttons above to add character parts!', canvas.width / 2, canvas.height / 2);
-            }
-        }
-
-        function toggleAnimationPlay() {
-            isAnimating = !isAnimating;
-            const btn = document.getElementById('play-anim-btn');
-            if (isAnimating) {
-                btn.innerText = '⏸ Pause Animation';
-                runAnimationLoop();
+            // Onion skinning (show previous frame light shadow)
+            if (index > 0 && frames[index - 1]) {
+                const prevImg = new Image();
+                prevImg.src = frames[index - 1];
+                prevImg.onload = () => {
+                    ctx.save();
+                    ctx.globalAlpha = 0.25;
+                    ctx.drawImage(prevImg, 0, 0);
+                    ctx.restore();
+                    drawMainFrame(index);
+                };
             } else {
-                btn.innerText = '▶ Play Animation';
-                if (animFrameId) cancelAnimationFrame(animFrameId);
+                drawMainFrame(index);
             }
         }
 
-        function runAnimationLoop() {
-            if (!isAnimating) return;
-            animOffset += 0.1;
-            redrawCanvas();
-            animFrameId = requestAnimationFrame(runAnimationLoop);
-        }
-
-        function drawStudioScene(ctx) {
-            if (characterParts.length === 0) {
-                characterParts = [
-                    { type: 'body', x: 250, y: 140 },
-                    { type: 'circle', x: 250, y: 100 }
-                ];
+        function drawMainFrame(index) {
+            if (frames[index]) {
+                const img = new Image();
+                img.src = frames[index];
+                img.onload = () => {
+                    ctx.save();
+                    ctx.globalAlpha = 1.0;
+                    ctx.drawImage(img, 0, 0);
+                    ctx.restore();
+                };
             }
-            redrawCanvas();
         }
 
+        function addNewFrame() {
+            saveCurrentFrameState();
+            frames.push(null);
+            currentFrameIndex = frames.length - 1;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+            loadFrameToCanvas(currentFrameIndex);
+        }
+
+        function duplicateFrame() {
+            saveCurrentFrameState();
+            const currentImgData = frames[currentFrameIndex];
+            frames.splice(currentFrameIndex + 1, 0, currentImgData);
+            currentFrameIndex++;
+            renderTimelineThumbnails();
+            loadFrameToCanvas(currentFrameIndex);
+        }
+
+        function deleteCurrentFrame() {
+            if (frames.length <= 1) {
+                alert("You must keep at least one frame!");
+                return;
+            }
+            frames.splice(currentFrameIndex, 1);
+            if (currentFrameIndex >= frames.length) currentFrameIndex = frames.length - 1;
+            renderTimelineThumbnails();
+            loadFrameToCanvas(currentFrameIndex);
+        }
+
+        function clearCurrentFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+        }
+
+        function selectFrame(index) {
+            if (isPlayingAnimation) return;
+            saveCurrentFrameState();
+            currentFrameIndex = index;
+            renderTimelineThumbnails();
+            loadFrameToCanvas(currentFrameIndex);
+        }
+
+        function renderTimelineThumbnails() {
+            const scroller = document.getElementById('frames-scroller');
+            const counter = document.getElementById('frame-counter');
+            if (!scroller || !counter) return;
+
+            counter.innerText = `${currentFrameIndex + 1} / ${frames.length}`;
+            scroller.innerHTML = '';
+
+            frames.forEach((frameData, idx) => {
+                const thumb = document.createElement('div');
+                thumb.className = `flex-shrink-0 w-14 h-14 rounded-lg border-2 cursor-pointer bg-white relative overflow-hidden flex items-center justify-center shadow-sm transition ${idx === currentFrameIndex ? 'border-indigo-600 ring-2 ring-indigo-200' : 'border-slate-300 hover:border-slate-400'}`;
+                thumb.onclick = () => selectFrame(idx);
+
+                if (frameData) {
+                    const img = document.createElement('img');
+                    img.src = frameData;
+                    img.className = 'w-full h-full object-contain';
+                    thumb.appendChild(img);
+                } else {
+                    thumb.innerHTML = `<span class="text-[10px] font-bold text-slate-400">#${idx+1}</span>`;
+                }
+                scroller.appendChild(thumb);
+            });
+        }
+
+        function playAnimation() {
+            const playBtn = document.getElementById('play-btn');
+            if (isPlayingAnimation) {
+                clearInterval(animPlayInterval);
+                isPlayingAnimation = false;
+                playBtn.innerText = '▶ Play';
+                playBtn.className = 'bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition';
+                loadFrameToCanvas(currentFrameIndex);
+                return;
+            }
+
+            if (frames.length < 2) {
+                alert("Add at least 2 frames to play animation!");
+                return;
+            }
+
+            saveCurrentFrameState();
+            isPlayingAnimation = true;
+            playBtn.innerText = '⏸ Stop';
+            playBtn.className = 'bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-600 transition';
+
+            let playIdx = 0;
+            animPlayInterval = setInterval(() => {
+                if (!isPlayingAnimation) return;
+                currentFrameIndex = playIdx;
+                renderTimelineThumbnails();
+                
+                // Direct render without onion skin during playback
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (frames[playIdx]) {
+                    const img = new Image();
+                    img.src = frames[playIdx];
+                    img.onload = () => ctx.drawImage(img, 0, 0);
+                }
+
+                playIdx = (playIdx + 1) % frames.length;
+            }, 200); // 5 frames per second speed
+        }
+
+        /* SEARCH & CATEGORIES, STORAGE & ARTICLES SYSTEM */
         function renderCategoriesPage() {
             const badgesContainer = document.getElementById('categories-badges');
             const categories = [...new Set(articles.filter(a => !a.isDraft).map(a => a.category || 'General'))];
@@ -367,15 +533,12 @@
                     </button>
                 `;
             });
-
             filterArticlesByCatSearch('');
         }
 
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
-            if (catQuery !== undefined && searchInput && catQuery !== '') {
-                searchInput.value = catQuery;
-            }
+            if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
             const query = searchInput ? searchInput.value.toLowerCase() : '';
             const resultsContainer = document.getElementById('search-page-results');
             resultsContainer.innerHTML = '';
@@ -392,10 +555,7 @@
             }
 
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
-
-            requestAnimationFrame(() => {
-                setTimeout(initYouTubePlayers, 300);
-            });
+            requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
 
         function clearLocalStorageData() {
@@ -431,9 +591,7 @@
                             width: '100%',
                             videoId: ytId,
                             playerVars: { 'enablejsapi': 1, 'rel': 0 },
-                            events: {
-                                'onStateChange': onPlayerStateChange
-                            }
+                            events: { 'onStateChange': onPlayerStateChange }
                         });
                         ytPlayers.push(player);
                     } catch(e) {}
@@ -460,17 +618,13 @@
             if (type === 'image') {
                 return url.match(/\.(jpeg|jpg|gif|png|webp|svg|bmp|avif|ico)(\?.*)?$/i) || 
                        url.includes('picsum.photos') || url.includes('unsplash.com') || 
-                       url.includes('catbox.moe') || url.includes('imgur.com');
+                       url.includes('catbox.moe') || url.includes('imgur.com') || url.startsWith('data:image');
             }
             if (type === 'video') {
                 return url.match(/\.(mp4|webm|ogg|mov|avi)(\?.*)?$/i) || url.includes('youtube.com') || url.includes('youtu.be');
             }
-            if (type === 'audio') {
-                return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
-            }
-            if (type === 'pdf') {
-                return url.match(/\.pdf(\?.*)?$/i) || url.includes('.pdf');
-            }
+            if (type === 'audio') return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
+            if (type === 'pdf') return url.match(/\.pdf(\?.*)?$/i) || url.includes('.pdf');
             return false;
         }
 
@@ -478,10 +632,7 @@
             url = url.trim();
             const containerId = 'pdf_container_' + Math.random().toString(36).substring(2, 9);
             const infoId = 'pdf_info_' + Math.random().toString(36).substring(2, 9);
-
-            setTimeout(() => {
-                loadPDFIntoContainer(url, containerId, infoId);
-            }, 100);
+            setTimeout(() => loadPDFIntoContainer(url, containerId, infoId), 100);
 
             return `
                 <div class="w-full max-w-full bg-slate-800 rounded-xl overflow-hidden border border-slate-700 my-3 shadow-md">
@@ -508,43 +659,31 @@
                 const loadingTask = pdfjsLib.getDocument(url);
                 const pdfDoc = await loadingTask.promise;
                 const numPages = pdfDoc.numPages;
-                
                 container.innerHTML = '';
                 if (infoSpan) infoSpan.innerText = `📄 Total Pages: ${numPages}`;
 
                 for (let pageNum = 1; pageNum <= numPages; pageNum++) {
                     const page = await pdfDoc.getPage(pageNum);
                     const viewport = page.getViewport({ scale: 1.2 });
-                    
                     const canvas = document.createElement('canvas');
                     canvas.className = 'pdf-canvas rounded';
                     const context = canvas.getContext('2d');
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-
                     container.appendChild(canvas);
-
-                    await page.render({
-                        canvasContext: context,
-                        viewport: viewport
-                    }).promise;
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
                 }
             } catch (err) {
-                if (container) {
-                    container.innerHTML = `<div class="text-red-400 p-4 text-xs text-center">Failed to load PDF. <a href="${url}" target="_blank" class="underline text-indigo-300">Open directly</a></div>`;
-                }
+                if (container) container.innerHTML = `<div class="text-red-400 p-4 text-xs text-center">Failed to load PDF. <a href="${url}" target="_blank" class="underline text-indigo-300">Open directly</a></div>`;
             }
         }
 
         function sharePDF(url) {
             if (navigator.share) {
-                navigator.share({
-                    title: 'Shared PDF Document',
-                    url: url
-                }).catch(() => {});
+                navigator.share({ title: 'Shared PDF', url: url }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(url);
-                alert("PDF Link copied to clipboard!");
+                alert("PDF Link copied!");
             }
         }
 
@@ -567,79 +706,44 @@
 
         function parseContent(text) {
             if (!text) return '';
-
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
-                
-                let slidesHTML = urls.map(url => {
-                    return `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(url)}</div>`;
-                }).join('');
-
-                let dotsHTML = urls.map((_, idx) => `
-                    <button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>
-                `).join('');
-                
+                let slidesHTML = urls.map(url => `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(url)}</div>`).join('');
+                let dotsHTML = urls.map((_, idx) => `<button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>`).join('');
                 return `
                     <div class="relative my-4 w-full max-w-full overflow-hidden">
-                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">
-                            ${slidesHTML}
-                        </div>
-                        <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">
-                            ${dotsHTML}
-                        </div>
+                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">${slidesHTML}</div>
+                        <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">${dotsHTML}</div>
                     </div>
                 `;
             });
-
-            text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
-                return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
-            });
-
-            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
-                return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
-            });
-
-            text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
-                return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
-            });
-
-            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
-                return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
-            });
-
+            text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
+            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
+            text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
+            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
             return text;
         }
 
         function scrollToSlide(carouselId, index) {
             const container = document.getElementById(carouselId);
-            if (container) {
-                container.scrollTo({ left: index * container.clientWidth, behavior: 'smooth' });
-            }
+            if (container) container.scrollTo({ left: index * container.clientWidth, behavior: 'smooth' });
         }
 
         function updateDots(carouselId, totalSlides) {
             const container = document.getElementById(carouselId);
             const dotsContainer = document.getElementById(carouselId + '_dots');
             if (!container || !dotsContainer) return;
-            const scrollPos = container.scrollLeft;
-            const slideWidth = container.clientWidth;
-            const activeIndex = Math.round(scrollPos / slideWidth);
-            const dots = dotsContainer.children;
-            for (let i = 0; i < dots.length; i++) {
-                if (i === activeIndex) {
-                    dots[i].className = "w-4 h-2 rounded-full transition-all duration-300 bg-indigo-600";
-                } else {
-                    dots[i].className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-300";
-                }
-            }
+            const activeIndex = Math.round(container.scrollLeft / container.clientWidth);
+            Array.from(dotsContainer.children).forEach((dot, idx) => {
+                dot.className = idx === activeIndex ? "w-4 h-2 rounded-full transition-all duration-300 bg-indigo-600" : "w-2 h-2 rounded-full transition-all duration-300 bg-slate-300";
+            });
         }
 
         function renderArticles(dataToRender) {
             const list = document.getElementById('articles-list');
             const draftsList = document.getElementById('drafts-list');
             const draftsContainer = document.getElementById('drafts-container');
-
             if (!list) return;
             list.innerHTML = '';
             if (draftsList) draftsList.innerHTML = '';
@@ -660,38 +764,27 @@
             }
 
             publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
-
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    if (window.YT && window.YT.Player) {
-                        initYouTubePlayers();
-                    } else {
-                        window.onYouTubeIframeAPIReady = initYouTubePlayers;
-                    }
-                }, 300);
-            });
+            requestAnimationFrame(() => setTimeout(() => {
+                if (window.YT && window.YT.Player) initYouTubePlayers();
+                else window.onYouTubeIframeAPIReady = initYouTubePlayers;
+            }, 300));
         }
 
         function createCardHTML(art) {
             const card = document.createElement('div');
             card.className = 'bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden';
-            
             const parsedBody = parseContent(art.body);
-
-            let actionButtons = '';
-            if (isLoggedIn) {
-                actionButtons = `
-                    <div class="flex gap-1.5">
-                        <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
-                        <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
-                    </div>
-                `;
-            }
+            let actionButtons = isLoggedIn ? `
+                <div class="flex gap-1.5">
+                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
+                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
+                </div>
+            ` : '';
 
             card.innerHTML = `
                 <div class="w-full max-w-full overflow-hidden">
                     <div class="flex justify-between items-center mb-2.5 w-full">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
                         ${actionButtons}
                     </div>
                     <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
@@ -702,25 +795,19 @@
         }
 
         function handleAuthorAccess() {
-            if (isLoggedIn) {
-                toggleAdmin();
-            } else {
+            if (isLoggedIn) toggleAdmin();
+            else {
                 const pass = prompt("Enter Author Password:");
                 if (pass === ADMIN_PASSWORD) {
                     isLoggedIn = true;
                     document.getElementById('author-btn').innerText = 'Dashboard 🔓';
                     toggleAdmin();
                     renderArticles(articles);
-                } else if (pass !== null) {
-                    alert("Incorrect Password!");
-                }
+                } else if (pass !== null) alert("Incorrect Password!");
             }
         }
 
-        function toggleAdmin() {
-            const panel = document.getElementById('admin-panel');
-            panel.classList.toggle('hidden');
-        }
+        function toggleAdmin() { document.getElementById('admin-panel').classList.toggle('hidden'); }
 
         function saveArticle(isDraft) {
             const title = document.getElementById('art-title').value.trim();
@@ -728,19 +815,13 @@
             const body = document.getElementById('art-body').value.trim();
             const editingId = document.getElementById('editing-id').value;
 
-            if (!title || !body) {
-                alert('Please fill in Title and Content!');
-                return;
-            }
+            if (!title || !body) { alert('Please fill in Title and Content!'); return; }
 
             if (editingId) {
-                const index = articles.findIndex(a => a.id == editingId);
-                if (index !== -1) {
-                    articles[index] = { ...articles[index], title, category, body, isDraft };
-                }
+                const idx = articles.findIndex(a => a.id == editingId);
+                if (idx !== -1) articles[idx] = { ...articles[idx], title, category, body, isDraft };
             } else {
-                const newArt = { id: Date.now(), title, category, body, isDraft };
-                articles.unshift(newArt);
+                articles.unshift({ id: Date.now(), title, category, body, isDraft });
             }
 
             saveAndRender();
@@ -752,13 +833,11 @@
         function editArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
-
             document.getElementById('editing-id').value = art.id;
             document.getElementById('art-title').value = art.title;
             document.getElementById('art-cat').value = art.category;
             document.getElementById('art-body').value = art.body;
             document.getElementById('form-title').innerText = 'Edit Article ✏️';
-
             const panel = document.getElementById('admin-panel');
             panel.classList.remove('hidden');
             window.scrollTo({ top: panel.offsetTop - 50, behavior: 'smooth' });
@@ -789,9 +868,7 @@
             renderArticles(filtered);
         }
 
-        function onYouTubeIframeAPIReady() {
-            initYouTubePlayers();
-        }
+        function onYouTubeIframeAPIReady() { initYouTubePlayers(); }
 
         // Initial Load
         renderArticles(articles);
