@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Knowledge Hub</title>
+    <title>InfoHub - Animation & Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- YouTube Player API -->
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -64,14 +64,13 @@
             <input type="hidden" id="editing-id" value="">
 
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <input type="text" id="art-cat" placeholder="Category (e.g., Animation, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
-            <!-- Shortcode Helper Guide -->
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
-                <p class="font-bold text-xs">💡 Universal Media & Document Shortcodes:</p>
-                <p>• Images (JPG, PNG, WEBP, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
-                <p>• Videos / YouTube: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
-                <p>• Audios (MP3, WAV, etc.): <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
+                <p class="font-bold text-xs">💡 Universal Media & Animation Shortcodes:</p>
+                <p>• Images: <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
+                <p>• Videos / Animation: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
+                <p>• Audios: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
                 <p>• PDF Documents: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[pdf: url]</code></p>
                 <p>• Carousel: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2]</code></p>
             </div>
@@ -86,19 +85,16 @@
 
         <!-- PAGE 1: HOME / FEED PAGE -->
         <div id="page-home" class="page-view space-y-6">
-            <!-- Global Search Bar in Feed -->
             <div class="w-full max-w-full">
                 <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
 
-            <!-- Drafts Section for Author -->
             <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
                 <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Unpublished Drafts</h2>
                 <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
                 <hr class="my-6 border-slate-200">
             </div>
 
-            <!-- Articles Grid Container -->
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full">
                 <!-- Articles load dynamically -->
             </div>
@@ -112,16 +108,31 @@
             </div>
             <div>
                 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Popular Categories</h3>
-                <div id="categories-badges" class="flex flex-wrap gap-2">
-                    <!-- Badges load dynamically -->
-                </div>
+                <div id="categories-badges" class="flex flex-wrap gap-2"></div>
             </div>
-            <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4">
-                <!-- Filtered articles appear here -->
+            <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
+        </div>
+
+        <!-- PAGE 3: ANIMATION STUDIO PAGE (NEW CHARACTER & ANIMATION TOOL) -->
+        <div id="page-studio" class="page-view hidden space-y-6">
+            <h2 class="text-xl font-bold text-indigo-600">🎨 Character & Animation Studio</h2>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <p class="text-xs text-slate-600">Create your character shape, position, and preview simple frame animations right here!</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <button onclick="addCharacterPart('circle')" class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-2 rounded-lg">+ Add Head (Circle)</button>
+                    <button onclick="addCharacterPart('body')" class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-2 rounded-lg">+ Add Body</button>
+                    <button onclick="clearCanvas()" class="bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg">Clear Canvas</button>
+                    <button onclick="toggleAnimationPlay()" id="play-anim-btn" class="bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-lg">▶ Play Animation</button>
+                </div>
+                <!-- Canvas Workspace -->
+                <div class="w-full bg-slate-900 rounded-xl overflow-hidden flex justify-center items-center p-4">
+                    <canvas id="anim-canvas" width="500" height="300" class="bg-slate-950 rounded-lg shadow-inner max-w-full"></canvas>
+                </div>
+                <div class="text-xs text-slate-500 text-center">Tip: You can use your custom animated screen recordings or character exports in articles using [video: url]!</div>
             </div>
         </div>
 
-        <!-- PAGE 3: SETTINGS PAGE -->
+        <!-- PAGE 4: SETTINGS PAGE -->
         <div id="page-settings" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600">⚙️ Settings</h2>
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
@@ -140,7 +151,7 @@
                     <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v2.0 • Hosted on GitHub Pages</p>
+                    <p class="text-xs text-slate-400">InfoHub v2.5 • Animation Studio Enabled</p>
                 </div>
             </div>
         </div>
@@ -149,18 +160,19 @@
 
     <!-- FLOATING NAVIGATION SYSTEM (BOTTOM LEFT) -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
-        <!-- Main Floating Mark/Trigger Button -->
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100">
             🧭
         </button>
 
-        <!-- Navigation Bar (Appears/Disappears on click) -->
-        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-3 py-1.5 flex items-center gap-1">
+        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-3 py-1.5 flex items-center gap-1.5">
             <button onclick="switchTab('home')" id="tab-btn-home" class="px-3 py-1.5 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 transition flex items-center gap-1">
                 <span>🏠</span> Home
             </button>
             <button onclick="switchTab('search')" id="tab-btn-search" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
                 <span>🔍</span> Search
+            </button>
+            <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
+                <span>🎨</span> Studio
             </button>
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
                 <span>⚙️</span> Settings
@@ -173,6 +185,12 @@
         let isLoggedIn = false;
         let ytPlayers = [];
         let currentTab = 'home';
+
+        // Animation Studio State
+        let characterParts = [];
+        let isAnimating = false;
+        let animFrameId = null;
+        let animOffset = 0;
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -221,8 +239,7 @@
             currentTab = tabName;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             
-            // Reset Tab Button styles
-            ['home', 'search', 'settings'].forEach(t => {
+            ['home', 'search', 'studio', 'settings'].forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (btn) {
                     btn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1";
@@ -240,9 +257,100 @@
             } else if (tabName === 'search') {
                 document.getElementById('page-search').classList.remove('hidden');
                 renderCategoriesPage();
+            } else if (tabName === 'studio') {
+                document.getElementById('page-studio').classList.remove('hidden');
+                initCanvasStudio();
             } else if (tabName === 'settings') {
                 document.getElementById('page-settings').classList.remove('hidden');
             }
+        }
+
+        /* ANIMATION STUDIO LOGIC */
+        function initCanvasStudio() {
+            const canvas = document.getElementById('anim-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            drawStudioScene(ctx);
+        }
+
+        function addCharacterPart(type) {
+            characterParts.push({ type, x: 250 + (Math.random() * 40 - 20), y: 150 + (Math.random() * 40 - 20) });
+            redrawCanvas();
+        }
+
+        function clearCanvas() {
+            characterParts = [];
+            isAnimating = false;
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            document.getElementById('play-anim-btn').innerText = '▶ Play Animation';
+            redrawCanvas();
+        }
+
+        function redrawCanvas() {
+            const canvas = document.getElementById('anim-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid background
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 30) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            // Draw Character Parts with animation offset if active
+            characterParts.forEach((part, idx) => {
+                ctx.save();
+                let currentY = part.y + (isAnimating ? Math.sin(animOffset + idx) * 10 : 0);
+                if (part.type === 'circle') {
+                    ctx.fillStyle = '#818cf8';
+                    ctx.beginPath();
+                    ctx.arc(part.x, currentY - 20, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (part.type === 'body') {
+                    ctx.fillStyle = '#34d399';
+                    ctx.fillRect(part.x - 20, currentY, 40, 60);
+                }
+                ctx.restore();
+            });
+
+            if (characterParts.length === 0) {
+                ctx.fillStyle = '#64748b';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Click buttons above to add character parts!', canvas.width / 2, canvas.height / 2);
+            }
+        }
+
+        function toggleAnimationPlay() {
+            isAnimating = !isAnimating;
+            const btn = document.getElementById('play-anim-btn');
+            if (isAnimating) {
+                btn.innerText = '⏸ Pause Animation';
+                runAnimationLoop();
+            } else {
+                btn.innerText = '▶ Play Animation';
+                if (animFrameId) cancelAnimationFrame(animFrameId);
+            }
+        }
+
+        function runAnimationLoop() {
+            if (!isAnimating) return;
+            animOffset += 0.1;
+            redrawCanvas();
+            animFrameId = requestAnimationFrame(runAnimationLoop);
+        }
+
+        function drawStudioScene(ctx) {
+            if (characterParts.length === 0) {
+                characterParts = [
+                    { type: 'body', x: 250, y: 140 },
+                    { type: 'circle', x: 250, y: 100 }
+                ];
+            }
+            redrawCanvas();
         }
 
         function renderCategoriesPage() {
@@ -391,7 +499,7 @@
             `;
         }
 
-   async function loadPDFIntoContainer(url, containerId, infoId) {
+        async function loadPDFIntoContainer(url, containerId, infoId) {
             const container = document.getElementById(containerId);
             const infoSpan = document.getElementById(infoId);
             if (!container) return;
@@ -460,7 +568,6 @@
         function parseContent(text) {
             if (!text) return '';
 
-            // 1. Process Carousels
             text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
                 const urls = urlsStr.split(',').map(u => u.trim());
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
@@ -485,22 +592,18 @@
                 `;
             });
 
-            // 2. Process Images
             text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 3. Process Videos
             text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 4. Process Audio
             text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
 
-            // 5. Process PDF
             text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, url) {
                 return `<div class="my-3 w-full max-w-full">${renderMediaItem(url)}</div>`;
             });
