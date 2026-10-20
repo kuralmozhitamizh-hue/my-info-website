@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Pro 2D/3D Animation Studio</title>
+    <title>InfoHub - Knowledge Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -38,10 +38,6 @@
             max-width: 100%;
             height: auto !important;
         }
-        .drawing-canvas {
-            touch-action: none;
-            cursor: crosshair;
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-24">
@@ -65,7 +61,7 @@
             
             <input type="hidden" id="editing-id" value="">
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Animation, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
                 <p class="font-bold text-xs">💡 Universal Shortcodes:</p>
@@ -98,7 +94,6 @@
 
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
-
         <!-- PAGE 2: SEARCH & CATEGORIES PAGE -->
         <div id="page-search" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & Categories</h2>
@@ -111,157 +106,8 @@
             </div>
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
-        <!-- PAGE 3: ULTIMATE PRO 2D/3D ANIMATION STUDIO -->
-        <div id="page-studio" class="page-view hidden space-y-4">
-            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-                
-                <!-- Top Toolbar: Play, Export, Undo/Redo, Clear -->
-                <div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
-                    <h2 class="text-lg font-bold text-indigo-600">🎬 Ultimate Pro Animation Studio</h2>
-                    <div class="flex flex-wrap items-center gap-1.5">
-                        <button onclick="playAnimation()" id="play-btn" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition">▶ Play</button>
-                        <button onclick="exportAnimationVideo()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">🎬 Export Video</button>
-                        <button onclick="undoDrawing()" class="bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-200" title="Undo Drawing">↩ Undo</button>
-                        <button onclick="redoDrawing()" class="bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-200" title="Redo Drawing">↪ Redo</button>
-                        <button onclick="clearCurrentFrame()" class="bg-red-50 text-red-600 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100">🗑 Clear</button>
-                    </div>
-                </div>
 
-                <!-- Select & Transform Floating Controls (Move Left/Right/Top/Bottom, Scale, Rotate, Delete, Edit) -->
-                <div class="flex flex-wrap items-center justify-between gap-2 bg-indigo-50/70 p-2.5 rounded-xl border border-indigo-100 text-xs">
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-indigo-900">🛠 Transform / Edit:</span>
-                        <button onclick="setTool('select')" id="tool-select" class="px-2.5 py-1 bg-white border border-indigo-200 rounded font-bold text-indigo-700">👆 Select & Drag</button>
-                        <button onclick="deleteSelectedObject()" class="px-2.5 py-1 bg-red-50 text-red-600 rounded font-bold">🗑 Delete Sel</button>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <span class="font-bold text-indigo-900">Move:</span>
-                        <button onclick="moveSelected('left', 10)" class="px-2 bg-white border rounded">◀</button>
-                        <button onclick="moveSelected('right', 10)" class="px-2 bg-white border rounded">▶</button>
-                        <button onclick="moveSelected('up', 10)" class="px-2 bg-white border rounded">▲</button>
-                        <button onclick="moveSelected('down', 10)" class="px-2 bg-white border rounded">▼</button>
-                        <button onclick="rotateSelected(15)" class="px-2.5 bg-white border rounded font-bold" title="Rotate 15°">🔄 Rotate</button>
-                        <button onclick="scaleSelected(1.1)" class="px-2 bg-white border rounded font-bold" title="Zoom In Object">➕</button>
-                        <button onclick="scaleSelected(0.9)" class="px-2 bg-white border rounded font-bold" title="Zoom Out Object">➖</button>
-                    </div>
-                </div>
-
-                <!-- Tools, 100 Shapes, 500+ Assets Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <!-- 30 Brushes & Tools -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700">✏️ Brush / Tool (30 Types):</label>
-                        <select id="tool-select-type" onchange="changeBrushTool(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
-                            <option value="brush">✏️ Standard Brush</option>
-                            <option value="pencil">✏️ Soft Pencil</option>
-                            <option value="marker">🖊️ Highlighter Marker</option>
-                            <option value="airbrush">💨 Airbrush / Spray</option>
-                            <option value="fountain">✒️ Fountain Pen</option>
-                            <option value="chalk">🖍️ Chalk / Crayon</option>
-                            <option value="bucket">🪣 Color Fill Bucket</option>
-                            <option value="eraser">🧹 Eraser</option>
-                        </select>
-                    </div>
-
-                    <!-- 100 Shapes (2D & 3D Realistic) -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700">📐 Shapes (100 2D/3D):</label>
-                        <select id="shape-select" onchange="drawSelectedShape(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
-                            <option value="">Select 2D/3D Shape...</option>
-                            <option value="circle">🔵 2D Circle</option>
-                            <option value="rect">🟦 2D Rectangle</option>
-                            <option value="triangle">🔺 2D Triangle</option>
-                            <option value="star">⭐ 2D Star</option>
-                            <option value="polygon">🛑 2D Polygon</option>
-                            <option value="cube">🧊 3D Cube</option>
-                            <option value="pyramid">🎪 3D Pyramid</option>
-                            <option value="cylinder">🛢️ 3D Cylinder</option>
-                            <option value="cone">🍦 3D Cone</option>
-                            <option value="sphere">⚽ 3D Sphere</option>
-                        </select>
-                    </div>
-
-                    <!-- 500+ Natural Assets & AI Asset Generator -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700">🌲 Natural Assets & AI Creator:</label>
-                        <div class="flex gap-1">
-                            <select id="asset-select" onchange="stampSelectedAsset(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
-                                <option value="">Select Asset (500+)...</option>
-                                <option value="tree">🌳 Realistic Green Tree</option>
-                                <option value="bush">🌿 Bush / Shrubs</option>
-                                <option value="grass">🌱 Grass Patch</option>
-                                <option value="stone">🪨 Natural Stone</option>
-                                <option value="house">🏠 Cottage / House</option>
-                                <option value="human">🧍 Human Character</option>
-                                <option value="animal">🐅 Animal / Wildlife</option>
-                                <option value="vehicle">🚗 Car / Vehicle</option>
-                            </select>
-                            <button onclick="promptAIAssignAsset()" class="bg-indigo-600 text-white px-2.5 rounded-lg font-bold text-[10px]" title="Ask AI to create custom asset">🤖 AI</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Color Palette (100 Colors & Gradients) + Infinite Canvas Zoom/Pan -->
-                <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-700">🎨 Colors & Gradients:</span>
-                        <input type="color" id="brush-color" value="#4f46e5" class="w-8 h-8 rounded border cursor-pointer">
-                        <select id="gradient-presets" onchange="setGradientColor(this.value)" class="p-1.5 bg-white border border-slate-300 rounded-lg font-medium">
-                            <option value="">Solid Color</option>
-                            <option value="sunset">🌅 Sunset Gradient</option>
-                            <option value="ocean">🌊 Ocean Blue</option>
-                            <option value="neon">⚡ Neon Gold</option>
-                            <option value="forest">🌲 Forest Green</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-700">Size:</span>
-                        <input type="range" id="brush-size" min="1" max="50" value="5" class="w-24 accent-indigo-600">
-                        <span class="font-bold text-slate-700">🔍 Canvas Zoom:</span>
-                        <button onclick="zoomCanvas(1.2)" class="px-2 py-1 bg-white border rounded font-bold">+</button>
-                        <button onclick="zoomCanvas(0.8)" class="px-2 py-1 bg-white border rounded font-bold">-</button>
-                        <button onclick="resetZoomCanvas()" class="px-2 py-1 bg-white border rounded font-bold">Reset</button>
-                    </div>
-                </div>
-
-                <!-- Main Drawing Canvas Container (Infinite Zoom / Pan Viewport) -->
-                <div id="canvas-viewport" class="relative w-full bg-slate-900 rounded-xl overflow-hidden flex justify-center items-center shadow-inner border border-slate-800" style="height: 360px;">
-                    <canvas id="anim-canvas" width="600" height="360" class="drawing-canvas bg-white rounded-lg shadow-lg"></canvas>
-                </div>
-
-                <!-- Audio Track Timeline Section -->
-                <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-2 text-xs">
-                    <div class="flex flex-wrap justify-between items-center gap-2">
-                        <span class="font-bold text-indigo-900">🎵 Audio Timeline Sync:</span>
-                        <div class="flex items-center gap-2">
-                            <input type="file" id="audio-input" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
-                            <button onclick="document.getElementById('audio-input').click()" class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg">+ Add Audio</button>
-                            <button onclick="removeAudioTrack()" class="bg-red-50 text-red-600 font-bold px-3 py-1 rounded-lg">✕ Remove Audio</button>
-                        </div>
-                    </div>
-                    <div id="audio-info" class="text-slate-500 font-medium">No audio track added.</div>
-                    <audio id="studio-audio" class="hidden" controls></audio>
-                </div>
-
-                <!-- Timeline / Frame Manager Bar (Copy Frame, Paste Frame, Frame Undo/Redo) -->
-                <div class="space-y-2 pt-1">
-                    <div class="flex flex-wrap justify-between items-center text-xs gap-2">
-                        <span class="font-bold text-slate-700">Timeline Frames (<span id="frame-counter">1 / 1</span>)</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button onclick="addNewFrame()" class="bg-indigo-50 text-indigo-600 font-bold px-2.5 py-1.5 rounded-lg hover:bg-indigo-100 transition">+ Frame</button>
-                            <button onclick="duplicateFrame()" class="bg-slate-100 text-slate-700 font-bold px-2.5 py-1.5 rounded-lg hover:bg-slate-200 transition">📋 Duplicate</button>
-                            <button onclick="copyCurrentFrame()" class="bg-amber-50 text-amber-700 font-bold px-2.5 py-1.5 rounded-lg hover:bg-amber-100 transition">💾 Copy Frame</button>
-                            <button onclick="pasteFrameToTimeline()" class="bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1.5 rounded-lg hover:bg-emerald-100 transition">📥 Paste Frame</button>
-                            <button onclick="undoFrameAction()" class="bg-slate-100 text-slate-700 px-2 py-1.5 rounded-lg font-bold">↩ Undo Frame</button>
-                            <button onclick="deleteCurrentFrame()" class="bg-red-50 text-red-600 font-bold px-2.5 py-1.5 rounded-lg hover:bg-red-100 transition">🗑 Delete</button>
-                        </div>
-                    </div>
-                    <div id="frames-scroller" class="flex gap-2 overflow-x-auto py-2 px-1 bg-slate-100 rounded-xl border border-slate-200 min-h-[75px] items-center"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PAGE 4: SETTINGS PAGE -->
+        <!-- PAGE 3: SETTINGS PAGE -->
         <div id="page-settings" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600">⚙️ Settings</h2>
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
@@ -280,14 +126,14 @@
                     <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v4.0 • Ultimate Animation Studio</p>
+                    <p class="text-xs text-slate-400">InfoHub v3.0 • Knowledge Hub</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- FLOATING NAVIGATION SYSTEM (BOTTOM LEFT) -->
+    <!-- FLOATING NAVIGATION SYSTEM (BOTTOM LEFT) - 3 TABS -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100">
             🧭
@@ -300,45 +146,17 @@
             <button onclick="switchTab('search')" id="tab-btn-search" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
                 <span>🔍</span> Search
             </button>
-            <button onclick="switchTab('studio')" id="tab-btn-studio" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
-                <span>🎬</span> Studio
-            </button>
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
                 <span>⚙️</span> Settings
             </button>
         </div>
     </div>
+
     <script>
         const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
         let ytPlayers = [];
         let currentTab = 'home';
-
-        // Pro Animation Studio State Engine
-        let frames = [null];
-        let currentFrameIndex = 0;
-        let isDrawing = false;
-        let currentTool = 'brush';
-        let isPlayingAnimation = false;
-        let animPlayInterval = null;
-        let activeGradient = null;
-        let audioTrack = null;
-        let canvas, ctx;
-
-        // Undo / Redo Stacks for Drawings & Frames
-        let drawingUndoStack = [];
-        let drawingRedoStack = [];
-        let frameUndoStack = [];
-
-        // Frame Copy Buffer
-        let copiedFrameBuffer = null;
-
-        // Interactive Object Selection & Transform State (Select, Drag, Scale, Rotate, Edit)
-        let canvasObjects = []; // Array storing selectable vector/asset objects per frame
-        let selectedObjectIndex = null;
-        let isDraggingObject = false;
-        let dragStartX = 0, dragStartY = 0;
-        let canvasZoom = 1.0;
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -372,7 +190,6 @@
                 }
             });
         }
-
         /* NAVIGATION LOGIC */
         function toggleNavMenu() {
             const navBar = document.getElementById('floating-nav-bar');
@@ -383,7 +200,7 @@
             currentTab = tabName;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             
-            ['home', 'search', 'studio', 'settings'].forEach(t => {
+            ['home', 'search', 'settings'].forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (btn) {
                     btn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1";
@@ -401,528 +218,11 @@
             } else if (tabName === 'search') {
                 document.getElementById('page-search').classList.remove('hidden');
                 renderCategoriesPage();
-            } else if (tabName === 'studio') {
-                document.getElementById('page-studio').classList.remove('hidden');
-                initAnimationStudio();
             } else if (tabName === 'settings') {
                 document.getElementById('page-settings').classList.remove('hidden');
             }
         }
 
-        /* STUDIO ENGINE INITIALIZATION */
-        function initAnimationStudio() {
-            canvas = document.getElementById('anim-canvas');
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-
-            canvas.onmousedown = startDrawing;
-            canvas.onmousemove = drawOnCanvas;
-            canvas.onmouseup = stopDrawing;
-            canvas.onmouseleave = stopDrawing;
-
-            canvas.ontouchstart = (e) => { startDrawing(e.touches[0]); e.preventDefault(); };
-            canvas.ontouchmove = (e) => { drawOnCanvas(e.touches[0]); e.preventDefault(); };
-            canvas.ontouchend = stopDrawing;
-
-            if (!canvasObjects[currentFrameIndex]) canvasObjects[currentFrameIndex] = [];
-            if (frames[0] === null) {
-                saveCurrentFrameState();
-            }
-            renderTimelineThumbnails();
-            loadFrameToCanvas(currentFrameIndex);
-        }
-
-        function changeBrushTool(val) { currentTool = val; selectedObjectIndex = null; redrawCanvasObjects(); }
-        
-        function setGradientColor(val) {
-            activeGradient = val;
-            const colorInput = document.getElementById('brush-color');
-            if (val === 'sunset') colorInput.value = '#ff7e5f';
-            else if (val === 'ocean') colorInput.value = '#00c6ff';
-            else if (val === 'neon') colorInput.value = '#ffd200';
-            else if (val === 'forest') colorInput.value = '#22c55e';
-        }
-
-        function getCanvasCoordinates(e) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: ((e.clientX - rect.left) * (canvas.width / rect.width)) / canvasZoom,
-                y: ((e.clientY - rect.top) * (canvas.height / rect.height)) / canvasZoom
-            };
-        }
-
-        function startDrawing(e) {
-            if (isPlayingAnimation) return;
-            const pos = getCanvasCoordinates(e);
-
-            if (currentTool === 'select') {
-                // Check if clicked on any object for selection & dragging
-                const objs = canvasObjects[currentFrameIndex] || [];
-                selectedObjectIndex = null;
-                for (let i = objs.length - 1; i >= 0; i--) {
-                    const obj = objs[i];
-                    if (pos.x >= obj.x && pos.x <= obj.x + obj.w && pos.y >= obj.y && pos.y <= obj.y + obj.h) {
-                        selectedObjectIndex = i;
-                        isDraggingObject = true;
-                        dragStartX = pos.x - obj.x;
-                        dragStartY = pos.y - obj.y;
-                        break;
-                    }
-                }
-                redrawCanvasObjects();
-                return;
-            }
-
-            if (currentTool === 'bucket') {
-                fillCanvasColor();
-                return;
-            }
-
-            isDrawing = true;
-            saveDrawingStateForUndo();
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-        }
-
-        function drawOnCanvas(e) {
-            if (isPlayingAnimation) return;
-            const pos = getCanvasCoordinates(e);
-
-            if (currentTool === 'select' && isDraggingObject && selectedObjectIndex !== null) {
-                const objs = canvasObjects[currentFrameIndex];
-                if (objs && objs[selectedObjectIndex]) {
-                    objs[selectedObjectIndex].x = pos.x - dragStartX;
-                    objs[selectedObjectIndex].y = pos.y - dragStartY;
-                    redrawCanvasObjects();
-                }
-                return;
-            }
-
-            if (!isDrawing) return;
-            const size = document.getElementById('brush-size').value;
-            const color = document.getElementById('brush-color').value;
-
-            ctx.lineWidth = size;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            if (currentTool === 'eraser') {
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.strokeStyle = 'rgba(0,0,0,1)';
-            } else {
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = color;
-            }
-
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-
-        function stopDrawing() {
-            if (isDraggingObject) {
-                isDraggingObject = false;
-                saveCurrentFrameState();
-                renderTimelineThumbnails();
-            }
-            if (!isDrawing) return;
-            isDrawing = false;
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        function fillCanvasColor() {
-            saveDrawingStateForUndo();
-            const color = document.getElementById('brush-color').value;
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = color;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        /* SHAPES & ASSETS INJECTION */
-        function drawSelectedShape(shape) {
-            if (!shape) return;
-            saveDrawingStateForUndo();
-            const color = document.getElementById('brush-color').value;
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-
-            let newObj = { type: 'shape', subtype: shape, x: cx - 40, y: cy - 30, w: 80, h: 60, color: color, rotation: 0, scale: 1.0 };
-            if (!canvasObjects[currentFrameIndex]) canvasObjects[currentFrameIndex] = [];
-            canvasObjects[currentFrameIndex].push(newObj);
-            selectedObjectIndex = canvasObjects[currentFrameIndex].length - 1;
-
-            document.getElementById('shape-select').value = '';
-            redrawCanvasObjects();
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        function stampSelectedAsset(asset) {
-            if (!asset) return;
-            saveDrawingStateForUndo();
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-
-            let newObj = { type: 'asset', subtype: asset, x: cx - 35, y: cy - 35, w: 70, h: 70, rotation: 0, scale: 1.0 };
-            if (!canvasObjects[currentFrameIndex]) canvasObjects[currentFrameIndex] = [];
-            canvasObjects[currentFrameIndex].push(newObj);
-            selectedObjectIndex = canvasObjects[currentFrameIndex].length - 1;
-
-            document.getElementById('asset-select').value = '';
-            redrawCanvasObjects();
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        function promptAIAssignAsset() {
-            const promptName = prompt("Ask AI to create custom asset (e.g., 'Realistic Robot', 'Cyberpunk Car', 'Magic Portal'):");
-            if (!promptName) return;
-            alert(`🤖 AI successfully generated custom realistic asset: "${promptName}" and added to canvas!`);
-            
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-            let newObj = { type: 'ai_asset', name: promptName, x: cx - 40, y: cy - 40, w: 80, h: 80, color: '#6366f1', rotation: 0, scale: 1.0 };
-            if (!canvasObjects[currentFrameIndex]) canvasObjects[currentFrameIndex] = [];
-            canvasObjects[currentFrameIndex].push(newObj);
-            selectedObjectIndex = canvasObjects[currentFrameIndex].length - 1;
-
-            redrawCanvasObjects();
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-        /* SELECT & TRANSFORM CONTROLS (Move, Resize, Rotate, Delete) */
-        function moveSelected(direction, amount) {
-            if (selectedObjectIndex === null) { alert("Please select an object first using 'Select & Drag' tool!"); return; }
-            const objs = canvasObjects[currentFrameIndex];
-            if (objs && objs[selectedObjectIndex]) {
-                if (direction === 'left') objs[selectedObjectIndex].x -= amount;
-                if (direction === 'right') objs[selectedObjectIndex].x += amount;
-                if (direction === 'up') objs[selectedObjectIndex].y -= amount;
-                if (direction === 'down') objs[selectedObjectIndex].y += amount;
-                redrawCanvasObjects();
-                saveCurrentFrameState();
-            }
-        }
-
-        function rotateSelected(deg) {
-            if (selectedObjectIndex === null) { alert("Select an object to rotate!"); return; }
-            const objs = canvasObjects[currentFrameIndex];
-            if (objs && objs[selectedObjectIndex]) {
-                objs[selectedObjectIndex].rotation = (objs[selectedObjectIndex].rotation || 0) + deg;
-                redrawCanvasObjects();
-                saveCurrentFrameState();
-            }
-        }
-
-        function scaleSelected(factor) {
-            if (selectedObjectIndex === null) { alert("Select an object to scale!"); return; }
-            const objs = canvasObjects[currentFrameIndex];
-            if (objs && objs[selectedObjectIndex]) {
-                objs[selectedObjectIndex].w *= factor;
-                objs[selectedObjectIndex].h *= factor;
-                redrawCanvasObjects();
-                saveCurrentFrameState();
-            }
-        }
-
-        function deleteSelectedObject() {
-            if (selectedObjectIndex === null) { alert("Select an object to delete!"); return; }
-            canvasObjects[currentFrameIndex].splice(selectedObjectIndex, 1);
-            selectedObjectIndex = null;
-            redrawCanvasObjects();
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        /* REDO / UNDO DRAWINGS & FRAMES */
-        function saveDrawingStateForUndo() {
-            if (!canvas) return;
-            drawingUndoStack.push(canvas.toDataURL());
-            if (drawingUndoStack.length > 20) drawingUndoStack.shift();
-            drawingRedoStack = [];
-        }
-
-        function undoDrawing() {
-            if (drawingUndoStack.length === 0) { alert("Nothing to undo!"); return; }
-            drawingRedoStack.push(canvas.toDataURL());
-            const lastState = drawingUndoStack.pop();
-            const img = new Image();
-            img.src = lastState;
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-                saveCurrentFrameState();
-                renderTimelineThumbnails();
-            };
-        }
-
-        function redoDrawing() {
-            if (drawingRedoStack.length === 0) { alert("Nothing to redo!"); return; }
-            drawingUndoStack.push(canvas.toDataURL());
-            const nextState = drawingRedoStack.pop();
-            const img = new Image();
-            img.src = nextState;
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-                saveCurrentFrameState();
-                renderTimelineThumbnails();
-            };
-        }
-
-        function undoFrameAction() {
-            if (frameUndoStack.length === 0) { alert("No previous frame states!"); return; }
-            frames = frameUndoStack.pop();
-            if (currentFrameIndex >= frames.length) currentFrameIndex = frames.length - 1;
-            renderTimelineThumbnails();
-            loadFrameToCanvas(currentFrameIndex);
-        }
-
-        /* INFINITE ZOOM & PAN */
-        function zoomCanvas(factor) {
-            canvasZoom *= factor;
-            if (canvasZoom < 0.2) canvasZoom = 0.2;
-            if (canvasZoom > 10) canvasZoom = 10;
-            canvas.style.transform = `scale(${canvasZoom})`;
-            canvas.style.transformOrigin = 'center center';
-        }
-
-        function resetZoomCanvas() {
-            canvasZoom = 1.0;
-            canvas.style.transform = `scale(1)`;
-        }
-
-        /* FRAME COPY & PASTE */
-        function copyCurrentFrame() {
-            saveCurrentFrameState();
-            copiedFrameBuffer = {
-                image: frames[currentFrameIndex],
-                objects: JSON.parse(JSON.stringify(canvasObjects[currentFrameIndex] || []))
-            };
-            alert("Current frame copied successfully! 💾");
-        }
-
-        function pasteFrameToTimeline() {
-            if (!copiedFrameBuffer) { alert("No frame copied in buffer!"); return; }
-            frameUndoStack.push(JSON.parse(JSON.stringify(frames)));
-            frames.push(copiedFrameBuffer.image);
-            canvasObjects.push(JSON.parse(JSON.stringify(copiedFrameBuffer.objects)));
-            currentFrameIndex = frames.length - 1;
-            renderTimelineThumbnails();
-            loadFrameToCanvas(currentFrameIndex);
-            alert("Frame pasted as new frame! 📥");
-        }
-
-        /* REDRAW CANVAS OBJECTS */
-        function redrawCanvasObjects() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (frames[currentFrameIndex]) {
-                const img = new Image();
-                img.src = frames[currentFrameIndex];
-                img.onload = () => ctx.drawImage(img, 0, 0);
-            }
-
-            const objs = canvasObjects[currentFrameIndex] || [];
-            objs.forEach((obj, idx) => {
-                ctx.save();
-                ctx.translate(obj.x + obj.w / 2, obj.y + obj.h / 2);
-                ctx.rotate((obj.rotation || 0) * Math.PI / 180);
-                ctx.translate(-(obj.x + obj.w / 2), -(obj.y + obj.h / 2));
-
-                if (obj.type === 'shape') {
-                    ctx.fillStyle = obj.color;
-                    if (obj.subtype === 'circle') {
-                        ctx.beginPath(); ctx.arc(obj.x + obj.w/2, obj.y + obj.h/2, obj.w/2, 0, Math.PI*2); ctx.fill();
-                    } else {
-                        ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-                    }
-                } else if (obj.type === 'asset' || obj.type === 'ai_asset') {
-                    ctx.fillStyle = obj.color || '#22c55e';
-                    ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-                    ctx.fillStyle = '#000';
-                    ctx.font = '10px sans-serif';
-                    ctx.fillText(obj.name || obj.subtype, obj.x + 5, obj.y + 20);
-                }
-
-                // Highlight selected object border
-                if (idx === selectedObjectIndex) {
-                    ctx.strokeStyle = '#6366f1';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([4, 4]);
-                    ctx.strokeRect(obj.x - 4, obj.y - 4, obj.w + 8, obj.h + 8);
-                    ctx.setLineDash([]);
-                }
-                ctx.restore();
-            });
-        }
-
-        /* FRAME MANAGEMENT */
-        function saveCurrentFrameState() {
-            if (!canvas) return;
-            frames[currentFrameIndex] = canvas.toDataURL();
-        }
-
-        function loadFrameToCanvas(index) {
-            currentFrameIndex = index;
-            redrawCanvasObjects();
-        }
-
-        function addNewFrame() {
-            saveCurrentFrameState();
-            frameUndoStack.push(JSON.parse(JSON.stringify(frames)));
-            frames.push(null);
-            canvasObjects.push([]);
-            currentFrameIndex = frames.length - 1;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        function duplicateFrame() {
-            saveCurrentFrameState();
-            frameUndoStack.push(JSON.parse(JSON.stringify(frames)));
-            const currentImg = frames[currentFrameIndex];
-            const currentObjs = JSON.parse(JSON.stringify(canvasObjects[currentFrameIndex] || []));
-            frames.splice(currentFrameIndex + 1, 0, currentImg);
-            canvasObjects.splice(currentFrameIndex + 1, 0, currentObjs);
-            currentFrameIndex++;
-            renderTimelineThumbnails();
-            loadFrameToCanvas(currentFrameIndex);
-        }
-
-        function deleteCurrentFrame() {
-            if (frames.length <= 1) { alert("Keep at least one frame!"); return; }
-            frameUndoStack.push(JSON.parse(JSON.stringify(frames)));
-            frames.splice(currentFrameIndex, 1);
-            canvasObjects.splice(currentFrameIndex, 1);
-            if (currentFrameIndex >= frames.length) currentFrameIndex = frames.length - 1;
-            renderTimelineThumbnails();
-            loadFrameToCanvas(currentFrameIndex);
-        }
-
-        function clearCurrentFrame() {
-            saveDrawingStateForUndo();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            canvasObjects[currentFrameIndex] = [];
-            saveCurrentFrameState();
-            renderTimelineThumbnails();
-        }
-
-        function selectFrame(index) {
-            if (isPlayingAnimation) return;
-            saveCurrentFrameState();
-            currentFrameIndex = index;
-            renderTimelineThumbnails();
-            loadFrameToCanvas(index);
-        }
-
-        function renderTimelineThumbnails() {
-            const scroller = document.getElementById('frames-scroller');
-            const counter = document.getElementById('frame-counter');
-            if (!scroller || !counter) return;
-
-            counter.innerText = `${currentFrameIndex + 1} / ${frames.length}`;
-            scroller.innerHTML = '';
-
-            frames.forEach((frameData, idx) => {
-                const thumb = document.createElement('div');
-                thumb.className = `flex-shrink-0 w-14 h-14 rounded-lg border-2 cursor-pointer bg-white relative overflow-hidden flex items-center justify-center shadow-sm transition ${idx === currentFrameIndex ? 'border-indigo-600 ring-2 ring-indigo-200' : 'border-slate-300 hover:border-slate-400'}`;
-                thumb.onclick = () => selectFrame(idx);
-
-                if (frameData) {
-                    const img = document.createElement('img');
-                    img.src = frameData;
-                    img.className = 'w-full h-full object-contain';
-                    thumb.appendChild(img);
-                } else {
-                    thumb.innerHTML = `<span class="text-[10px] font-bold text-slate-400">#${idx+1}</span>`;
-                }
-                scroller.appendChild(thumb);
-            });
-        }
-
-        /* PLAY & VIDEO EXPORT */
-        function playAnimation() {
-            const playBtn = document.getElementById('play-btn');
-            const audioEl = document.getElementById('studio-audio');
-
-            if (isPlayingAnimation) {
-                clearInterval(animPlayInterval);
-                isPlayingAnimation = false;
-                if (audioEl) audioEl.pause();
-                playBtn.innerText = '▶ Play';
-                playBtn.className = 'bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition';
-                loadFrameToCanvas(currentFrameIndex);
-                return;
-            }
-
-            if (frames.length < 2) { alert("Add at least 2 frames to play!"); return; }
-
-            saveCurrentFrameState();
-            isPlayingAnimation = true;
-            if (audioEl && audioEl.src) { audioEl.currentTime = 0; audioEl.play(); }
-            playBtn.innerText = '⏸ Stop';
-            playBtn.className = 'bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-600 transition';
-
-            let playIdx = 0;
-            animPlayInterval = setInterval(() => {
-                if (!isPlayingAnimation) return;
-                currentFrameIndex = playIdx;
-                renderTimelineThumbnails();
-                redrawCanvasObjects();
-                playIdx = (playIdx + 1) % frames.length;
-            }, 200);
-        }
-
-        function exportAnimationVideo() {
-            if (frames.length < 2) { alert("Add at least 2 frames to export video!"); return; }
-            alert("Exporting animation video... Download will start automatically!");
-
-            const stream = canvas.captureStream(10);
-            const mediaRecorder = new MediaRecorder(stream);
-            let chunks = [];
-
-            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'animation_video.webm';
-                a.click();
-            };
-
-            mediaRecorder.start();
-            let idx = 0;
-            let exportInterval = setInterval(() => {
-                loadFrameToCanvas(idx);
-                idx++;
-                if (idx >= frames.length) {
-                    clearInterval(exportInterval);
-                    mediaRecorder.stop();
-                }
-            }, 300);
-        }
-
-        /* AUDIO TIMELINE ENGINE */
-        function handleAudioUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const audioEl = document.getElementById('studio-audio');
-                audioEl.src = URL.createObjectURL(file);
-                document.getElementById('audio-info').innerText = `🎵 Active Track: ${file.name}`;
-            }
-        }
-
-        function removeAudioTrack() {
-            const audioEl = document.getElementById('studio-audio');
-            audioEl.src = '';
-            document.getElementById('audio-info').innerText = 'No audio track added.';
-        }
-
-        /* ARTICLES, SEARCH, AUTHOR PANEL & INIT */
         function renderCategoriesPage() {
             const badgesContainer = document.getElementById('categories-badges');
             const categories = [...new Set(articles.filter(a => !a.isDraft).map(a => a.category || 'General'))];
@@ -969,6 +269,7 @@
             }
         }
 
+        /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -1010,7 +311,6 @@
                 } catch(e) {}
             }
         }
-
         function saveAndRender() {
             localStorage.setItem('my_info_articles', JSON.stringify(articles));
             renderArticles(articles);
@@ -1175,7 +475,7 @@
             card.innerHTML = `
                 <div class="w-full max-w-full overflow-hidden">
                     <div class="flex justify-between items-center mb-2.5 w-full">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
                         ${actionButtons}
                     </div>
                     <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
