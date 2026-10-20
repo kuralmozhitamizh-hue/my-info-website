@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Instagram Style Pro Hub</title>
+    <title>InfoHub - Floating Navigation Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -168,7 +168,6 @@
             <h2 class="text-xl font-bold text-indigo-600">👤 Profile & Settings</h2>
             
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
-                <!-- Insta Profile Header Section -->
                 <div id="insta-profile-section" class="flex flex-col sm:flex-row items-center gap-4 pb-4 border-b border-slate-100">
                     <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-1 flex items-center justify-center shadow-md">
                         <div class="w-full h-full rounded-full bg-white flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-initial">👤</div>
@@ -187,14 +186,12 @@
                     </div>
                 </div>
 
-                <!-- Insta Profile Edit Bio -->
                 <div class="space-y-3 pb-4 border-b border-slate-100">
                     <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">Edit Profile Bio</h4>
                     <input type="text" id="edit-bio-input" placeholder="Write your Insta-style bio here..." class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                     <button onclick="saveProfileBio()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">Save Bio 💾</button>
                 </div>
 
-                <!-- Settings inside Profile Page -->
                 <div class="space-y-3">
                     <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">⚙️ Account Settings</h4>
                     <div class="flex justify-between items-center py-2 border-b border-slate-50 text-xs">
@@ -207,32 +204,38 @@
                     </div>
                     <div class="flex justify-between items-center py-2 text-xs">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v5.0 Instagram Style</span>
+                        <span class="text-slate-400 font-bold">v5.5 Floating Toggle Nav</span>
                     </div>
                 </div>
             </div>
         </div>
 
     </main>
-    <!-- Clean Instagram Style Bottom Navigation Bar (No White Pill Background Container, Rounded, Active State Highlighted) -->
-    <div class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 px-6 py-2.5 flex justify-between items-center shadow-lg">
-        <button onclick="switchTab('home')" id="tab-btn-home" class="p-2 rounded-xl text-xl text-indigo-600 bg-indigo-50 transition flex items-center justify-center">
-            🏠
-        </button>
-        <button onclick="switchTab('reels')" id="tab-btn-reels" class="p-2 rounded-xl text-xl text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
-            🎬
-        </button>
-        <button onclick="switchTab('messages')" id="tab-btn-messages" class="p-2 rounded-xl text-xl text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
-            💬
-        </button>
-        <button onclick="switchTab('search')" id="tab-btn-search" class="p-2 rounded-xl text-xl text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
-            🔍
-        </button>
-        <button onclick="switchTab('profile')" id="tab-btn-profile" class="p-2 rounded-xl text-xl text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
-            👤
-        </button>
-    </div>
 
+    <!-- FLOATING TOGGLE NAVIGATION SYSTEM (COMPASS BUTTON -> TOGGLES FLOATING ICONS OF EXACT SAME SIZE) -->
+    <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
+        <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100" title="Toggle Navigation">
+            🧭
+        </button>
+
+        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-2 py-1.5 flex items-center gap-1.5">
+            <button onclick="switchTab('home')" id="tab-btn-home" class="w-12 h-12 rounded-full text-xl font-bold text-indigo-600 bg-indigo-50 transition flex items-center justify-center shadow-sm" title="Home">
+                🏠
+            </button>
+            <button onclick="switchTab('reels')" id="tab-btn-reels" class="w-12 h-12 rounded-full text-xl font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center shadow-sm" title="Reels">
+                🎬
+            </button>
+            <button onclick="switchTab('messages')" id="tab-btn-messages" class="w-12 h-12 rounded-full text-xl font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center shadow-sm" title="Messages">
+                💬
+            </button>
+            <button onclick="switchTab('search')" id="tab-btn-search" class="w-12 h-12 rounded-full text-xl font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center shadow-sm" title="Search">
+                🔍
+            </button>
+            <button onclick="switchTab('profile')" id="tab-btn-profile" class="w-12 h-12 rounded-full text-xl font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center shadow-sm" title="Profile">
+                👤
+            </button>
+        </div>
+    </div>
     <script>
         let currentUser = JSON.parse(localStorage.getItem('infohub_current_user')) || null;
         let registeredUsers = JSON.parse(localStorage.getItem('infohub_registered_users')) || [];
@@ -276,7 +279,12 @@
             });
         }
 
-        /* NAVIGATION LOGIC WITH ACTIVE TAB HIGHLIGHTING */
+        /* FLOATING NAVIGATION TOGGLE LOGIC */
+        function toggleNavMenu() {
+            const navBar = document.getElementById('floating-nav-bar');
+            navBar.classList.toggle('hidden');
+        }
+
         function switchTab(tabName) {
             currentTab = tabName;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
@@ -284,13 +292,13 @@
             ['home', 'reels', 'messages', 'search', 'profile', 'notifications'].forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (btn) {
-                    btn.className = "p-2 rounded-xl text-xl text-slate-600 hover:text-indigo-600 transition flex items-center justify-center";
+                    btn.className = "w-12 h-12 rounded-full text-xl font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center shadow-sm";
                 }
             });
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeBtn) {
-                activeBtn.className = "p-2 rounded-xl text-xl text-indigo-600 bg-indigo-50 transition flex items-center justify-center";
+                activeBtn.className = "w-12 h-12 rounded-full text-xl font-bold text-indigo-600 bg-indigo-50 transition flex items-center justify-center shadow-sm";
             }
 
             if (tabName === 'home') {
@@ -310,6 +318,7 @@
                 renderArticles(articles);
             }
         }
+
         /* STRICT PASSWORD AUTHENTICATION & GOOGLE LOGIN */
         function openLoginModal() {
             if (currentUser) {
@@ -392,7 +401,6 @@
             updateAuthUI();
             renderArticles(articles);
         }
-
         function updateAuthUI() {
             updateProfileSettingsUI();
         }
@@ -498,6 +506,7 @@
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
+
         /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
