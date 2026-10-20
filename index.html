@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Knowledge Hub</title>
+    <title>InfoHub - Unique Profiles & Publishing Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -46,22 +46,41 @@
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
         <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center w-full">
             <h1 class="text-xl sm:text-2xl font-black text-indigo-600 truncate">InfoHub 🚀</h1>
-            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">Author Login ✉️</button>
+            <div id="auth-header-btn-container">
+                <button id="login-nav-btn" onclick="openLoginModal()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">🔑 Login / Register</button>
+            </div>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Author Panel / Email Login Form -->
+        <!-- Gmail & Password Login / Register Modal / Panel -->
+        <div id="auth-modal" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="auth-modal-title" class="text-lg font-bold text-indigo-600">🔐 Gmail / Google Secure Login</h3>
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
+            </div>
+            <div class="space-y-3">
+                <p class="text-xs text-slate-600">Enter your Gmail address and secure password to access your unique profile and publish articles securely. Others cannot edit or delete your posts!</p>
+                <input type="email" id="auth-email" placeholder="name@gmail.com *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <input type="password" id="auth-pass" placeholder="Secure Password *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <div class="flex gap-2 w-full pt-2">
+                    <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs sm:text-sm">Log In 🔓</button>
+                    <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition text-xs sm:text-sm">Register Account ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Publishing Form (Only for Logged-In Owner Profile) -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="form-title" class="text-lg font-bold text-indigo-600">Publish New Article 📝</h3>
+                <h3 id="form-title" class="text-lg font-bold text-indigo-600">✍️ Publish New Article under Your Unique Profile</h3>
                 <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
             </div>
             
             <input type="hidden" id="editing-id" value="">
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Tamil, Tech)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <input type="text" id="art-cat" placeholder="Category (e.g., Tech, Stories)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
                 <p class="font-bold text-xs">💡 Universal Shortcodes:</p>
@@ -76,17 +95,18 @@
 
             <div class="flex gap-2 w-full">
                 <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-2.5 rounded-lg font-bold hover:bg-amber-600 transition text-xs sm:text-sm">Save Draft 💾</button>
-                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish 🚀</button>
+                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish to Profile 🚀</button>
             </div>
         </div>
         <!-- PAGE 1: HOME / FEED PAGE -->
         <div id="page-home" class="page-view space-y-6">
-            <div class="w-full max-w-full">
-                <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+            <div class="w-full max-w-full flex gap-2">
+                <input type="text" id="search-input" onkeyup="filterArticles()" placeholder="🔍 Search articles or unique profiles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm">+ New Post</button>
             </div>
 
             <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
-                <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Unpublished Drafts</h2>
+                <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Your Private Drafts</h2>
                 <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
                 <hr class="my-6 border-slate-200">
             </div>
@@ -98,7 +118,7 @@
         <div id="page-search" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & Categories</h2>
             <div class="w-full">
-                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search keywords..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search keywords or author profile..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
             <div>
                 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Popular Categories</h3>
@@ -107,19 +127,19 @@
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
 
-        <!-- PAGE 3: SETTINGS PAGE (DATA STORAGE REMOVED) -->
+        <!-- PAGE 3: SETTINGS PAGE (DATA STORAGE RESET COMPLETELY REMOVED) -->
         <div id="page-settings" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600">⚙️ Settings</h2>
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div id="settings-auth-box" class="flex justify-between items-center pb-3 border-b border-slate-100">
                     <div>
-                        <p class="font-bold text-sm text-slate-800">Author Authentication</p>
-                        <p class="text-xs text-slate-500">Sign in with your email to manage articles</p>
+                        <p class="font-bold text-sm text-slate-800">Google / Gmail Account</p>
+                        <p id="settings-account-status" class="text-xs text-slate-500">Not logged in. Log in to manage your unique profile.</p>
                     </div>
-                    <button onclick="handleAuthorAccess()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg">Login ✉️</button>
+                    <button id="settings-auth-action-btn" onclick="openLoginModal()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg">Login 🔑</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v3.5 • Knowledge Hub</p>
+                    <p class="text-xs text-slate-400">InfoHub v4.0 • Unique Secure Profiles</p>
                 </div>
             </div>
         </div>
@@ -145,8 +165,8 @@
         </div>
     </div>
     <script>
-        let isLoggedIn = false;
-        let loggedInEmail = '';
+        let currentUser = JSON.parse(localStorage.getItem('infohub_current_user')) || null;
+        let registeredUsers = JSON.parse(localStorage.getItem('infohub_registered_users')) || [];
         let ytPlayers = [];
         let currentTab = 'home';
 
@@ -155,6 +175,8 @@
                 id: 1,
                 title: "முல்லைப்பாட்டு Demo",
                 category: "தமிழ்",
+                authorEmail: "admin@gmail.com",
+                authorName: "Admin Profile",
                 isDraft: false,
                 body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும்.\n\n[carousel: https://picsum.photos/id/1018/800/400, https://picsum.photos/id/1015/800/400]\n\nஇது 103 அடிகளைக் கொண்டது."
             }
@@ -213,32 +235,128 @@
                 renderCategoriesPage();
             } else if (tabName === 'settings') {
                 document.getElementById('page-settings').classList.remove('hidden');
+                updateSettingsUI();
             }
         }
 
-        /* EMAIL LOGIN SYSTEM FOR AUTHOR ACCESS */
-        function handleAuthorAccess() {
-            if (isLoggedIn) {
-                toggleAdmin();
-            } else {
-                const email = prompt("Enter your email address to log in as Author:");
-                if (email !== null) {
-                    const trimmedEmail = email.trim();
-                    if (trimmedEmail && trimmedEmail.includes('@') && trimmedEmail.includes('.')) {
-                        isLoggedIn = true;
-                        loggedInEmail = trimmedEmail;
-                        document.getElementById('author-btn').innerText = `${loggedInEmail.split('@')[0]} 🔓`;
-                        alert(`Successfully logged in as ${loggedInEmail}! 🎉`);
-                        toggleAdmin();
-                        renderArticles(articles);
-                    } else {
-                        alert("Please enter a valid email address!");
-                    }
+        /* GMAIL AUTHENTICATION & UNIQUE PROFILE SYSTEM */
+        function openLoginModal() {
+            if (currentUser) {
+                if (confirm(`Logged in as ${currentUser.email}. Do you want to log out?`)) {
+                    currentUser = null;
+                    localStorage.removeItem('infohub_current_user');
+                    updateAuthUI();
+                    alert("Logged out successfully!");
                 }
+            } else {
+                document.getElementById('auth-modal').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+        }
+
+        function toggleAuthModal() {
+            document.getElementById('auth-modal').classList.toggle('hidden');
+        }
+
+        function handleUserRegister() {
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const pass = document.getElementById('auth-pass').value.trim();
+
+            if (!email || !pass) { alert("Please enter both Gmail and password!"); return; }
+            if (!email.endsWith('@gmail.com') && !email.includes('@')) { alert("Please enter a valid Gmail address!"); return; }
+
+            const existing = registeredUsers.find(u => u.email === email);
+            if (existing) { alert("Account already exists with this email! Please Log In."); return; }
+
+            const newUser = { email: email, pass: pass, name: email.split('@')[0] };
+            registeredUsers.push(newUser);
+            localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
+
+            currentUser = newUser;
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+
+            alert(`Account created & logged in successfully as ${email}! 🎉`);
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-pass').value = '';
+            toggleAuthModal();
+            updateAuthUI();
+            renderArticles(articles);
+        }
+
+        function handleUserLogin() {
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const pass = document.getElementById('auth-pass').value.trim();
+
+            if (!email || !pass) { alert("Please enter both Gmail and password!"); return; }
+
+            const user = registeredUsers.find(u => u.email === email && u.pass === pass);
+            if (!user) {
+                // Auto register / login convenience if matches email format
+                if (email.includes('@')) {
+                    const newUser = { email: email, pass: pass, name: email.split('@')[0] };
+                    registeredUsers.push(newUser);
+                    localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
+                    currentUser = newUser;
+                } else {
+                    alert("Invalid Gmail or password!"); return;
+                }
+            } else {
+                currentUser = user;
+            }
+
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            alert(`Welcome back, ${currentUser.email}! 🔓`);
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-pass').value = '';
+            toggleAuthModal();
+            updateAuthUI();
+            renderArticles(articles);
+        }
+
+        function updateAuthUI() {
+            const btnContainer = document.getElementById('auth-header-btn-container');
+            if (currentUser) {
+                btnContainer.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg truncate max-w-[140px]">👤 ${currentUser.email}</span>
+                        <button onclick="openLoginModal()" class="bg-red-50 text-red-600 hover:bg-red-100 px-2.5 py-2 rounded-lg text-xs font-bold transition">Logout</button>
+                    </div>
+                `;
+            } else {
+                btnContainer.innerHTML = `
+                    <button id="login-nav-btn" onclick="openLoginModal()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">🔑 Login / Register</button>
+                `;
+            }
+            updateSettingsUI();
+        }
+
+        function updateSettingsUI() {
+            const statusEl = document.getElementById('settings-account-status');
+            const actionBtn = document.getElementById('settings-auth-action-btn');
+            if (!statusEl) return;
+
+            if (currentUser) {
+                statusEl.innerText = `Logged in as unique profile: ${currentUser.email}`;
+                actionBtn.innerText = 'Logout 🚪';
+                actionBtn.className = 'text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg';
+            } else {
+                statusEl.innerText = 'Not logged in. Log in with Gmail to manage your unique profile.';
+                actionBtn.innerText = 'Login 🔑';
+                actionBtn.className = 'text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg';
+            }
+        }
+
+        function openPublishIfLoggedIn() {
+            if (!currentUser) {
+                alert("Please log in with your Gmail/Google account first to publish articles on your unique profile!");
+                openLoginModal();
+                return;
+            }
+            toggleAdmin();
         }
 
         function toggleAdmin() {
+            if (!currentUser) { openLoginModal(); return; }
             document.getElementById('admin-panel').classList.toggle('hidden');
         }
         function renderCategoriesPage() {
@@ -268,6 +386,7 @@
             const filtered = articles.filter(a => !a.isDraft && (
                 a.title.toLowerCase().includes(query) ||
                 (a.category || 'General').toLowerCase().includes(query) ||
+                (a.authorEmail || '').toLowerCase().includes(query) ||
                 a.body.toLowerCase().includes(query)
             ));
 
@@ -453,9 +572,9 @@
             if (draftsList) draftsList.innerHTML = '';
 
             const publishedArts = dataToRender.filter(a => !a.isDraft);
-            const draftArts = articles.filter(a => a.isDraft);
+            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email) : [];
 
-            if (isLoggedIn && draftArts.length > 0 && draftsContainer) {
+            if (currentUser && draftArts.length > 0 && draftsContainer) {
                 draftsContainer.classList.remove('hidden');
                 draftArts.forEach(art => draftsList.appendChild(createCardHTML(art)));
             } else if (draftsContainer) { draftsContainer.classList.add('hidden'); }
@@ -476,17 +595,23 @@
             const card = document.createElement('div');
             card.className = 'bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden';
             const parsedBody = parseContent(art.body);
-            let actionButtons = isLoggedIn ? `
+
+            // Strict Ownership Check: Only the exact author who published this article can see Edit & Delete buttons!
+            let isOwner = currentUser && art.authorEmail && currentUser.email.toLowerCase() === art.authorEmail.toLowerCase();
+            let actionButtons = isOwner ? `
                 <div class="flex gap-1.5">
-                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
-                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
+                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit your post">✏️</button>
+                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete your post">🗑</button>
                 </div>
             ` : '';
 
             card.innerHTML = `
                 <div class="w-full max-w-full overflow-hidden">
                     <div class="flex justify-between items-center mb-2.5 w-full">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate max-w-[65%]" title="${art.category || 'General'}">${art.category || 'General'} ${art.isDraft ? '• DRAFT' : ''}</span>
+                        <div class="flex items-center gap-2 max-w-[70%] truncate">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate" title="${art.category || 'General'}">${art.category || 'General'}</span>
+                            <span class="text-[11px] font-medium text-slate-500 truncate" title="Author: ${art.authorEmail || 'Anonymous'}">✍️ ${art.authorEmail || 'Anonymous'}</span>
+                        </div>
                         ${actionButtons}
                     </div>
                     <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
@@ -497,6 +622,8 @@
         }
 
         function saveArticle(isDraft) {
+            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
+
             const title = document.getElementById('art-title').value.trim();
             const category = document.getElementById('art-cat').value.trim();
             const body = document.getElementById('art-body').value.trim();
@@ -506,33 +633,59 @@
 
             if (editingId) {
                 const idx = articles.findIndex(a => a.id == editingId);
-                if (idx !== -1) articles[idx] = { ...articles[idx], title, category, body, isDraft };
+                if (idx !== -1) {
+                    // Verify ownership before updating
+                    if (articles[idx].authorEmail !== currentUser.email) {
+                        alert("You can only edit articles published under your own profile!");
+                        return;
+                    }
+                    articles[idx] = { ...articles[idx], title, category, body, isDraft };
+                }
             } else {
-                articles.unshift({ id: Date.now(), title, category, body, isDraft });
+                articles.unshift({
+                    id: Date.now(),
+                    title,
+                    category,
+                    body,
+                    isDraft,
+                    authorEmail: currentUser.email
+                });
             }
 
             saveAndRender();
             resetForm();
             toggleAdmin();
-            alert(isDraft ? 'Draft Saved 💾' : 'Published Successfully 🚀');
+            alert(isDraft ? 'Draft Saved under your profile 💾' : 'Published successfully to your unique profile 🚀');
         }
 
         function editArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
+            if (!currentUser || art.authorEmail !== currentUser.email) {
+                alert("Access Denied: You cannot edit articles belonging to other profiles!");
+                return;
+            }
+
             document.getElementById('editing-id').value = art.id;
             document.getElementById('art-title').value = art.title;
             document.getElementById('art-cat').value = art.category;
             document.getElementById('art-body').value = art.body;
-            document.getElementById('form-title').innerText = 'Edit Article ✏️';
+            document.getElementById('form-title').innerText = 'Edit Your Article ✏️';
             const panel = document.getElementById('admin-panel');
             panel.classList.remove('hidden');
             window.scrollTo({ top: panel.offsetTop - 50, behavior: 'smooth' });
         }
 
         function deleteArticle(id) {
-            if (confirm("Delete this article?")) {
-                articles = articles.filter(art => art.id !== id);
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+            if (!currentUser || art.authorEmail !== currentUser.email) {
+                alert("Access Denied: You cannot delete articles belonging to other profiles!");
+                return;
+            }
+
+            if (confirm("Are you sure you want to delete your article?")) {
+                articles = articles.filter(a => a.id !== id);
                 saveAndRender();
             }
         }
@@ -542,14 +695,15 @@
             document.getElementById('art-title').value = '';
             document.getElementById('art-cat').value = '';
             document.getElementById('art-body').value = '';
-            document.getElementById('form-title').innerText = 'Publish New Article 📝';
+            document.getElementById('form-title').innerText = '✍️ Publish New Article under Your Unique Profile';
         }
 
         function filterArticles() {
             const query = document.getElementById('search-input').value.toLowerCase();
             const filtered = articles.filter(art => 
                 art.title.toLowerCase().includes(query) || 
-                art.category.toLowerCase().includes(query) || 
+                (art.category || '').toLowerCase().includes(query) || 
+                (art.authorEmail || '').toLowerCase().includes(query) || 
                 art.body.toLowerCase().includes(query)
             );
             renderArticles(filtered);
@@ -558,6 +712,7 @@
         function onYouTubeIframeAPIReady() { initYouTubePlayers(); }
 
         // Initial Load
+        updateAuthUI();
         renderArticles(articles);
     </script>
 </body>
