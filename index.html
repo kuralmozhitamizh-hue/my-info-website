@@ -46,13 +46,13 @@
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
         <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center w-full">
             <h1 class="text-xl sm:text-2xl font-black text-indigo-600 truncate">InfoHub 🚀</h1>
-            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">Author Panel 🔒</button>
+            <button id="author-btn" onclick="handleAuthorAccess()" class="bg-indigo-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition whitespace-nowrap">Author Login ✉️</button>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Author Panel Form -->
+        <!-- Author Panel / Email Login Form -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="form-title" class="text-lg font-bold text-indigo-600">Publish New Article 📝</h3>
@@ -107,33 +107,26 @@
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
 
-        <!-- PAGE 3: SETTINGS PAGE -->
+        <!-- PAGE 3: SETTINGS PAGE (DATA STORAGE REMOVED) -->
         <div id="page-settings" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600">⚙️ Settings</h2>
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                     <div>
                         <p class="font-bold text-sm text-slate-800">Author Authentication</p>
-                        <p class="text-xs text-slate-500">Manage author dashboard session</p>
+                        <p class="text-xs text-slate-500">Sign in with your email to manage articles</p>
                     </div>
-                    <button onclick="handleAuthorAccess()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg">Panel 🔒</button>
-                </div>
-                <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                    <div>
-                        <p class="font-bold text-sm text-slate-800">Data Storage</p>
-                        <p class="text-xs text-slate-500">Local browser storage status</p>
-                    </div>
-                    <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
+                    <button onclick="handleAuthorAccess()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-lg">Login ✉️</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v3.0 • Knowledge Hub</p>
+                    <p class="text-xs text-slate-400">InfoHub v3.5 • Knowledge Hub</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- FLOATING NAVIGATION SYSTEM (ICON ONLY MODIFICATION) -->
+    <!-- FLOATING NAVIGATION SYSTEM (ICON ONLY) -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100">
             🧭
@@ -152,8 +145,8 @@
         </div>
     </div>
     <script>
-        const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
+        let loggedInEmail = '';
         let ytPlayers = [];
         let currentTab = 'home';
 
@@ -190,7 +183,7 @@
             });
         }
 
-        /* NAVIGATION LOGIC WITH ICON-ONLY STYLES */
+        /* NAVIGATION LOGIC */
         function toggleNavMenu() {
             const navBar = document.getElementById('floating-nav-bar');
             navBar.classList.toggle('hidden');
@@ -221,6 +214,32 @@
             } else if (tabName === 'settings') {
                 document.getElementById('page-settings').classList.remove('hidden');
             }
+        }
+
+        /* EMAIL LOGIN SYSTEM FOR AUTHOR ACCESS */
+        function handleAuthorAccess() {
+            if (isLoggedIn) {
+                toggleAdmin();
+            } else {
+                const email = prompt("Enter your email address to log in as Author:");
+                if (email !== null) {
+                    const trimmedEmail = email.trim();
+                    if (trimmedEmail && trimmedEmail.includes('@') && trimmedEmail.includes('.')) {
+                        isLoggedIn = true;
+                        loggedInEmail = trimmedEmail;
+                        document.getElementById('author-btn').innerText = `${loggedInEmail.split('@')[0]} 🔓`;
+                        alert(`Successfully logged in as ${loggedInEmail}! 🎉`);
+                        toggleAdmin();
+                        renderArticles(articles);
+                    } else {
+                        alert("Please enter a valid email address!");
+                    }
+                }
+            }
+        }
+
+        function toggleAdmin() {
+            document.getElementById('admin-panel').classList.toggle('hidden');
         }
         function renderCategoriesPage() {
             const badgesContainer = document.getElementById('categories-badges');
@@ -259,13 +278,6 @@
 
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
-        }
-
-        function clearLocalStorageData() {
-            if (confirm("Reset all local storage data?")) {
-                localStorage.removeItem('my_info_articles');
-                location.reload();
-            }
         }
 
         /* MEDIA PARSING & RENDERING */
@@ -483,21 +495,6 @@
             `;
             return card;
         }
-
-        function handleAuthorAccess() {
-            if (isLoggedIn) toggleAdmin();
-            else {
-                const pass = prompt("Enter Author Password:");
-                if (pass === ADMIN_PASSWORD) {
-                    isLoggedIn = true;
-                    document.getElementById('author-btn').innerText = 'Dashboard 🔓';
-                    toggleAdmin();
-                    renderArticles(articles);
-                } else if (pass !== null) alert("Incorrect Password!");
-            }
-        }
-
-        function toggleAdmin() { document.getElementById('admin-panel').classList.toggle('hidden'); }
 
         function saveArticle(isDraft) {
             const title = document.getElementById('art-title').value.trim();
