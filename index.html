@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Transparent Floating Nav Hub</title>
+    <title>InfoHub - YouTube Thumbnail Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -91,6 +91,7 @@
             <input type="hidden" id="editing-id" value="">
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             <input type="text" id="art-cat" placeholder="Category (e.g., Tech, Games, Stories)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <input type="text" id="art-thumb" placeholder="Thumbnail Image URL (Optional - YouTube style thumbnail)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
             <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
                 <p class="font-bold text-xs">💡 Universal Shortcodes:</p>
@@ -108,16 +109,14 @@
                 <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish 🚀</button>
             </div>
         </div>
-        <!-- PAGE 1: HOME FEED PAGE (NO SEARCH BAR) -->
-        <div id="page-home" class="page-view space-y-6">
-            <div class="w-full max-w-full flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <div>
-                    <h2 class="text-base font-bold text-slate-800">🏠 Feed & Stories</h2>
-                    <p class="text-xs text-slate-500">Explore posts from creators worldwide</p>
-                </div>
-                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm">+ New Post</button>
-            </div>
 
+        <!-- FULL ARTICLE DETAIL PAGE VIEW -->
+        <div id="page-detail" class="page-view hidden space-y-6 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">← Back to Feed</button>
+            <div id="detail-content-container" class="space-y-4"></div>
+        </div>
+        <!-- PAGE 1: HOME FEED PAGE (NO TOP BANNER, YOUTUBE THUMBNAIL GRID) -->
+        <div id="page-home" class="page-view space-y-6">
             <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
                 <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Your Drafts</h2>
                 <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
@@ -163,9 +162,12 @@
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE (WITH SETTINGS INSIDE) -->
+        <!-- PAGE 4: PROFILE PAGE (WITH NEW POST BUTTON & SETTINGS INSIDE) -->
         <div id="page-profile" class="page-view hidden space-y-6">
-            <h2 class="text-xl font-bold text-indigo-600">👤 Profile & Settings</h2>
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-indigo-600">👤 Profile & Settings</h2>
+                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm">+ New Post</button>
+            </div>
             
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
                 <div id="insta-profile-section" class="flex flex-col sm:flex-row items-center gap-4 pb-4 border-b border-slate-100">
@@ -204,7 +206,7 @@
                     </div>
                     <div class="flex justify-between items-center py-2 text-xs">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v6.0 Transparent Nav Hub</span>
+                        <span class="text-slate-400 font-bold">v7.0 Thumbnail Hub</span>
                     </div>
                 </div>
             </div>
@@ -212,7 +214,7 @@
 
     </main>
 
-    <!-- TRANSPARENT FLOATING TOGGLE NAVIGATION SYSTEM (BACKGROUND CONTAINER IS TRANSPARENT, ICONS ARE PURPLE ROUNDED) -->
+    <!-- TRANSPARENT FLOATING TOGGLE NAVIGATION SYSTEM -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100" title="Toggle Navigation">
             🧭
@@ -250,6 +252,7 @@
                 category: "Tamil Literature",
                 authorEmail: "admin@gmail.com",
                 authorName: "Admin Profile",
+                thumbnail: "",
                 bio: "Official Creator",
                 isDraft: false,
                 body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும்.\n\n[carousel: https://picsum.photos/id/1018/800/400, https://picsum.photos/id/1015/800/400]\n\nஇது 103 அடிகளைக் கொண்டது."
@@ -557,10 +560,10 @@
 
         function isMediaUrl(url, type) {
             url = url.trim().toLowerCase();
-            if (type === 'image') return url.match(/\.(jpeg|jpg|gif|png|webp|svg|bmp|avif|ico)(\?.*)?$/i) || url.includes('picsum.photos') || url.includes('unsplash.com') || url.startsWith('data:image');
+            if (type === 'image') return url.match(/\.(jpeg|jpg|gif|png|webp|svg|bmp|avif|ico)(\?.*)?$|picsum\.photos|unsplash\.com|data:image/i);
             if (type === 'video') return url.match(/\.(mp4|webm|ogg|mov|avi)(\?.*)?$/i) || url.includes('youtube.com') || url.includes('youtu.be');
             if (type === 'audio') return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
-            if (type === 'pdf') return url.match(/\.pdf(\?.*)?$/i) || url.includes('.pdf');
+            if (type === 'pdf') return url.match(/\.pdf(\?.*)?$|\.pdf/i);
             return false;
         }
 
@@ -700,40 +703,87 @@
             }, 300));
         }
 
+        /* YOUTUBE THUMBNAIL FIXED CARD HTML WITH LEFT AUTHOR & RIGHT FOLLOW */
         function createCardHTML(art) {
             const card = document.createElement('div');
-            card.className = 'bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden';
-            const parsedBody = parseContent(art.body);
-
-            let isOwner = currentUser && art.authorEmail && currentUser.email.toLowerCase() === art.authorEmail.toLowerCase();
-            let actionButtons = isOwner ? `
-                <div class="flex gap-1.5">
-                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit your post">✏️</button>
-                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete your post">🗑</button>
-                </div>
-            ` : '';
+            card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
+            card.onclick = () => openFullArticle(art.id);
 
             let isFollowing = currentUser && followingList.includes(art.authorEmail);
             let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
-                <button onclick="toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
+                <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
                     ${isFollowing ? 'Following ✓' : '+ Follow'}
                 </button>
             ` : '';
 
+            // Thumbnail display: custom thumbnail or default fixed-size box
+            let thumbHTML = '';
+            if (art.thumbnail && art.thumbnail.trim() !== '') {
+                thumbHTML = `<div class="w-full h-40 bg-slate-100 overflow-hidden"><img src="${art.thumbnail}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x350?text=Thumbnail'"></div>`;
+            } else {
+                thumbHTML = `
+                    <div class="w-full h-40 bg-gradient-to-br from-indigo-500 to-purple-600 p-4 flex flex-col justify-between text-white">
+                        <span class="text-xs font-bold uppercase tracking-wider bg-black/20 px-2 py-0.5 rounded w-max">${art.category || 'General'}</span>
+                        <h4 class="font-bold text-base line-clamp-2">${art.title}</h4>
+                        <span class="text-[10px] opacity-80">Click to read full article →</span>
+                    </div>
+                `;
+            }
+
+            let actionButtons = (currentUser && currentUser.email === art.authorEmail) ? `
+                <div class="flex gap-1.5" onclick="event.stopPropagation()">
+                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit">✏️</button>
+                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete">🗑</button>
+                </div>
+            ` : '';
+
             card.innerHTML = `
-                <div class="w-full max-w-full overflow-hidden">
-                    <div class="flex justify-between items-center mb-2.5 w-full">
-                        <div class="flex items-center gap-2 max-w-[70%] truncate">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded truncate" title="${art.category || 'General'}">${art.category || 'General'}</span>
-                            <span class="text-[11px] font-medium text-slate-500 truncate flex items-center gap-1" title="Author: ${art.authorEmail || 'Anonymous'}">✍️ ${art.authorEmail || 'Anonymous'} ${followBtn}</span>
+                <div>
+                    <!-- Header with Author on Left & Follow on Right -->
+                    <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-1.5 truncate max-w-[70%]">
+                            <span class="font-bold text-slate-800 truncate" title="${art.authorEmail || 'Anonymous'}">✍️ ${art.authorEmail || 'Anonymous'}</span>
+                            ${followBtn}
                         </div>
                         ${actionButtons}
                     </div>
-                    <h3 class="text-lg font-bold mb-2 text-slate-800 strict-break">${art.title}</h3>
-                    <div class="text-slate-600 text-sm whitespace-pre-line leading-relaxed strict-break overflow-hidden">${parsedBody}</div>
+
+                    <!-- Fixed Size YouTube Thumbnail Container -->
+                    ${thumbHTML}
+
+                    <!-- Title & Snippet Preview -->
+                    <div class="p-4 space-y-1">
+                        <span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">${art.category || 'General'}</span>
+                        <h3 class="text-base font-bold text-slate-800 strict-break line-clamp-1">${art.title}</h3>
+                        <p class="text-xs text-slate-500 line-clamp-2">${art.body.replace(/\[.*?\]/g, '')}</p>
+                    </div>
                 </div>
             `;
             return card;
+        }
+
+        /* FULL ARTICLE DETAIL VIEW PAGE */
+        function openFullArticle(id) {
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+
+            const container = document.getElementById('detail-content-container');
+            const parsedBody = parseContent(art.body);
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
+                        <span class="text-xs text-slate-500">✍️ ${art.authorEmail || 'Anonymous'}</span>
+                    </div>
+                    <h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1>
+                    <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div>
+                </div>
+            `;
+
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-detail').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function openPublishIfLoggedIn() {
@@ -755,6 +805,7 @@
 
             const title = document.getElementById('art-title').value.trim();
             const category = document.getElementById('art-cat').value.trim();
+            const thumbnail = document.getElementById('art-thumb').value.trim();
             const body = document.getElementById('art-body').value.trim();
             const editingId = document.getElementById('editing-id').value;
 
@@ -767,13 +818,14 @@
                         alert("You can only edit articles published under your own profile!");
                         return;
                     }
-                    articles[idx] = { ...articles[idx], title, category, body, isDraft };
+                    articles[idx] = { ...articles[idx], title, category, thumbnail, body, isDraft };
                 }
             } else {
                 articles.unshift({
                     id: Date.now(),
                     title,
                     category,
+                    thumbnail,
                     body,
                     isDraft,
                     authorEmail: currentUser.email
@@ -797,6 +849,7 @@
             document.getElementById('editing-id').value = art.id;
             document.getElementById('art-title').value = art.title;
             document.getElementById('art-cat').value = art.category;
+            document.getElementById('art-thumb').value = art.thumbnail || '';
             document.getElementById('art-body').value = art.body;
             document.getElementById('form-title').innerText = 'Edit Your Article ✏️';
             const panel = document.getElementById('admin-panel');
@@ -822,6 +875,7 @@
             document.getElementById('editing-id').value = '';
             document.getElementById('art-title').value = '';
             document.getElementById('art-cat').value = '';
+            document.getElementById('art-thumb').value = '';
             document.getElementById('art-body').value = '';
             document.getElementById('form-title').innerText = '✍️ Publish New Article';
         }
