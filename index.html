@@ -79,7 +79,6 @@
                 <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish 🚀</button>
             </div>
         </div>
-
         <!-- PAGE 1: HOME / FEED PAGE -->
         <div id="page-home" class="page-view space-y-6">
             <div class="w-full max-w-full">
@@ -94,6 +93,7 @@
 
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
+
         <!-- PAGE 2: SEARCH & CATEGORIES PAGE -->
         <div id="page-search" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & Categories</h2>
@@ -133,25 +133,24 @@
 
     </main>
 
-    <!-- FLOATING NAVIGATION SYSTEM (BOTTOM LEFT) - 3 TABS -->
+    <!-- FLOATING NAVIGATION SYSTEM (ICON ONLY MODIFICATION) -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100">
             🧭
         </button>
 
-        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-3 py-1.5 flex items-center gap-1.5">
-            <button onclick="switchTab('home')" id="tab-btn-home" class="px-3 py-1.5 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 transition flex items-center gap-1">
-                <span>🏠</span> Home
+        <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-full px-2 py-1.5 flex items-center gap-1">
+            <button onclick="switchTab('home')" id="tab-btn-home" class="w-10 h-10 rounded-full text-base font-bold text-indigo-600 bg-indigo-50 transition flex items-center justify-center">
+                🏠
             </button>
-            <button onclick="switchTab('search')" id="tab-btn-search" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
-                <span>🔍</span> Search
+            <button onclick="switchTab('search')" id="tab-btn-search" class="w-10 h-10 rounded-full text-base font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
+                🔍
             </button>
-            <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1">
-                <span>⚙️</span> Settings
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="w-10 h-10 rounded-full text-base font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center">
+                ⚙️
             </button>
         </div>
     </div>
-
     <script>
         const ADMIN_PASSWORD = "1234";
         let isLoggedIn = false;
@@ -190,7 +189,8 @@
                 }
             });
         }
-        /* NAVIGATION LOGIC */
+
+        /* NAVIGATION LOGIC WITH ICON-ONLY STYLES */
         function toggleNavMenu() {
             const navBar = document.getElementById('floating-nav-bar');
             navBar.classList.toggle('hidden');
@@ -203,13 +203,13 @@
             ['home', 'search', 'settings'].forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (btn) {
-                    btn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-indigo-600 transition flex items-center gap-1";
+                    btn.className = "w-10 h-10 rounded-full text-base font-bold text-slate-600 hover:text-indigo-600 transition flex items-center justify-center";
                 }
             });
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             if (activeBtn) {
-                activeBtn.className = "px-3 py-1.5 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 transition flex items-center gap-1";
+                activeBtn.className = "w-10 h-10 rounded-full text-base font-bold text-indigo-600 bg-indigo-50 transition flex items-center justify-center";
             }
 
             if (tabName === 'home') {
@@ -222,7 +222,6 @@
                 document.getElementById('page-settings').classList.remove('hidden');
             }
         }
-
         function renderCategoriesPage() {
             const badgesContainer = document.getElementById('categories-badges');
             const categories = [...new Set(articles.filter(a => !a.isDraft).map(a => a.category || 'General'))];
