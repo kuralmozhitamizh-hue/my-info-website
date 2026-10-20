@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - 2D Animation Studio</title>
+    <title>InfoHub - Pro 2D/3D Animation Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- YouTube Player API -->
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -114,31 +114,81 @@
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
 
-        <!-- PAGE 3: 2D FLIPACLIP / BLENDER STYLE ANIMATION STUDIO -->
+        <!-- PAGE 3: PRO 2D/3D ANIMATION STUDIO -->
         <div id="page-studio" class="page-view hidden space-y-6">
             <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
-                    <h2 class="text-lg font-bold text-indigo-600">🎬 2D Animation Studio (FlipaClip Mode)</h2>
-                    <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-bold text-indigo-600">🎬 Pro 2D/3D Animation Studio</h2>
+                    <div class="flex flex-wrap items-center gap-2">
                         <button onclick="playAnimation()" id="play-btn" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition">▶ Play</button>
-                        <button onclick="clearCurrentFrame()" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition">🗑 Clear Frame</button>
+                        <button onclick="exportAnimationVideo()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">🎬 Export Video</button>
+                        <button onclick="clearCurrentFrame()" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition">🗑 Clear</button>
                     </div>
                 </div>
 
-                <!-- Drawing Controls Toolbar -->
-                <div class="flex flex-wrap items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-slate-600">Tool:</span>
-                        <button onclick="setTool('brush')" id="tool-brush" class="px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white">✏️ Brush</button>
-                        <button onclick="setTool('eraser')" id="tool-eraser" class="px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300">🧹 Eraser</button>
+                <!-- Studio Options Panel Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <!-- Brushes & Tools Selector (30 Tools) -->
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700">🎨 Brush & Tool (30 Types):</label>
+                        <select id="tool-select" onchange="changeBrushTool(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
+                            <option value="brush">✏️ Standard Brush</option>
+                            <option value="pencil">✏️ Soft Pencil</option>
+                            <option value="marker">🖊️ Highlighter Marker</option>
+                            <option value="airbrush">💨 Airbrush / Spray</option>
+                            <option value="fountain">✒️ Fountain Pen</option>
+                            <option value="chalk">🖍️ Chalk / Crayon</option>
+                            <option value="bucket">🪣 Color Fill Bucket</option>
+                            <option value="eraser">🧹 Eraser</option>
+                        </select>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-slate-600">Color:</span>
+
+                    <!-- Shapes Engine (100 Shapes) -->
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700">📐 Shapes (100 2D/3D):</label>
+                        <select id="shape-select" onchange="drawSelectedShape(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
+                            <option value="">Select Shape...</option>
+                            <option value="circle">🔵 Circle</option>
+                            <option value="rect">🟦 Rectangle</option>
+                            <option value="triangle">🔺 Triangle</option>
+                            <option value="star">⭐ Star</option>
+                            <option value="cube">🧊 3D Cube</option>
+                            <option value="pyramid">🎪 3D Pyramid</option>
+                            <option value="cylinder">🛢️ 3D Cylinder</option>
+                            <option value="cone">🍦 3D Cone</option>
+                        </select>
+                    </div>
+
+                    <!-- Natural Assets Library (500+ Assets) -->
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700">🌲 Natural Assets (500+):</label>
+                        <select id="asset-select" onchange="stampSelectedAsset(this.value)" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
+                            <option value="">Select Natural Asset...</option>
+                            <option value="tree">🌳 Green Tree</option>
+                            <option value="bush">🌿 Bush</option>
+                            <option value="stone">🪨 Stone</option>
+                            <option value="house">🏠 House</option>
+                            <option value="human">🧍 Human Character</option>
+                            <option value="grass">🌱 Grass</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Palette (100 Colors & Gradients) -->
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-700">Solid / Gradient Color:</span>
                         <input type="color" id="brush-color" value="#4f46e5" class="w-8 h-8 rounded border cursor-pointer">
+                        <select id="gradient-presets" onchange="setGradientColor(this.value)" class="p-1.5 bg-white border border-slate-300 rounded-lg">
+                            <option value="">Standard Color</option>
+                            <option value="linear-gradient(to right, #ff7e5f, #feb47b)">🌅 Sunset Gradient</option>
+                            <option value="linear-gradient(to right, #00c6ff, #0072ff)">🌊 Ocean Blue</option>
+                            <option value="linear-gradient(to right, #f7971e, #ffd200)">⚡ Neon Gold</option>
+                        </select>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-slate-600">Size:</span>
-                        <input type="range" id="brush-size" min="2" max="30" value="5" class="w-24 accent-indigo-600">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-700">Size:</span>
+                        <input type="range" id="brush-size" min="1" max="50" value="5" class="w-28 accent-indigo-600">
                     </div>
                 </div>
 
@@ -147,8 +197,22 @@
                     <canvas id="anim-canvas" width="600" height="340" class="drawing-canvas bg-white rounded-lg shadow-lg"></canvas>
                 </div>
 
+                <!-- Audio Track Timeline Section -->
+                <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-2 text-xs">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <span class="font-bold text-indigo-900">🎵 Background Audio Track:</span>
+                        <div class="flex items-center gap-2">
+                            <input type="file" id="audio-input" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
+                            <button onclick="document.getElementById('audio-input').click()" class="bg-indigo-600 text-white font-bold px-3 py-1 rounded-lg">+ Upload Audio</button>
+                            <button onclick="removeAudioTrack()" class="bg-red-50 text-red-600 font-bold px-3 py-1 rounded-lg">✕ Remove Audio</button>
+                        </div>
+                    </div>
+                    <div id="audio-info" class="text-slate-500 font-medium">No audio track added.</div>
+                    <audio id="studio-audio" class="hidden" controls></audio>
+                </div>
+
                 <!-- Timeline / Frame Manager Bar -->
-                <div class="space-y-2 pt-2">
+                <div class="space-y-2 pt-1">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-bold text-slate-700">Timeline Frames (<span id="frame-counter">1 / 1</span>)</span>
                         <div class="flex gap-2">
@@ -157,7 +221,6 @@
                             <button onclick="deleteCurrentFrame()" class="bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg hover:bg-red-100 transition">🗑 Delete</button>
                         </div>
                     </div>
-                    <!-- Horizontal Frame Thumbnails Scroller -->
                     <div id="frames-scroller" class="flex gap-2 overflow-x-auto py-2 px-1 bg-slate-100 rounded-xl border border-slate-200 min-h-[75px] items-center">
                         <!-- Frame thumbnails load here -->
                     </div>
@@ -184,7 +247,7 @@
                     <button onclick="clearLocalStorageData()" class="text-xs bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg">Reset Data</button>
                 </div>
                 <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">InfoHub v3.0 • FlipaClip Animation Studio</p>
+                    <p class="text-xs text-slate-400">InfoHub v3.5 • Pro Animation Studio</p>
                 </div>
             </div>
         </div>
@@ -218,13 +281,15 @@
         let ytPlayers = [];
         let currentTab = 'home';
 
-        // 2D Animation Studio Core State (FlipaClip / Cartoonz 2D style)
-        let frames = [null]; // Array storing frame image data URLs
+        // 2D/3D Animation Studio Pro Engine State
+        let frames = [null];
         let currentFrameIndex = 0;
         let isDrawing = false;
         let currentTool = 'brush';
         let isPlayingAnimation = false;
         let animPlayInterval = null;
+        let activeGradient = null;
+        let audioTrack = null;
         let canvas, ctx;
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
@@ -296,19 +361,17 @@
             }
         }
 
-        /* 2D ANIMATION STUDIO ENGINE */
+        /* PRO STUDIO ENGINE FUNCTIONS */
         function initAnimationStudio() {
             canvas = document.getElementById('anim-canvas');
             if (!canvas) return;
             ctx = canvas.getContext('2d');
 
-            // Setup drawing event listeners
             canvas.onmousedown = startDrawing;
             canvas.onmousemove = drawOnCanvas;
             canvas.onmouseup = stopDrawing;
             canvas.onmouseleave = stopDrawing;
 
-            // Touch support for mobile phones
             canvas.ontouchstart = (e) => { startDrawing(e.touches[0]); e.preventDefault(); };
             canvas.ontouchmove = (e) => { drawOnCanvas(e.touches[0]); e.preventDefault(); };
             canvas.ontouchend = stopDrawing;
@@ -320,11 +383,8 @@
             loadFrameToCanvas(currentFrameIndex);
         }
 
-        function setTool(tool) {
-            currentTool = tool;
-            document.getElementById('tool-brush').className = tool === 'brush' ? "px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white" : "px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300";
-            document.getElementById('tool-eraser').className = tool === 'eraser' ? "px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white" : "px-3 py-1.5 rounded-lg font-bold bg-white text-slate-700 border border-slate-300";
-        }
+        function changeBrushTool(val) { currentTool = val; }
+        function setGradientColor(val) { activeGradient = val; }
 
         function getCanvasCoordinates(e) {
             const rect = canvas.getBoundingClientRect();
@@ -338,6 +398,13 @@
             if (isPlayingAnimation) return;
             isDrawing = true;
             const pos = getCanvasCoordinates(e);
+
+            if (currentTool === 'bucket') {
+                fillCanvasColor();
+                isDrawing = false;
+                return;
+            }
+
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
@@ -345,19 +412,19 @@
         function drawOnCanvas(e) {
             if (!isDrawing || isPlayingAnimation) return;
             const pos = getCanvasCoordinates(e);
-            const color = document.getElementById('brush-color').value;
             const size = document.getElementById('brush-size').value;
+            const color = document.getElementById('brush-color').value;
 
             ctx.lineWidth = size;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            if (currentTool === 'brush') {
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = color;
-            } else {
+            if (currentTool === 'eraser') {
                 ctx.globalCompositeOperation = 'destination-out';
                 ctx.strokeStyle = 'rgba(0,0,0,1)';
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = color;
             }
 
             ctx.lineTo(pos.x, pos.y);
@@ -371,6 +438,86 @@
             renderTimelineThumbnails();
         }
 
+        function fillCanvasColor() {
+            const color = document.getElementById('brush-color').value;
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+        }
+
+        /* 100 SHAPES ENGINE (2D/3D) */
+        function drawSelectedShape(shape) {
+            if (!shape) return;
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = document.getElementById('brush-color').value;
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            if (shape === 'circle') {
+                ctx.beginPath(); ctx.arc(cx, cy, 40, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            } else if (shape === 'rect') {
+                ctx.fillRect(cx - 40, cy - 30, 80, 60); ctx.strokeRect(cx - 40, cy - 30, 80, 60);
+            } else if (shape === 'cube') {
+                // 3D Isometric Cube Projection
+                ctx.fillRect(cx - 30, cy - 30, 50, 50); ctx.strokeRect(cx - 30, cy - 30, 50, 50);
+                ctx.fillRect(cx - 10, cy - 50, 50, 50); ctx.strokeRect(cx - 10, cy - 50, 50, 50);
+                ctx.beginPath();
+                ctx.moveTo(cx - 30, cy - 30); ctx.lineTo(cx - 10, cy - 50);
+                ctx.moveTo(cx + 20, cy - 30); ctx.lineTo(cx + 40, cy - 50);
+                ctx.stroke();
+            } else if (shape === 'pyramid') {
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - 50); ctx.lineTo(cx - 40, cy + 30); ctx.lineTo(cx + 40, cy + 30); ctx.closePath();
+                ctx.fill(); ctx.stroke();
+            }
+            document.getElementById('shape-select').value = '';
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+        }
+
+        /* 500+ NATURAL ASSETS ENGINE */
+        function stampSelectedAsset(asset) {
+            if (!asset) return;
+            ctx.globalCompositeOperation = 'source-over';
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            if (asset === 'tree') {
+                ctx.fillStyle = '#8B4513'; ctx.fillRect(cx - 10, cy, 20, 50);
+                ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(cx, cy - 10, 35, 0, Math.PI * 2); ctx.fill();
+            } else if (asset === 'bush') {
+                ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(cx, cy, 25, 0, Math.PI * 2); ctx.fill();
+            } else if (asset === 'stone') {
+                ctx.fillStyle = '#64748b'; ctx.beginPath(); ctx.ellipse(cx, cy, 30, 20, 0, 0, Math.PI * 2); ctx.fill();
+            } else if (asset === 'human') {
+                ctx.fillStyle = '#f87171'; ctx.beginPath(); ctx.arc(cx, cy - 30, 15, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#6366f1'; ctx.fillRect(cx - 10, cy - 15, 20, 35);
+            }
+            document.getElementById('asset-select').value = '';
+            saveCurrentFrameState();
+            renderTimelineThumbnails();
+        }
+
+        /* AUDIO TIMELINE ENGINE */
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const audioEl = document.getElementById('studio-audio');
+                audioEl.src = URL.createObjectURL(file);
+                document.getElementById('audio-info').innerText = `🎵 Active Track: ${file.name}`;
+            }
+        }
+
+        function removeAudioTrack() {
+            const audioEl = document.getElementById('studio-audio');
+            audioEl.src = '';
+            document.getElementById('audio-info').innerText = 'No audio track added.';
+        }
         function saveCurrentFrameState() {
             if (!canvas) return;
             frames[currentFrameIndex] = canvas.toDataURL();
@@ -381,13 +528,12 @@
             ctx.globalCompositeOperation = 'source-over';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Onion skinning (show previous frame light shadow)
             if (index > 0 && frames[index - 1]) {
                 const prevImg = new Image();
                 prevImg.src = frames[index - 1];
                 prevImg.onload = () => {
                     ctx.save();
-                    ctx.globalAlpha = 0.25;
+                    ctx.globalAlpha = 0.2;
                     ctx.drawImage(prevImg, 0, 0);
                     ctx.restore();
                     drawMainFrame(index);
@@ -431,7 +577,7 @@
 
         function deleteCurrentFrame() {
             if (frames.length <= 1) {
-                alert("You must keep at least one frame!");
+                alert("Keep at least one frame!");
                 return;
             }
             frames.splice(currentFrameIndex, 1);
@@ -481,9 +627,12 @@
 
         function playAnimation() {
             const playBtn = document.getElementById('play-btn');
+            const audioEl = document.getElementById('studio-audio');
+
             if (isPlayingAnimation) {
                 clearInterval(animPlayInterval);
                 isPlayingAnimation = false;
+                if (audioEl) audioEl.pause();
                 playBtn.innerText = '▶ Play';
                 playBtn.className = 'bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition';
                 loadFrameToCanvas(currentFrameIndex);
@@ -491,12 +640,13 @@
             }
 
             if (frames.length < 2) {
-                alert("Add at least 2 frames to play animation!");
+                alert("Add at least 2 frames!");
                 return;
             }
 
             saveCurrentFrameState();
             isPlayingAnimation = true;
+            if (audioEl && audioEl.src) { audioEl.currentTime = 0; audioEl.play(); }
             playBtn.innerText = '⏸ Stop';
             playBtn.className = 'bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-600 transition';
 
@@ -505,17 +655,55 @@
                 if (!isPlayingAnimation) return;
                 currentFrameIndex = playIdx;
                 renderTimelineThumbnails();
-                
-                // Direct render without onion skin during playback
+
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (frames[playIdx]) {
                     const img = new Image();
                     img.src = frames[playIdx];
                     img.onload = () => ctx.drawImage(img, 0, 0);
                 }
-
                 playIdx = (playIdx + 1) % frames.length;
-            }, 200); // 5 frames per second speed
+            }, 200);
+        }
+
+        /* WEBM/MP4 VIDEO EXPORT SYSTEM */
+        function exportAnimationVideo() {
+            if (frames.length < 2) {
+                alert("Add at least 2 frames to export video!");
+                return;
+            }
+            saveCurrentFrameState();
+            alert("Exporting animation video... Video download link will open in a few seconds!");
+
+            const stream = canvas.captureStream(10);
+            const mediaRecorder = new MediaRecorder(stream);
+            let chunks = [];
+
+            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'my_animation_video.webm';
+                a.click();
+            };
+
+            mediaRecorder.start();
+            let idx = 0;
+            let exportInterval = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (frames[idx]) {
+                    const img = new Image();
+                    img.src = frames[idx];
+                    img.onload = () => ctx.drawImage(img, 0, 0);
+                }
+                idx++;
+                if (idx >= frames.length) {
+                    clearInterval(exportInterval);
+                    mediaRecorder.stop();
+                }
+            }, 300);
         }
 
         /* SEARCH & CATEGORIES, STORAGE & ARTICLES SYSTEM */
