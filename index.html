@@ -187,7 +187,8 @@
                 </div>
             </div>
         </div>
-        <!-- SETTINGS MODAL (DARK MODE, NOTIFICATIONS, DEACTIVATION, DELETION, LOGOUT) -->
+
+        <!-- SETTINGS MODAL (DYNAMIC LOGIN / LOGOUT CONTAINER) -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -209,15 +210,10 @@
                     </div>
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v11.0 Insta Multi-Account Hub</span>
+                        <span class="text-slate-400 font-bold">v12.0 Insta Multi-Account Hub</span>
                     </div>
-                    <div class="space-y-2 pt-2">
-                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🗑️ Delete Account Permanently
-                        </button>
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🚪 Logout
-                        </button>
+                    <div class="space-y-2 pt-2" id="settings-action-buttons">
+                        <!-- Dynamically populated based on login state -->
                     </div>
                 </div>
             </div>
@@ -268,7 +264,7 @@
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
 
-        <!-- PAGE 2: SEARCH USERS & ARTICLES PAGE (INSTAGRAM STYLE) -->
+        <!-- PAGE 2: SEARCH USERS & ARTICLES PAGE -->
         <div id="page-search" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Users, Articles & Multi-Accounts</h2>
             <div class="w-full">
@@ -299,19 +295,17 @@
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE WITH INSTA-STYLE ACCOUNT SWITCHER DROPDOWN -->
+        <!-- PAGE 4: PROFILE PAGE WITH INSTA-STYLE ACCOUNT SWITCHER -->
         <div id="page-profile" class="page-view hidden space-y-4 relative">
             <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm relative">
                 <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
                     ＋
                 </button>
                 
-                <!-- Insta-Style Account Switcher Dropdown Toggle -->
                 <div class="relative">
                     <button onclick="toggleAccountDropdown()" class="flex items-center gap-1 font-bold text-sm text-slate-800 hover:text-indigo-600 transition">
                         <span id="profile-header-username">not_logged_in</span> ▾
                     </button>
-                    <!-- Account Dropdown Menu -->
                     <div id="account-dropdown-menu" class="hidden absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-2xl rounded-xl border border-slate-200 p-2 w-64 z-50 space-y-1">
                         <div id="dropdown-accounts-list" class="space-y-1 max-h-48 overflow-y-auto"></div>
                         <button onclick="toggleAddAccountModal(); toggleAccountDropdown();" class="w-full text-left px-3 py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg flex items-center gap-2">
@@ -396,7 +390,7 @@
         </div>
     </div>
     <script>
-        let accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || []; // [{email, username, name, bio, avatar, isDeactivated}]
+        let accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || [];
         let currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
         let currentUser = accountsList[currentAccountIndex] || null;
 
@@ -501,10 +495,7 @@
                 }
             }
 
-            // Delete all user's posts
             articles = articles.filter(a => a.authorEmail !== currentUser.email && a.authorUsername !== currentUser.username);
-            
-            // Remove account from accounts list
             accountsList.splice(currentAccountIndex, 1);
             localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
 
@@ -598,7 +589,6 @@
 
             if (!name || !username) { alert("Please fill in both name and unique username!"); return; }
 
-            // Check username uniqueness
             let conflict = accountsList.find(a => a.username.toLowerCase() === username) || registeredUsers.find(u => u.username && u.username.toLowerCase() === username);
             if (conflict) {
                 alert("Username is already taken! Please choose another unique username.");
@@ -606,7 +596,7 @@
             }
 
             const newSubAcc = {
-                email: currentUser.email, // Same email can have unlimited accounts
+                email: currentUser.email,
                 username: username,
                 name: name,
                 bio: "New sub-account",
@@ -627,13 +617,13 @@
             renderArticles(articles);
             alert(`New account @${username} created and switched successfully! 🚀`);
         }
-        /* USERNAME AVAILABILITY & FILE UPLOAD */
+
         function checkUsernameAvailability() {
             const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
             const indicator = document.getElementById('username-availability-indicator');
             if (!inputVal) { indicator.innerHTML = ''; return; }
 
-            let existing = accountsList.find(u => u.username && u.username.toLowerCase() === inputVal && u.username !== currentUser.username);
+            let existing = accountsList.find(u => u.username && u.username.toLowerCase() === inputVal && (!currentUser || u.username !== currentUser.username));
             if (existing) {
                 indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>';
             } else {
@@ -721,7 +711,6 @@
 
             let found = accountsList.find(a => a.email === email && (a.pass === pass || !a.pass));
             if (!found) {
-                // Create account if email matches
                 const username = email.split('@')[0];
                 found = { email: email, pass: pass, username: username, name: username, bio: "User", avatar: "", isDeactivated: false };
                 accountsList.push(found);
@@ -743,6 +732,7 @@
 
         function updateAuthUI() { updateProfileSettingsUI(); }
 
+        /* UPDATE PROFILE & DYNAMIC SETTINGS ACTIONS (LOGIN / LOGOUT TOGGLE) */
         function updateProfileSettingsUI() {
             const headerUsernameEl = document.getElementById('profile-header-username');
             const nameEl = document.getElementById('profile-display-name');
@@ -751,6 +741,7 @@
             const postsCountEl = document.getElementById('profile-posts-count');
             const followersEl = document.getElementById('profile-followers-count');
             const followingEl = document.getElementById('profile-following-count');
+            const settingsActions = document.getElementById('settings-action-buttons');
 
             if (!nameEl) return;
 
@@ -770,13 +761,39 @@
                 followingEl.innerText = followingList.length;
                 let myFollowers = followersMap[currentUser.email] || [];
                 followersEl.innerText = myFollowers.length;
-            } else if (currentUser && currentUser.isDeactivated) {
+
+                // When logged in -> Show Delete, Deactivate & Logout buttons
+                if (settingsActions) {
+                    settingsActions.innerHTML = `
+                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🗑️ Delete Account Permanently
+                        </button>
+                        <button onclick="toggleDeactivateAccount()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            ⚠️ Deactivate Account
+                        </button>
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🚪 Logout
+                        </button>
+                    `;
+                }
+              } else if (currentUser && currentUser.isDeactivated) {
                 headerUsernameEl.innerText = currentUser.username + " (Deactivated)";
                 nameEl.innerText = currentUser.name;
                 bioEl.innerText = "⚠️ Account is Deactivated. Reactivate in Settings.";
                 postsCountEl.innerText = '0';
                 followersEl.innerText = '0';
                 followingEl.innerText = '0';
+
+                if (settingsActions) {
+                    settingsActions.innerHTML = `
+                        <button onclick="toggleDeactivateAccount()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            ✨ Reactivate Account
+                        </button>
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🚪 Logout
+                        </button>
+                    `;
+                }
             } else {
                 headerUsernameEl.innerText = 'not_logged_in';
                 nameEl.innerText = 'Not Logged In';
@@ -785,9 +802,17 @@
                 postsCountEl.innerText = '0';
                 followersEl.innerText = '0';
                 followingEl.innerText = '0';
+
+                // When NOT logged in -> Show Login button instead of Logout
+                if (settingsActions) {
+                    settingsActions.innerHTML = `
+                        <button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🔓 Login / Register
+                        </button>
+                    `;
+                }
             }
 
-            // Sync settings UI buttons
             const darkBtn = document.getElementById('dark-mode-toggle-btn');
             if (darkBtn) darkBtn.innerText = isDarkMode ? "Disable 🌙" : "Enable ☀️";
             const notifBtn = document.getElementById('notif-onoff-btn');
@@ -884,7 +909,7 @@
             else { navigator.clipboard.writeText(window.location.href); alert("Profile link copied! 🔗"); }
         }
 
-        /* FOLLOWERS & FOLLOWING LIST MODALS (WITH NAME, USERNAME, AVATAR - LIKE 4TH IMAGE) */
+        /* FOLLOWERS & FOLLOWING LIST MODALS */
         function openFollowersList() {
             if (!currentUser) { openLoginModal(); return; }
             const modal = document.getElementById('follow-list-modal');
@@ -1018,6 +1043,7 @@
             document.getElementById('page-public-profile').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
         function renderPlayStoreCategories() {
             const grid = document.getElementById('playstore-categories-grid');
             if (!grid) return;
@@ -1036,7 +1062,6 @@
             `).join('');
         }
 
-        /* COMPREHENSIVE SEARCH FOR BOTH ACCOUNTS, MULTI-ACCOUNTS & ARTICLES (LIKE 7TH IMAGE) */
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
             if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
@@ -1047,7 +1072,6 @@
             resultsContainer.innerHTML = '';
             if (usersListContainer) usersListContainer.innerHTML = '';
 
-            // Search accounts & multi-accounts
             if (query.trim() !== '') {
                 let matchedAccounts = accountsList.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
                 if (matchedAccounts.length > 0 && usersListContainer) {
@@ -1084,7 +1108,6 @@
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
 
-        /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -1277,7 +1300,6 @@
             }, 300));
         }
 
-        /* ARTICLE CARD WITH TOP-LEFT USERNAME AND TOP-RIGHT FOLLOW BUTTON IN FIXED CONTAINER */
         function createCardHTML(art) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
@@ -1314,7 +1336,6 @@
 
             card.innerHTML = `
                 <div>
-                    <!-- Top Left Username & Top Right Follow Button in Fixed Header Container -->
                     <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
                         <div class="flex items-center gap-1.5 truncate max-w-[70%]">
                             <span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span>
