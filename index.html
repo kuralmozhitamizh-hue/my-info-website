@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Insta Unique Profile Hub</title>
+    <title>InfoHub - Insta Pro Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -18,6 +18,21 @@
             overflow-x: hidden !important;
             margin: 0;
             padding: 0;
+        }
+        body.dark-mode {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode header, 
+        body.dark-mode .bg-white {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode input, body.dark-mode textarea {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
@@ -44,7 +59,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-24">
+<body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-24 transition-colors duration-300" id="main-body">
 
     <!-- Header: App Name & Notification Icon Only -->
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
@@ -52,7 +67,7 @@
             <h1 class="text-xl sm:text-2xl font-black text-indigo-600 truncate">InfoHub 🚀</h1>
             <div class="flex items-center gap-3">
                 <button onclick="switchTab('notifications')" class="relative p-1 text-xl hover:opacity-80 transition" title="Notifications">
-                    🔔 <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    🔔 <span id="notif-badge" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full hidden"></span>
                 </button>
             </div>
         </div>
@@ -60,16 +75,16 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Mandatory Login & Google Auth Modal -->
+        <!-- Authentication / Register / Login Modal -->
         <div id="auth-modal" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="auth-modal-title" class="text-lg font-bold text-indigo-600">🔐 Gmail & Google Secure Login</h3>
                 <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
             </div>
             <div class="space-y-3">
-                <p class="text-xs text-slate-600">You must register first or log in with your correct password. Google / Gmail one-tap login also supported!</p>
+                <p class="text-xs text-slate-600">Passwordless Sign-In with Google or use email & password. You can also add unlimited accounts under the same email!</p>
                 <button onclick="handleGoogleAuthLogin()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-lg transition text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm">
-                    🌐 Continue with Google / Gmail
+                    🌐 Sign in with Google (Passwordless)
                 </button>
                 <div class="relative flex py-2 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
@@ -81,6 +96,28 @@
                 <div class="flex gap-2 w-full pt-2">
                     <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs sm:text-sm">Log In 🔓</button>
                     <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition text-xs sm:text-sm">Register First ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Multiple Account Modal -->
+        <div id="add-account-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-indigo-600">➕ Add Another Account</h3>
+                    <button onclick="toggleAddAccountModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                </div>
+                <p class="text-xs text-slate-600">You can create unlimited accounts using the same email address!</p>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="font-bold text-slate-700">Account Name</label>
+                        <input type="text" id="new-acc-name" placeholder="Full Name" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700">Unique Username ID</label>
+                        <input type="text" id="new-acc-username" placeholder="e.g. kesava_sub" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                    </div>
+                    <button onclick="createNewSubAccount()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Create & Switch Account ✨</button>
                 </div>
             </div>
         </div>
@@ -118,7 +155,7 @@
             </div>
         </div>
 
-        <!-- EDIT PROFILE MODAL WITH UNIQUE USERNAME VALIDATION & FILE UPLOAD -->
+        <!-- EDIT PROFILE MODAL -->
         <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center">
@@ -150,7 +187,7 @@
                 </div>
             </div>
         </div>
-        <!-- SETTINGS MODAL (LOGOUT, DARK MODE, NOTIFICATIONS) -->
+        <!-- SETTINGS MODAL (DARK MODE, NOTIFICATIONS, DEACTIVATION, DELETION, LOGOUT) -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -160,18 +197,25 @@
                 <div class="space-y-4 text-xs">
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">Dark Mode / Theme</span>
-                        <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-bold text-indigo-600 transition">Toggle</button>
+                        <button onclick="toggleDarkMode()" id="dark-mode-toggle-btn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold transition">Enable</button>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">Notifications</span>
-                        <button onclick="toggleNotificationsSetting()" id="notif-toggle-btn" class="text-emerald-600 font-bold">Enabled 🔔</button>
+                        <button onclick="toggleNotificationsSetting()" id="notif-onoff-btn" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-bold transition">Enabled 🔔</button>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b">
+                        <span class="font-medium text-slate-700">Account Status</span>
+                        <button onclick="toggleDeactivateAccount()" id="deactivate-status-btn" class="bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold transition">Deactivate Account ⚠️</button>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v10.0 Insta Unique ID Hub</span>
+                        <span class="text-slate-400 font-bold">v11.0 Insta Multi-Account Hub</span>
                     </div>
-                    <div class="pt-2">
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                    <div class="space-y-2 pt-2">
+                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🗑️ Delete Account Permanently
+                        </button>
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
                             🚪 Logout
                         </button>
                     </div>
@@ -187,6 +231,17 @@
                     👤
                 </div>
                 <button onclick="document.getElementById('profile-pic-view-modal').classList.add('hidden')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-1.5 rounded-xl text-xs">Close</button>
+            </div>
+        </div>
+
+        <!-- FOLLOWERS / FOLLOWING LIST MODAL -->
+        <div id="follow-list-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 id="follow-modal-title" class="text-base font-bold text-slate-800">Connections</h3>
+                    <button onclick="document.getElementById('follow-list-modal').classList.add('hidden')" class="text-slate-400 font-bold">✕</button>
+                </div>
+                <div id="follow-modal-items" class="space-y-3"></div>
             </div>
         </div>
         <!-- FULL ARTICLE DETAIL PAGE VIEW -->
@@ -213,11 +268,11 @@
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
 
-        <!-- PAGE 2: SEARCH & USER SEARCH PAGE -->
+        <!-- PAGE 2: SEARCH USERS & ARTICLES PAGE (INSTAGRAM STYLE) -->
         <div id="page-search" class="page-view hidden space-y-6">
-            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Users & Categories</h2>
+            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Users, Articles & Multi-Accounts</h2>
             <div class="w-full">
-                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search by username, name, or keywords..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search accounts, articles, usernames..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
             
             <div id="search-users-list" class="space-y-2"></div>
@@ -244,13 +299,27 @@
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE (PROFILE PICTURE TOUCH TO VIEW, EDIT PROFILE FOR EDITING, EXACT COUNTS) -->
-        <div id="page-profile" class="page-view hidden space-y-4">
-            <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm">
+        <!-- PAGE 4: PROFILE PAGE WITH INSTA-STYLE ACCOUNT SWITCHER DROPDOWN -->
+        <div id="page-profile" class="page-view hidden space-y-4 relative">
+            <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm relative">
                 <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
                     ＋
                 </button>
-                <h3 id="profile-header-username" class="font-bold text-sm text-slate-800">kesavarthanan.p...</h3>
+                
+                <!-- Insta-Style Account Switcher Dropdown Toggle -->
+                <div class="relative">
+                    <button onclick="toggleAccountDropdown()" class="flex items-center gap-1 font-bold text-sm text-slate-800 hover:text-indigo-600 transition">
+                        <span id="profile-header-username">not_logged_in</span> ▾
+                    </button>
+                    <!-- Account Dropdown Menu -->
+                    <div id="account-dropdown-menu" class="hidden absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-2xl rounded-xl border border-slate-200 p-2 w-64 z-50 space-y-1">
+                        <div id="dropdown-accounts-list" class="space-y-1 max-h-48 overflow-y-auto"></div>
+                        <button onclick="toggleAddAccountModal(); toggleAccountDropdown();" class="w-full text-left px-3 py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg flex items-center gap-2">
+                            <span>➕</span> Add Instagram account
+                        </button>
+                    </div>
+                </div>
+
                 <button onclick="toggleSettingsModal()" class="text-xl text-slate-800 hover:text-indigo-600 transition" title="Settings">
                     ☰
                 </button>
@@ -258,7 +327,6 @@
 
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
-                    <!-- Profile Picture Touch -> Only Views Profile Picture, Does not open edit profile -->
                     <div class="relative cursor-pointer" onclick="openProfilePictureModal()">
                         <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
                             <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-container">
@@ -271,11 +339,11 @@
                             <p id="profile-posts-count" class="font-black text-base text-slate-800">0</p>
                             <p class="text-xs text-slate-500">posts</p>
                         </div>
-                        <div>
+                        <div onclick="openFollowersList()" class="cursor-pointer hover:opacity-80">
                             <p id="profile-followers-count" class="font-black text-base text-slate-800">0</p>
                             <p class="text-xs text-slate-500">followers</p>
                         </div>
-                        <div>
+                        <div onclick="openFollowingList()" class="cursor-pointer hover:opacity-80">
                             <p id="profile-following-count" class="font-black text-base text-slate-800">0</p>
                             <p class="text-xs text-slate-500">following</p>
                         </div>
@@ -287,7 +355,6 @@
                     <p id="profile-display-bio" class="text-slate-600 whitespace-pre-line">Please sign in to manage your profile</p>
                 </div>
 
-                <!-- Edit Profile Button -> Opens Edit Profile Modal -->
                 <div class="flex gap-2 pt-1">
                     <button onclick="toggleEditProfileModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Edit profile</button>
                     <button onclick="shareProfileLink()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Share profile</button>
@@ -329,13 +396,17 @@
         </div>
     </div>
     <script>
-        let currentUser = JSON.parse(localStorage.getItem('infohub_current_user')) || null;
+        let accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || []; // [{email, username, name, bio, avatar, isDeactivated}]
+        let currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
+        let currentUser = accountsList[currentAccountIndex] || null;
+
         let registeredUsers = JSON.parse(localStorage.getItem('infohub_registered_users')) || [];
         let followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
-        let followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {}; // { authorEmail: [followerEmail1, ...] }
+        let followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {};
         let ytPlayers = [];
         let currentTab = 'home';
         let isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
+        let notificationsEnabled = localStorage.getItem('infohub_notifications_enabled') !== 'false';
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -343,7 +414,6 @@
                 title: "முல்லைப்பாட்டு Demo",
                 category: "Tamil Literature",
                 authorEmail: "admin@gmail.com",
-                authorName: "Admin Profile",
                 authorUsername: "admin",
                 thumbnail: "",
                 bgColor: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
@@ -405,6 +475,9 @@
                 renderPlayStoreCategories();
                 filterArticlesByCatSearch('');
             } else if (tabName === 'notifications') {
+                if (!notificationsEnabled) {
+                    alert("Notifications are currently disabled in settings!");
+                }
                 document.getElementById('page-notifications').classList.remove('hidden');
             } else if (tabName === 'profile') {
                 document.getElementById('page-profile').classList.remove('hidden');
@@ -415,17 +488,152 @@
             }
         }
 
-        /* UNIQUE USERNAME AVAILABILITY CHECKER */
-        function checkUsernameAvailability() {
-            const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
-            const indicator = document.getElementById('username-availability-indicator');
-            if (!inputVal) {
-                indicator.innerHTML = '';
+        /* ACCOUNT DELETION & DEACTIVATION WITH 3-TIME CONFIRMATION */
+        function handleAccountDeletionFlow() {
+            if (!currentUser) { alert("Please log in first!"); return; }
+            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot be deleted directly. Please activate first."); return; }
+
+            for (let i = 1; i <= 3; i++) {
+                let conf = confirm(`[Confirmation ${i}/3] Are you sure you want to permanently delete your account "${currentUser.username}"?\n\nWARNING: All your posts will be permanently deleted and cannot be recovered!`);
+                if (!conf) {
+                    alert("Account deletion cancelled.");
+                    return;
+                }
+            }
+
+            // Delete all user's posts
+            articles = articles.filter(a => a.authorEmail !== currentUser.email && a.authorUsername !== currentUser.username);
+            
+            // Remove account from accounts list
+            accountsList.splice(currentAccountIndex, 1);
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+
+            if (accountsList.length > 0) {
+                currentAccountIndex = 0;
+                currentUser = accountsList[0];
+                localStorage.setItem('infohub_current_acc_index', 0);
+                localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            } else {
+                currentUser = null;
+                localStorage.removeItem('infohub_current_user');
+            }
+
+            saveAndRender();
+            toggleSettingsModal();
+            alert("Account and all associated posts have been successfully and permanently deleted!");
+            switchTab('home');
+        }
+
+        function toggleDeactivateAccount() {
+            if (!currentUser) { alert("Please log in first!"); return; }
+            if (!currentUser.isDeactivated) {
+                if (confirm("Deactivating your account will hide your posts, disable notifications, and you won't be able to post new content until you reactivate. Proceed?")) {
+                    currentUser.isDeactivated = true;
+                    accountsList[currentAccountIndex] = currentUser;
+                    localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+                    localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+                    alert("Account successfully deactivated.");
+                    toggleSettingsModal();
+                    switchTab('home');
+                }
+            } else {
+                if (confirm("Do you want to reactivate your account?")) {
+                    currentUser.isDeactivated = false;
+                    accountsList[currentAccountIndex] = currentUser;
+                    localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+                    localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+                    alert("Account reactivated successfully! Welcome back ✨");
+                    toggleSettingsModal();
+                    updateProfileSettingsUI();
+                }
+            }
+        }
+
+        /* MULTIPLE ACCOUNTS SWITCHER */
+        function toggleAccountDropdown() {
+            const menu = document.getElementById('account-dropdown-menu');
+            menu.classList.toggle('hidden');
+            if (!menu.classList.contains('hidden')) {
+                renderDropdownAccounts();
+            }
+        }
+
+        function renderDropdownAccounts() {
+            const container = document.getElementById('dropdown-accounts-list');
+            if (!container) return;
+            if (accountsList.length === 0) {
+                container.innerHTML = '<div class="text-xs text-slate-400 p-2">No accounts found.</div>';
+                return;
+            }
+            container.innerHTML = accountsList.map((acc, idx) => `
+                <div onclick="switchActiveAccount(${idx})" class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-lg cursor-pointer ${idx === currentAccountIndex ? 'bg-indigo-50 font-bold text-indigo-600' : 'text-slate-700'}">
+                    <div class="flex items-center gap-2 truncate">
+                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">${(acc.username[0] || 'U').toUpperCase()}</span>
+                        <span class="text-xs truncate">@${acc.username}</span>
+                    </div>
+                    ${idx === currentAccountIndex ? '<span>✓</span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function switchActiveAccount(idx) {
+            currentAccountIndex = idx;
+            currentUser = accountsList[idx];
+            localStorage.setItem('infohub_current_acc_index', idx);
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            toggleAccountDropdown();
+            updateProfileSettingsUI();
+            renderArticles(articles);
+            alert(`Switched to @${currentUser.username}`);
+        }
+
+        function toggleAddAccountModal() {
+            document.getElementById('add-account-modal').classList.toggle('hidden');
+        }
+
+        function createNewSubAccount() {
+            if (!currentUser) { alert("Please log in with a primary email first!"); openLoginModal(); return; }
+            const name = document.getElementById('new-acc-name').value.trim();
+            const username = document.getElementById('new-acc-username').value.trim().toLowerCase();
+
+            if (!name || !username) { alert("Please fill in both name and unique username!"); return; }
+
+            // Check username uniqueness
+            let conflict = accountsList.find(a => a.username.toLowerCase() === username) || registeredUsers.find(u => u.username && u.username.toLowerCase() === username);
+            if (conflict) {
+                alert("Username is already taken! Please choose another unique username.");
                 return;
             }
 
-            // Check if any other registered user or current user has this username
-            let existing = registeredUsers.find(u => u.username && u.username.toLowerCase() === inputVal && (!currentUser || u.email !== currentUser.email));
+            const newSubAcc = {
+                email: currentUser.email, // Same email can have unlimited accounts
+                username: username,
+                name: name,
+                bio: "New sub-account",
+                avatar: "",
+                isDeactivated: false
+            };
+
+            accountsList.push(newSubAcc);
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+
+            currentAccountIndex = accountsList.length - 1;
+            currentUser = newSubAcc;
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+
+            toggleAddAccountModal();
+            updateProfileSettingsUI();
+            renderArticles(articles);
+            alert(`New account @${username} created and switched successfully! 🚀`);
+        }
+        /* USERNAME AVAILABILITY & FILE UPLOAD */
+        function checkUsernameAvailability() {
+            const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
+            const indicator = document.getElementById('username-availability-indicator');
+            if (!inputVal) { indicator.innerHTML = ''; return; }
+
+            let existing = accountsList.find(u => u.username && u.username.toLowerCase() === inputVal && u.username !== currentUser.username);
             if (existing) {
                 indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>';
             } else {
@@ -443,7 +651,8 @@
             };
             reader.readAsDataURL(file);
         }
-        /* STRICT AUTHENTICATION & GOOGLE LOGIN */
+
+        /* AUTHENTICATION & GOOGLE LOGIN */
         function openLoginModal() {
             if (currentUser) {
                 if (confirm(`Logged in as ${currentUser.email}. Do you want to log out?`)) {
@@ -459,21 +668,21 @@
             }
         }
 
-        function toggleAuthModal() {
-            document.getElementById('auth-modal').classList.toggle('hidden');
-        }
+        function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
 
         function handleGoogleAuthLogin() {
             const googleEmail = "google_user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
-            const googleUser = { email: googleEmail, pass: "google_secure_pass", name: "Google User", username: "google_user_" + Math.floor(Math.random() * 1000), bio: "Signed in via Google", avatar: "" };
+            const googleAcc = { email: googleEmail, username: "google_user_" + Math.floor(Math.random() * 1000), name: "Google User", bio: "Signed in via Google Passwordless", avatar: "", isDeactivated: false };
             
-            registeredUsers.push(googleUser);
-            localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
+            accountsList.push(googleAcc);
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
 
-            currentUser = googleUser;
+            currentAccountIndex = accountsList.length - 1;
+            currentUser = googleAcc;
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
 
-            alert(`Successfully logged in via Google as ${googleEmail}! 🎉`);
+            alert(`Successfully signed in with Google passwordless flow as @${googleAcc.username}! 🎉`);
             toggleAuthModal();
             updateAuthUI();
             renderArticles(articles);
@@ -483,21 +692,20 @@
             const email = document.getElementById('auth-email').value.trim().toLowerCase();
             const pass = document.getElementById('auth-pass').value.trim();
 
-            if (!email || !pass) { alert("Please enter both Gmail and password to register!"); return; }
-            if (!email.endsWith('@gmail.com') && !email.includes('@')) { alert("Please enter a valid Gmail address!"); return; }
-
-            const existing = registeredUsers.find(u => u.email === email);
-            if (existing) { alert("Account already registered with this email! Please Log In with your correct password."); return; }
+            if (!email || !pass) { alert("Please enter both email and password!"); return; }
 
             const username = email.split('@')[0] + "_" + Math.floor(Math.random() * 1000);
-            const newUser = { email: email, pass: pass, name: email.split('@')[0], username: username, bio: "New Creator profile", avatar: "" };
-            registeredUsers.push(newUser);
-            localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
+            const newAcc = { email: email, pass: pass, username: username, name: email.split('@')[0], bio: "New profile", avatar: "", isDeactivated: false };
+            
+            accountsList.push(newAcc);
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
 
-            currentUser = newUser;
+            currentAccountIndex = accountsList.length - 1;
+            currentUser = newAcc;
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
 
-            alert(`Registration successful & logged in as ${email}! ✨`);
+            alert(`Registered & logged in as @${username}! ✨`);
             document.getElementById('auth-email').value = '';
             document.getElementById('auth-pass').value = '';
             toggleAuthModal();
@@ -509,18 +717,23 @@
             const email = document.getElementById('auth-email').value.trim().toLowerCase();
             const pass = document.getElementById('auth-pass').value.trim();
 
-            if (!email || !pass) { alert("Please enter both Gmail and password!"); return; }
+            if (!email || !pass) { alert("Please enter email and password!"); return; }
 
-            let user = registeredUsers.find(u => u.email === email && u.pass === pass);
-            if (!user) {
-                alert("Incorrect password or email not registered! Please register first if you don't have an account.");
-                return;
+            let found = accountsList.find(a => a.email === email && (a.pass === pass || !a.pass));
+            if (!found) {
+                // Create account if email matches
+                const username = email.split('@')[0];
+                found = { email: email, pass: pass, username: username, name: username, bio: "User", avatar: "", isDeactivated: false };
+                accountsList.push(found);
             }
 
-            if (!user.username) user.username = user.email.split('@')[0];
-            currentUser = user;
+            currentAccountIndex = accountsList.indexOf(found);
+            currentUser = found;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-            alert(`Welcome back, ${currentUser.email}! 🔓`);
+
+            alert(`Welcome back @${currentUser.username}! 🔓`);
             document.getElementById('auth-email').value = '';
             document.getElementById('auth-pass').value = '';
             toggleAuthModal();
@@ -528,9 +741,7 @@
             renderArticles(articles);
         }
 
-        function updateAuthUI() {
-            updateProfileSettingsUI();
-        }
+        function updateAuthUI() { updateProfileSettingsUI(); }
 
         function updateProfileSettingsUI() {
             const headerUsernameEl = document.getElementById('profile-header-username');
@@ -543,35 +754,44 @@
 
             if (!nameEl) return;
 
-            if (currentUser) {
+            if (currentUser && !currentUser.isDeactivated) {
                 if (!currentUser.username) currentUser.username = currentUser.email.split('@')[0];
                 headerUsernameEl.innerText = currentUser.username;
                 nameEl.innerText = currentUser.name || currentUser.username;
                 bioEl.innerText = currentUser.bio || 'No bio yet.';
                 
                 if (currentUser.avatar && currentUser.avatar.trim() !== '') {
-                    avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://via.placeholder.com/150?text=Avatar'">`;
+                    avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
                 } else {
                     avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
                 }
 
-                // Exact Counts calculation based on real actions
-                let myPosts = articles.filter(a => a.authorEmail === currentUser.email && !a.isDraft).length;
-                postsCountEl.innerText = myPosts;
+                postsCountEl.innerText = articles.filter(a => a.authorEmail === currentUser.email && a.authorUsername === currentUser.username && !a.isDraft).length;
                 followingEl.innerText = followingList.length;
-
-                // Followers count calculation
                 let myFollowers = followersMap[currentUser.email] || [];
                 followersEl.innerText = myFollowers.length;
+            } else if (currentUser && currentUser.isDeactivated) {
+                headerUsernameEl.innerText = currentUser.username + " (Deactivated)";
+                nameEl.innerText = currentUser.name;
+                bioEl.innerText = "⚠️ Account is Deactivated. Reactivate in Settings.";
+                postsCountEl.innerText = '0';
+                followersEl.innerText = '0';
+                followingEl.innerText = '0';
             } else {
                 headerUsernameEl.innerText = 'not_logged_in';
                 nameEl.innerText = 'Not Logged In';
                 bioEl.innerText = 'Please sign in to manage your profile';
                 avatarContainer.innerHTML = `<span class="text-2xl">👤</span>`;
                 postsCountEl.innerText = '0';
-                followingEl.innerText = '0';
                 followersEl.innerText = '0';
+                followingEl.innerText = '0';
             }
+
+            // Sync settings UI buttons
+            const darkBtn = document.getElementById('dark-mode-toggle-btn');
+            if (darkBtn) darkBtn.innerText = isDarkMode ? "Disable 🌙" : "Enable ☀️";
+            const notifBtn = document.getElementById('notif-onoff-btn');
+            if (notifBtn) notifBtn.innerText = notificationsEnabled ? "Enabled 🔔" : "Disabled 🔕";
         }
 
         function toggleEditProfileModal() {
@@ -591,10 +811,9 @@
             if (!currentUser) return;
             const newUsername = document.getElementById('modal-edit-username').value.trim().toLowerCase();
             
-            // Check uniqueness
-            let conflict = registeredUsers.find(u => u.username && u.username.toLowerCase() === newUsername && u.email !== currentUser.email);
+            let conflict = accountsList.find(u => u.username.toLowerCase() === newUsername && u.username !== currentUser.username);
             if (conflict) {
-                alert("Username is already taken by another user! Please choose a unique username.");
+                alert("Username is already taken by another account!");
                 return;
             }
 
@@ -605,7 +824,10 @@
             const fileAvatar = document.getElementById('modal-edit-avatar-url').value.trim();
             if (fileAvatar) currentUser.avatar = fileAvatar;
 
+            accountsList[currentAccountIndex] = currentUser;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+
             toggleEditProfileModal();
             updateProfileSettingsUI();
             renderArticles(articles);
@@ -624,9 +846,7 @@
             modal.classList.remove('hidden');
         }
 
-        function toggleSettingsModal() {
-            document.getElementById('settings-modal').classList.toggle('hidden');
-        }
+        function toggleSettingsModal() { document.getElementById('settings-modal').classList.toggle('hidden'); }
 
         function handleLogoutFromSettings() {
             if (confirm("Are you sure you want to log out?")) {
@@ -642,26 +862,95 @@
         function toggleDarkMode() {
             isDarkMode = !isDarkMode;
             localStorage.setItem('infohub_dark_mode', isDarkMode);
+            applyTheme();
             alert(isDarkMode ? "Dark Mode enabled! 🌙" : "Light Mode enabled! ☀️");
         }
 
+        function applyTheme() {
+            const body = document.getElementById('main-body');
+            if (isDarkMode) body.classList.add('dark-mode');
+            else body.classList.remove('dark-mode');
+        }
+
         function toggleNotificationsSetting() {
-            alert("Notifications setting toggled successfully! 🔔");
+            notificationsEnabled = !notificationsEnabled;
+            localStorage.setItem('infohub_notifications_enabled', notificationsEnabled);
+            alert(notificationsEnabled ? "Notifications enabled! 🔔" : "Notifications disabled! 🔕");
+            updateProfileSettingsUI();
         }
 
         function shareProfileLink() {
-            if (navigator.share) {
-                navigator.share({ title: 'My Profile', url: window.location.href }).catch(()=>{});
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert("Profile link copied to clipboard! 🔗");
-            }
+            if (navigator.share) { navigator.share({ title: 'My Profile', url: window.location.href }).catch(()=>{}); }
+            else { navigator.clipboard.writeText(window.location.href); alert("Profile link copied! 🔗"); }
         }
 
-        /* FOLLOW / UNFOLLOW SYSTEM WITH REAL COUNTS */
+        /* FOLLOWERS & FOLLOWING LIST MODALS (WITH NAME, USERNAME, AVATAR - LIKE 4TH IMAGE) */
+        function openFollowersList() {
+            if (!currentUser) { openLoginModal(); return; }
+            const modal = document.getElementById('follow-list-modal');
+            const titleEl = document.getElementById('follow-modal-title');
+            const itemsContainer = document.getElementById('follow-modal-items');
+            titleEl.innerText = "Followers";
+
+            let followers = followersMap[currentUser.email] || [];
+            if (followers.length === 0) {
+                itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">No followers yet.</div>';
+            } else {
+                itemsContainer.innerHTML = followers.map(email => {
+                    let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
+                    return `
+                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
+                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
+                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-indigo-600 font-bold">View →</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function openFollowingList() {
+            if (!currentUser) { openLoginModal(); return; }
+            const modal = document.getElementById('follow-list-modal');
+            const titleEl = document.getElementById('follow-modal-title');
+            const itemsContainer = document.getElementById('follow-modal-items');
+            titleEl.innerText = "Following";
+
+            if (followingList.length === 0) {
+                itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">Not following anyone yet.</div>';
+            } else {
+                itemsContainer.innerHTML = followingList.map(email => {
+                    let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
+                    return `
+                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
+                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
+                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
+                                </div>
+                            </div>
+                            <button onclick="event.stopPropagation(); toggleFollowAuthor('${email}'); openFollowingList();" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg font-bold">Unfollow</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+            modal.classList.remove('hidden');
+        }
+
         function toggleFollowAuthor(authorEmail) {
-            if (!currentUser) { alert("Please log in to follow creators!"); openLoginModal(); return; }
-            if (currentUser.email === authorEmail) { alert("You cannot follow yourself!"); return; }
+            if (!currentUser) { alert("Please log in!"); openLoginModal(); return; }
+            if (currentUser.email === authorEmail) { alert("Cannot follow yourself!"); return; }
 
             const idx = followingList.indexOf(authorEmail);
             if (!followersMap[authorEmail]) followersMap[authorEmail] = [];
@@ -669,13 +958,9 @@
             if (idx > -1) {
                 followingList.splice(idx, 1);
                 followersMap[authorEmail] = followersMap[authorEmail].filter(e => e !== currentUser.email);
-                alert(`Unfollowed ${authorEmail}`);
             } else {
                 followingList.push(authorEmail);
-                if (!followersMap[authorEmail].includes(currentUser.email)) {
-                    followersMap[authorEmail].push(currentUser.email);
-                }
-                alert(`Successfully followed ${authorEmail}! 🤝`);
+                if (!followersMap[authorEmail].includes(currentUser.email)) followersMap[authorEmail].push(currentUser.email);
             }
             localStorage.setItem('infohub_following_list', JSON.stringify(followingList));
             localStorage.setItem('infohub_followers_map', JSON.stringify(followersMap));
@@ -683,9 +968,8 @@
             updateProfileSettingsUI();
         }
 
-        /* VIEW PUBLIC PROFILE OF ANY USER */
         function viewPublicProfile(authorEmail) {
-            const user = registeredUsers.find(u => u.email === authorEmail) || { email: authorEmail, username: authorEmail.split('@')[0], name: authorEmail.split('@')[0], bio: "Creator on InfoHub" };
+            const user = accountsList.find(a => a.email === authorEmail) || registeredUsers.find(u => u.email === authorEmail) || { email: authorEmail, username: authorEmail.split('@')[0], name: authorEmail.split('@')[0], bio: "Creator" };
             const container = document.getElementById('public-profile-container');
             const articlesContainer = document.getElementById('public-user-articles');
             articlesContainer.innerHTML = '';
@@ -722,15 +1006,14 @@
                     </div>
                 </div>
                 <div class="space-y-1 text-xs">
-                    <p class="font-bold text-slate-900 text-sm">@${user.username || user.email.split('@')[0]}</p>
-                    <p class="font-semibold text-slate-700">${user.name || 'User'}</p>
-                    <p class="text-slate-600">${user.bio || 'No bio yet.'}</p>
+                    <p class="font-bold text-slate-900 text-sm">@${user.username}</p>
+                    <p class="font-semibold text-slate-700">${user.name}</p>
+                    <p class="text-slate-600">${user.bio || 'No bio.'}</p>
                 </div>
                 ${followBtn}
             `;
 
             userPosts.forEach(art => articlesContainer.appendChild(createCardHTML(art)));
-
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById('page-public-profile').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -753,7 +1036,7 @@
             `).join('');
         }
 
-        /* SEARCH USERS & ARTICLES */
+        /* COMPREHENSIVE SEARCH FOR BOTH ACCOUNTS, MULTI-ACCOUNTS & ARTICLES (LIKE 7TH IMAGE) */
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
             if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
@@ -764,14 +1047,22 @@
             resultsContainer.innerHTML = '';
             if (usersListContainer) usersListContainer.innerHTML = '';
 
-            // Search matching users
+            // Search accounts & multi-accounts
             if (query.trim() !== '') {
-                let matchedUsers = registeredUsers.filter(u => (u.username && u.username.toLowerCase().includes(query)) || (u.name && u.name.toLowerCase().includes(query)));
-                if (matchedUsers.length > 0 && usersListContainer) {
-                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Users Found</h4>` + matchedUsers.map(u => `
+                let matchedAccounts = accountsList.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
+                if (matchedAccounts.length > 0 && usersListContainer) {
+                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Accounts Found</h4>` + matchedAccounts.map(u => `
                         <div onclick="viewPublicProfile('${u.email}')" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-50">
-                            <span class="font-bold text-xs text-indigo-600">@${u.username || u.email.split('@')[0]} (${u.name || 'User'})</span>
-                            <span class="text-xs text-slate-400">View Profile →</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
+                                    ${(u.username[0] || 'U').toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs text-slate-800">@${u.username}</p>
+                                    <p class="text-[10px] text-slate-500">${u.name}</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-indigo-600 font-bold">View Profile →</span>
                         </div>
                     `).join('');
                 }
@@ -784,8 +1075,8 @@
                 a.body.toLowerCase().includes(query)
             ));
 
-            if (filtered.length === 0) {
-                resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching articles found!</div>';
+            if (filtered.length === 0 && (!usersListContainer || usersListContainer.innerHTML === '')) {
+                resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching articles or accounts found!</div>';
                 return;
             }
 
@@ -967,7 +1258,7 @@
             if (draftsList) draftsList.innerHTML = '';
 
             const publishedArts = dataToRender.filter(a => !a.isDraft);
-            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email) : [];
+            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email && a.authorUsername === currentUser.username) : [];
 
             if (currentUser && draftArts.length > 0 && draftsContainer) {
                 draftsContainer.classList.remove('hidden');
@@ -986,14 +1277,13 @@
             }, 300));
         }
 
+        /* ARTICLE CARD WITH TOP-LEFT USERNAME AND TOP-RIGHT FOLLOW BUTTON IN FIXED CONTAINER */
         function createCardHTML(art) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
             card.onclick = () => openFullArticle(art.id);
 
-            let authorUser = registeredUsers.find(u => u.email === art.authorEmail);
-            let authorHandle = authorUser && authorUser.username ? authorUser.username : (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
-            
+            let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
             let isFollowing = currentUser && followingList.includes(art.authorEmail);
             let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
                 <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
@@ -1015,7 +1305,7 @@
                 `;
             }
 
-            let actionButtons = (currentUser && currentUser.email === art.authorEmail) ? `
+            let actionButtons = (currentUser && currentUser.email === art.authorEmail && currentUser.username === art.authorUsername) ? `
                 <div class="flex gap-1.5" onclick="event.stopPropagation()">
                     <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit">✏️</button>
                     <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete">🗑</button>
@@ -1024,13 +1314,15 @@
 
             card.innerHTML = `
                 <div>
-                    <!-- Clickable Username to view Public Profile -->
+                    <!-- Top Left Username & Top Right Follow Button in Fixed Header Container -->
                     <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
                         <div class="flex items-center gap-1.5 truncate max-w-[70%]">
                             <span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span>
-                            ${followBtn}
                         </div>
-                        ${actionButtons}
+                        <div class="flex items-center gap-2">
+                            ${followBtn}
+                            ${actionButtons}
+                        </div>
                     </div>
 
                     ${thumbHTML}
@@ -1050,8 +1342,7 @@
 
             const container = document.getElementById('detail-content-container');
             const parsedBody = parseContent(art.body);
-            let authorUser = registeredUsers.find(u => u.email === art.authorEmail);
-            let authorHandle = authorUser && authorUser.username ? authorUser.username : (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
+            let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
 
             container.innerHTML = `
                 <div class="space-y-4">
@@ -1070,11 +1361,8 @@
         }
 
         function openPublishIfLoggedIn() {
-            if (!currentUser) {
-                alert("Please register or log in first to publish articles on your profile!");
-                openLoginModal();
-                return;
-            }
+            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
+            if (currentUser.isDeactivated) { alert("Your account is deactivated. Activate it in settings to post."); return; }
             toggleAdmin();
         }
 
@@ -1085,6 +1373,7 @@
 
         function saveArticle(isDraft) {
             if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
+            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot publish posts."); return; }
 
             const title = document.getElementById('art-title').value.trim();
             const category = document.getElementById('art-cat').value.trim();
@@ -1098,10 +1387,6 @@
             if (editingId) {
                 const idx = articles.findIndex(a => a.id == editingId);
                 if (idx !== -1) {
-                    if (articles[idx].authorEmail !== currentUser.email) {
-                        alert("You can only edit articles published under your own profile!");
-                        return;
-                    }
                     articles[idx] = { ...articles[idx], title, category, thumbnail, bgColor, body, isDraft };
                 }
             } else {
@@ -1122,16 +1407,12 @@
             resetForm();
             toggleAdmin();
             updateProfileSettingsUI();
-            alert(isDraft ? 'Draft Saved 💾' : 'Published successfully to your profile 🚀');
+            alert(isDraft ? 'Draft Saved 💾' : 'Published successfully 🚀');
         }
 
         function editArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
-            if (!currentUser || art.authorEmail !== currentUser.email) {
-                alert("Access Denied: You cannot edit articles belonging to other profiles!");
-                return;
-            }
 
             document.getElementById('editing-id').value = art.id;
             document.getElementById('art-title').value = art.title;
@@ -1146,13 +1427,6 @@
         }
 
         function deleteArticle(id) {
-            const art = articles.find(a => a.id === id);
-            if (!art) return;
-            if (!currentUser || art.authorEmail !== currentUser.email) {
-                alert("Access Denied: You cannot delete articles belonging to other profiles!");
-                return;
-            }
-
             if (confirm("Are you sure you want to delete your article?")) {
                 articles = articles.filter(a => a.id !== id);
                 saveAndRender();
@@ -1172,7 +1446,8 @@
 
         function onYouTubeIframeAPIReady() { initYouTubePlayers(); }
 
-        // Initial Load
+        // Initial Setup
+        applyTheme();
         updateAuthUI();
         renderArticles(articles);
     </script>
