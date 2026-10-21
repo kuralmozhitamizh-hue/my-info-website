@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Insta Profile Pro</title>
+    <title>InfoHub - Insta Unique Profile Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -98,27 +98,18 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">🎨 Background Color / Gradient / Hex</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">🎨 Background Color / Gradient</label>
                     <div class="flex items-center gap-2">
                         <input type="color" id="art-color-picker" value="#6366f1" onchange="document.getElementById('art-bg').value=this.value" class="w-10 h-10 rounded border border-slate-300 cursor-pointer p-0.5">
                         <input type="text" id="art-bg" placeholder="Hex Code or Gradient" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">🖼️ Background Image URL (Optional)</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">🖼️ Thumbnail URL</label>
                     <input type="text" id="art-thumb" placeholder="Paste image URL here..." class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                 </div>
             </div>
             
-            <div class="bg-indigo-50 p-3 rounded-xl text-xs text-indigo-900 mb-3 space-y-1 border border-indigo-100 strict-break">
-                <p class="font-bold text-xs">💡 Universal Shortcodes:</p>
-                <p>• Images: <code class="bg-white px-1 py-0.5 rounded text-indigo-600">[img: url]</code></p>
-                <p>• Videos: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[video: url]</code></p>
-                <p>• Audios: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[audio: url]</code></p>
-                <p>• PDF: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[pdf: url]</code></p>
-                <p>• Carousel: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-semibold">[carousel: url1, url2]</code></p>
-            </div>
-
             <textarea id="art-body" rows="6" placeholder="Write content here..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm strict-break"></textarea>
 
             <div class="flex gap-2 w-full">
@@ -127,7 +118,7 @@
             </div>
         </div>
 
-        <!-- EDIT PROFILE MODAL -->
+        <!-- EDIT PROFILE MODAL WITH UNIQUE USERNAME VALIDATION & FILE UPLOAD -->
         <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center">
@@ -140,23 +131,26 @@
                         <input type="text" id="modal-edit-name" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700">Username / ID</label>
-                        <input type="text" id="modal-edit-username" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                        <label class="font-bold text-slate-700 flex justify-between">
+                            <span>Username / Unique ID</span>
+                            <span id="username-availability-indicator" class="font-bold"></span>
+                        </label>
+                        <input type="text" id="modal-edit-username" onkeyup="checkUsernameAvailability()" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
                     </div>
                     <div>
                         <label class="font-bold text-slate-700">Bio</label>
                         <textarea id="modal-edit-bio" rows="3" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1"></textarea>
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700">Profile Picture URL</label>
-                        <input type="text" id="modal-edit-avatar" placeholder="Image URL or leave blank" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                        <label class="font-bold text-slate-700">Upload Profile Picture from Files 📁</label>
+                        <input type="file" id="modal-edit-file-input" accept="image/*" onchange="handleProfileFileUpload(event)" class="w-full p-2 border border-slate-300 rounded-lg mt-1 text-xs">
                     </div>
+                    <input type="hidden" id="modal-edit-avatar-url" value="">
                     <button onclick="saveProfileDetails()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Save Changes ✨</button>
                 </div>
             </div>
         </div>
-
-        <!-- SETTINGS MODAL (INCLUDING LOGOUT, DARK MODE, NOTIFICATIONS) -->
+        <!-- SETTINGS MODAL (LOGOUT, DARK MODE, NOTIFICATIONS) -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -174,7 +168,7 @@
                     </div>
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v9.0 Insta Profile Hub</span>
+                        <span class="text-slate-400 font-bold">v10.0 Insta Unique ID Hub</span>
                     </div>
                     <div class="pt-2">
                         <button onclick="handleLogoutFromSettings()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
@@ -184,10 +178,28 @@
                 </div>
             </div>
         </div>
+
+        <!-- PROFILE PICTURE FULL VIEW MODAL -->
+        <div id="profile-pic-view-modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+            <div class="bg-white p-4 rounded-2xl max-w-xs text-center space-y-3" onclick="event.stopPropagation()">
+                <h4 class="font-bold text-sm text-slate-800">Profile Picture</h4>
+                <div id="view-modal-avatar-box" class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-indigo-600 flex items-center justify-center bg-slate-100 text-4xl">
+                    👤
+                </div>
+                <button onclick="document.getElementById('profile-pic-view-modal').classList.add('hidden')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-1.5 rounded-xl text-xs">Close</button>
+            </div>
+        </div>
         <!-- FULL ARTICLE DETAIL PAGE VIEW -->
         <div id="page-detail" class="page-view hidden space-y-6 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">← Back to Feed</button>
             <div id="detail-content-container" class="space-y-4"></div>
+        </div>
+
+        <!-- PUBLIC USER PROFILE PAGE VIEW -->
+        <div id="page-public-profile" class="page-view hidden space-y-4">
+            <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">← Back to Feed</button>
+            <div id="public-profile-container" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4"></div>
+            <div id="public-user-articles" class="grid gap-6 md:grid-cols-2 w-full"></div>
         </div>
 
         <!-- PAGE 1: HOME FEED PAGE -->
@@ -201,13 +213,15 @@
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
 
-        <!-- PAGE 2: SEARCH & PLAYSTORE STYLE CATEGORIES PAGE -->
+        <!-- PAGE 2: SEARCH & USER SEARCH PAGE -->
         <div id="page-search" class="page-view hidden space-y-6">
-            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search & PlayStore Categories</h2>
+            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Users & Categories</h2>
             <div class="w-full">
-                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search articles, keywords or creator profiles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search by username, name, or keywords..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
             
+            <div id="search-users-list" class="space-y-2"></div>
+
             <div>
                 <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">🔥 PlayStore Categories</h3>
                 <div id="playstore-categories-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
@@ -227,19 +241,11 @@
                         <p class="text-slate-500">2 hours ago</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span class="text-xl">👤</span>
-                    <div class="text-xs">
-                        <p class="font-bold text-slate-800">New follower joined your profile</p>
-                        <p class="text-slate-500">Yesterday</p>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE EXACTLY MATCHING INSTAGRAM IMAGE 2 STYLE -->
+        <!-- PAGE 4: PROFILE PAGE (PROFILE PICTURE TOUCH TO VIEW, EDIT PROFILE FOR EDITING, EXACT COUNTS) -->
         <div id="page-profile" class="page-view hidden space-y-4">
-            <!-- Top Header: Plus Icon on Left, Username ID in Center, Settings Icon on Right -->
             <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm">
                 <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
                     ＋
@@ -250,9 +256,9 @@
                 </button>
             </div>
 
-            <!-- Profile Info Section (Insta Layout) -->
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
+                    <!-- Profile Picture Touch -> Only Views Profile Picture, Does not open edit profile -->
                     <div class="relative cursor-pointer" onclick="openProfilePictureModal()">
                         <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
                             <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-container">
@@ -266,31 +272,29 @@
                             <p class="text-xs text-slate-500">posts</p>
                         </div>
                         <div>
-                            <p id="profile-followers-count" class="font-black text-base text-slate-800">135</p>
+                            <p id="profile-followers-count" class="font-black text-base text-slate-800">0</p>
                             <p class="text-xs text-slate-500">followers</p>
                         </div>
                         <div>
-                            <p id="profile-following-count" class="font-black text-base text-slate-800">140</p>
+                            <p id="profile-following-count" class="font-black text-base text-slate-800">0</p>
                             <p class="text-xs text-slate-500">following</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Name, Unique ID & Bio -->
                 <div class="space-y-1 text-xs">
                     <p id="profile-display-name" class="font-bold text-slate-900 text-sm">Not Logged In</p>
                     <p id="profile-display-bio" class="text-slate-600 whitespace-pre-line">Please sign in to manage your profile</p>
                 </div>
 
-                <!-- Edit profile & Share profile buttons -->
+                <!-- Edit Profile Button -> Opens Edit Profile Modal -->
                 <div class="flex gap-2 pt-1">
                     <button onclick="toggleEditProfileModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Edit profile</button>
                     <button onclick="shareProfileLink()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Share profile</button>
                 </div>
             </div>
 
-            <!-- Profile Dashboard / First Post Creation Box -->
-            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+            <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
                 <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
                 <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
                 <p class="text-xs text-slate-500">Give this space some love.</p>
@@ -328,6 +332,7 @@
         let currentUser = JSON.parse(localStorage.getItem('infohub_current_user')) || null;
         let registeredUsers = JSON.parse(localStorage.getItem('infohub_registered_users')) || [];
         let followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
+        let followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {}; // { authorEmail: [followerEmail1, ...] }
         let ytPlayers = [];
         let currentTab = 'home';
         let isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
@@ -339,6 +344,7 @@
                 category: "Tamil Literature",
                 authorEmail: "admin@gmail.com",
                 authorName: "Admin Profile",
+                authorUsername: "admin",
                 thumbnail: "",
                 bgColor: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
                 bio: "Official Creator",
@@ -370,7 +376,6 @@
             });
         }
 
-        /* FLOATING NAVIGATION TOGGLE LOGIC */
         function toggleNavMenu() {
             const navBar = document.getElementById('floating-nav-bar');
             navBar.classList.toggle('hidden');
@@ -409,7 +414,36 @@
                 renderArticles(articles);
             }
         }
-        /* STRICT PASSWORD AUTHENTICATION & GOOGLE LOGIN */
+
+        /* UNIQUE USERNAME AVAILABILITY CHECKER */
+        function checkUsernameAvailability() {
+            const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
+            const indicator = document.getElementById('username-availability-indicator');
+            if (!inputVal) {
+                indicator.innerHTML = '';
+                return;
+            }
+
+            // Check if any other registered user or current user has this username
+            let existing = registeredUsers.find(u => u.username && u.username.toLowerCase() === inputVal && (!currentUser || u.email !== currentUser.email));
+            if (existing) {
+                indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>';
+            } else {
+                indicator.innerHTML = '<span class="text-emerald-600 font-bold">✅ Available</span>';
+            }
+        }
+
+        function handleProfileFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('modal-edit-avatar-url').value = e.target.result;
+                alert("Profile picture uploaded from files successfully! 📁✨");
+            };
+            reader.readAsDataURL(file);
+        }
+        /* STRICT AUTHENTICATION & GOOGLE LOGIN */
         function openLoginModal() {
             if (currentUser) {
                 if (confirm(`Logged in as ${currentUser.email}. Do you want to log out?`)) {
@@ -521,9 +555,14 @@
                     avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
                 }
 
-                postsCountEl.innerText = articles.filter(a => a.authorEmail === currentUser.email && !a.isDraft).length;
-                followingEl.innerText = followingList.length + 140;
-                followersEl.innerText = Math.floor(Math.random() * 15) + 135;
+                // Exact Counts calculation based on real actions
+                let myPosts = articles.filter(a => a.authorEmail === currentUser.email && !a.isDraft).length;
+                postsCountEl.innerText = myPosts;
+                followingEl.innerText = followingList.length;
+
+                // Followers count calculation
+                let myFollowers = followersMap[currentUser.email] || [];
+                followersEl.innerText = myFollowers.length;
             } else {
                 headerUsernameEl.innerText = 'not_logged_in';
                 nameEl.innerText = 'Not Logged In';
@@ -543,21 +582,46 @@
                 document.getElementById('modal-edit-name').value = currentUser.name || '';
                 document.getElementById('modal-edit-username').value = currentUser.username || '';
                 document.getElementById('modal-edit-bio').value = currentUser.bio || '';
-                document.getElementById('modal-edit-avatar').value = currentUser.avatar || '';
+                document.getElementById('modal-edit-avatar-url').value = currentUser.avatar || '';
+                document.getElementById('username-availability-indicator').innerHTML = '';
             }
         }
 
         function saveProfileDetails() {
             if (!currentUser) return;
+            const newUsername = document.getElementById('modal-edit-username').value.trim().toLowerCase();
+            
+            // Check uniqueness
+            let conflict = registeredUsers.find(u => u.username && u.username.toLowerCase() === newUsername && u.email !== currentUser.email);
+            if (conflict) {
+                alert("Username is already taken by another user! Please choose a unique username.");
+                return;
+            }
+
             currentUser.name = document.getElementById('modal-edit-name').value.trim();
-            currentUser.username = document.getElementById('modal-edit-username').value.trim() || currentUser.email.split('@')[0];
+            currentUser.username = newUsername || currentUser.email.split('@')[0];
             currentUser.bio = document.getElementById('modal-edit-bio').value.trim();
-            currentUser.avatar = document.getElementById('modal-edit-avatar').value.trim();
+            
+            const fileAvatar = document.getElementById('modal-edit-avatar-url').value.trim();
+            if (fileAvatar) currentUser.avatar = fileAvatar;
 
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
             toggleEditProfileModal();
             updateProfileSettingsUI();
+            renderArticles(articles);
             alert("Profile updated successfully! ✨");
+        }
+
+        function openProfilePictureModal() {
+            if (!currentUser) { openLoginModal(); return; }
+            const modal = document.getElementById('profile-pic-view-modal');
+            const viewAvatarBox = document.getElementById('view-modal-avatar-box');
+            if (currentUser.avatar && currentUser.avatar.trim() !== '') {
+                viewAvatarBox.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
+            } else {
+                viewAvatarBox.innerHTML = `<span class="text-5xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
+            }
+            modal.classList.remove('hidden');
         }
 
         function toggleSettingsModal() {
@@ -585,11 +649,6 @@
             alert("Notifications setting toggled successfully! 🔔");
         }
 
-        function openProfilePictureModal() {
-            if (!currentUser) { openLoginModal(); return; }
-            toggleEditProfileModal();
-        }
-
         function shareProfileLink() {
             if (navigator.share) {
                 navigator.share({ title: 'My Profile', url: window.location.href }).catch(()=>{});
@@ -599,22 +658,83 @@
             }
         }
 
+        /* FOLLOW / UNFOLLOW SYSTEM WITH REAL COUNTS */
         function toggleFollowAuthor(authorEmail) {
             if (!currentUser) { alert("Please log in to follow creators!"); openLoginModal(); return; }
             if (currentUser.email === authorEmail) { alert("You cannot follow yourself!"); return; }
 
             const idx = followingList.indexOf(authorEmail);
+            if (!followersMap[authorEmail]) followersMap[authorEmail] = [];
+
             if (idx > -1) {
                 followingList.splice(idx, 1);
+                followersMap[authorEmail] = followersMap[authorEmail].filter(e => e !== currentUser.email);
                 alert(`Unfollowed ${authorEmail}`);
             } else {
                 followingList.push(authorEmail);
+                if (!followersMap[authorEmail].includes(currentUser.email)) {
+                    followersMap[authorEmail].push(currentUser.email);
+                }
                 alert(`Successfully followed ${authorEmail}! 🤝`);
             }
             localStorage.setItem('infohub_following_list', JSON.stringify(followingList));
+            localStorage.setItem('infohub_followers_map', JSON.stringify(followersMap));
             renderArticles(articles);
+            updateProfileSettingsUI();
         }
 
+        /* VIEW PUBLIC PROFILE OF ANY USER */
+        function viewPublicProfile(authorEmail) {
+            const user = registeredUsers.find(u => u.email === authorEmail) || { email: authorEmail, username: authorEmail.split('@')[0], name: authorEmail.split('@')[0], bio: "Creator on InfoHub" };
+            const container = document.getElementById('public-profile-container');
+            const articlesContainer = document.getElementById('public-user-articles');
+            articlesContainer.innerHTML = '';
+
+            let userPosts = articles.filter(a => a.authorEmail === authorEmail && !a.isDraft);
+            let userFollowers = followersMap[authorEmail] || [];
+            let isFollowing = currentUser && followingList.includes(authorEmail);
+            let followBtn = (currentUser && currentUser.email !== authorEmail) ? `
+                <button onclick="toggleFollowAuthor('${authorEmail}'); viewPublicProfile('${authorEmail}');" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs transition">
+                    ${isFollowing ? 'Following ✓' : '+ Follow'}
+                </button>
+            ` : '';
+
+            container.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
+                        <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600">
+                            ${user.avatar ? `<img src="${user.avatar}" class="w-full h-full object-cover">` : (user.username[0] || 'U').toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="flex-1 flex justify-around text-center">
+                        <div>
+                            <p class="font-black text-base text-slate-800">${userPosts.length}</p>
+                            <p class="text-xs text-slate-500">posts</p>
+                        </div>
+                        <div>
+                            <p class="font-black text-base text-slate-800">${userFollowers.length}</p>
+                            <p class="text-xs text-slate-500">followers</p>
+                        </div>
+                        <div>
+                            <p class="font-black text-base text-slate-800">0</p>
+                            <p class="text-xs text-slate-500">following</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-1 text-xs">
+                    <p class="font-bold text-slate-900 text-sm">@${user.username || user.email.split('@')[0]}</p>
+                    <p class="font-semibold text-slate-700">${user.name || 'User'}</p>
+                    <p class="text-slate-600">${user.bio || 'No bio yet.'}</p>
+                </div>
+                ${followBtn}
+            `;
+
+            userPosts.forEach(art => articlesContainer.appendChild(createCardHTML(art)));
+
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-public-profile').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         function renderPlayStoreCategories() {
             const grid = document.getElementById('playstore-categories-grid');
             if (!grid) return;
@@ -633,18 +753,34 @@
             `).join('');
         }
 
+        /* SEARCH USERS & ARTICLES */
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
             if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
             const query = searchInput ? searchInput.value.toLowerCase() : '';
             const resultsContainer = document.getElementById('search-page-results');
+            const usersListContainer = document.getElementById('search-users-list');
             if (!resultsContainer) return;
             resultsContainer.innerHTML = '';
+            if (usersListContainer) usersListContainer.innerHTML = '';
+
+            // Search matching users
+            if (query.trim() !== '') {
+                let matchedUsers = registeredUsers.filter(u => (u.username && u.username.toLowerCase().includes(query)) || (u.name && u.name.toLowerCase().includes(query)));
+                if (matchedUsers.length > 0 && usersListContainer) {
+                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Users Found</h4>` + matchedUsers.map(u => `
+                        <div onclick="viewPublicProfile('${u.email}')" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-50">
+                            <span class="font-bold text-xs text-indigo-600">@${u.username || u.email.split('@')[0]} (${u.name || 'User'})</span>
+                            <span class="text-xs text-slate-400">View Profile →</span>
+                        </div>
+                    `).join('');
+                }
+            }
 
             const filtered = articles.filter(a => !a.isDraft && (
                 a.title.toLowerCase().includes(query) ||
                 (a.category || 'General').toLowerCase().includes(query) ||
-                (a.authorEmail || '').toLowerCase().includes(query) ||
+                (a.authorUsername || '').toLowerCase().includes(query) ||
                 a.body.toLowerCase().includes(query)
             ));
 
@@ -656,6 +792,7 @@
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
+
         /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
@@ -854,8 +991,10 @@
             card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
             card.onclick = () => openFullArticle(art.id);
 
+            let authorUser = registeredUsers.find(u => u.email === art.authorEmail);
+            let authorHandle = authorUser && authorUser.username ? authorUser.username : (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
+            
             let isFollowing = currentUser && followingList.includes(art.authorEmail);
-            let authorHandle = art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous';
             let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
                 <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
                     ${isFollowing ? 'Following ✓' : '+ Follow'}
@@ -885,9 +1024,10 @@
 
             card.innerHTML = `
                 <div>
+                    <!-- Clickable Username to view Public Profile -->
                     <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
                         <div class="flex items-center gap-1.5 truncate max-w-[70%]">
-                            <span class="font-bold text-slate-800 truncate" title="${authorHandle}">✍️ ${authorHandle}</span>
+                            <span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span>
                             ${followBtn}
                         </div>
                         ${actionButtons}
@@ -910,12 +1050,14 @@
 
             const container = document.getElementById('detail-content-container');
             const parsedBody = parseContent(art.body);
+            let authorUser = registeredUsers.find(u => u.email === art.authorEmail);
+            let authorHandle = authorUser && authorUser.username ? authorUser.username : (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
 
             container.innerHTML = `
                 <div class="space-y-4">
                     <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                         <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
-                        <span class="text-xs text-slate-500">✍️ ${art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous'}</span>
+                        <span onclick="viewPublicProfile('${art.authorEmail}')" class="text-xs text-indigo-600 font-bold hover:underline cursor-pointer">✍️ @${authorHandle}</span>
                     </div>
                     <h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1>
                     <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div>
@@ -971,13 +1113,15 @@
                     bgColor,
                     body,
                     isDraft,
-                    authorEmail: currentUser.email
+                    authorEmail: currentUser.email,
+                    authorUsername: currentUser.username
                 });
             }
 
             saveAndRender();
             resetForm();
             toggleAdmin();
+            updateProfileSettingsUI();
             alert(isDraft ? 'Draft Saved 💾' : 'Published successfully to your profile 🚀');
         }
 
@@ -1012,6 +1156,7 @@
             if (confirm("Are you sure you want to delete your article?")) {
                 articles = articles.filter(a => a.id !== id);
                 saveAndRender();
+                updateProfileSettingsUI();
             }
         }
 
