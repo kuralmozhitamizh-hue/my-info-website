@@ -75,27 +75,36 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Authentication / Register / Login Modal -->
-        <div id="auth-modal" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="auth-modal-title" class="text-lg font-bold text-indigo-600">🔐 Gmail & Google Secure Login</h3>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
+        <!-- Professional Google Sign-In & Auth Modal (Matching Reference Images) -->
+        <div id="auth-modal" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-200 mb-8 w-full max-w-md mx-auto overflow-hidden">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Sign in to InfoHub</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Choose an account or continue with email</p>
+                </div>
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1 text-lg">✕</button>
             </div>
-            <div class="space-y-3">
-                <p class="text-xs text-slate-600">Passwordless Sign-In with Google or use email & password. You can also add unlimited accounts under the same email!</p>
-                <button onclick="handleGoogleAuthLogin()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-lg transition text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm">
-                    🌐 Sign in with Google (Passwordless)
+            <div class="space-y-4">
+                <button onclick="handleGoogleAuthLogin()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                    <span>Sign in with Google</span>
                 </button>
                 <div class="relative flex py-2 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-4 text-slate-400 text-xs">or email password</span>
+                    <span class="flex-shrink mx-4 text-slate-400 text-xs font-medium">or continue with email</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
-                <input type="email" id="auth-email" placeholder="name@gmail.com *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                <input type="password" id="auth-pass" placeholder="Exact Correct Password *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="auth-email" placeholder="name@gmail.com" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="auth-pass" placeholder="Enter password" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
                 <div class="flex gap-2 w-full pt-2">
-                    <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs sm:text-sm">Log In 🔓</button>
-                    <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition text-xs sm:text-sm">Register First ✨</button>
+                    <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition text-sm shadow-md">Log In 🔓</button>
+                    <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-sm shadow-md">Register ✨</button>
                 </div>
             </div>
         </div>
@@ -121,7 +130,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Article Publishing Form -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
@@ -188,7 +196,7 @@
             </div>
         </div>
 
-        <!-- SETTINGS MODAL (DYNAMIC LOGIN / LOGOUT CONTAINER) -->
+        <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -295,7 +303,7 @@
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE WITH INSTA-STYLE ACCOUNT SWITCHER -->
+        <!-- PAGE 4: PROFILE PAGE WITH USER POSTS GRID -->
         <div id="page-profile" class="page-view hidden space-y-4 relative">
             <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm relative">
                 <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
@@ -355,11 +363,14 @@
                 </div>
             </div>
 
-            <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
-                <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
-                <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
-                <p class="text-xs text-slate-500">Give this space some love.</p>
-                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
+            <!-- Profile User Posts Grid Container -->
+            <div id="profile-user-posts-container" class="space-y-4">
+                <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
+                    <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
+                    <p class="text-xs text-slate-500">Give this space some love.</p>
+                    <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
+                </div>
             </div>
         </div>
 
@@ -641,7 +652,6 @@
             };
             reader.readAsDataURL(file);
         }
-
         /* AUTHENTICATION & GOOGLE LOGIN */
         function openLoginModal() {
             if (currentUser) {
@@ -662,7 +672,7 @@
 
         function handleGoogleAuthLogin() {
             const googleEmail = "google_user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
-            const googleAcc = { email: googleEmail, username: "google_user_" + Math.floor(Math.random() * 1000), name: "Google User", bio: "Signed in via Google Passwordless", avatar: "", isDeactivated: false };
+            const googleAcc = { email: googleEmail, username: "google_user_" + Math.floor(Math.random() * 1000), name: "Google User", bio: "Signed in via Google", avatar: "", isDeactivated: false };
             
             accountsList.push(googleAcc);
             localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
@@ -672,7 +682,7 @@
             localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
 
-            alert(`Successfully signed in with Google passwordless flow as @${googleAcc.username}! 🎉`);
+            alert(`Successfully signed in with Google as @${googleAcc.username}! 🎉`);
             toggleAuthModal();
             updateAuthUI();
             renderArticles(articles);
@@ -732,7 +742,7 @@
 
         function updateAuthUI() { updateProfileSettingsUI(); }
 
-        /* UPDATE PROFILE & DYNAMIC SETTINGS ACTIONS (LOGIN / LOGOUT TOGGLE) */
+        /* UPDATE PROFILE & RENDER USER POSTS ON PROFILE PAGE */
         function updateProfileSettingsUI() {
             const headerUsernameEl = document.getElementById('profile-header-username');
             const nameEl = document.getElementById('profile-display-name');
@@ -742,6 +752,7 @@
             const followersEl = document.getElementById('profile-followers-count');
             const followingEl = document.getElementById('profile-following-count');
             const settingsActions = document.getElementById('settings-action-buttons');
+            const profilePostsContainer = document.getElementById('profile-user-posts-container');
 
             if (!nameEl) return;
 
@@ -757,12 +768,30 @@
                     avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
                 }
 
-                postsCountEl.innerText = articles.filter(a => a.authorEmail === currentUser.email && a.authorUsername === currentUser.username && !a.isDraft).length;
+                let myPosts = articles.filter(a => a.authorEmail === currentUser.email && a.authorUsername === currentUser.username && !a.isDraft);
+                postsCountEl.innerText = myPosts.length;
                 followingEl.innerText = followingList.length;
                 let myFollowers = followersMap[currentUser.email] || [];
                 followersEl.innerText = myFollowers.length;
 
-                // When logged in -> Show Delete, Deactivate & Logout buttons
+                // Render user posts in profile page
+                if (profilePostsContainer) {
+                    if (myPosts.length > 0) {
+                        profilePostsContainer.innerHTML = `<h3 class="font-bold text-sm text-slate-800 mb-3">Your Posts (${myPosts.length})</h3><div class="grid gap-6 md:grid-cols-2 w-full" id="profile-user-posts-grid"></div>`;
+                        const grid = document.getElementById('profile-user-posts-grid');
+                        myPosts.forEach(art => grid.appendChild(createCardHTML(art)));
+                    } else {
+                        profilePostsContainer.innerHTML = `
+                            <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+                                <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
+                                <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
+                                <p class="text-xs text-slate-500">Give this space some love.</p>
+                                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
+                            </div>
+                        `;
+                    }
+                }
+
                 if (settingsActions) {
                     settingsActions.innerHTML = `
                         <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
@@ -776,13 +805,14 @@
                         </button>
                     `;
                 }
-              } else if (currentUser && currentUser.isDeactivated) {
+            } else if (currentUser && currentUser.isDeactivated) {
                 headerUsernameEl.innerText = currentUser.username + " (Deactivated)";
                 nameEl.innerText = currentUser.name;
                 bioEl.innerText = "⚠️ Account is Deactivated. Reactivate in Settings.";
                 postsCountEl.innerText = '0';
                 followersEl.innerText = '0';
                 followingEl.innerText = '0';
+                if (profilePostsContainer) profilePostsContainer.innerHTML = '';
 
                 if (settingsActions) {
                     settingsActions.innerHTML = `
@@ -802,8 +832,17 @@
                 postsCountEl.innerText = '0';
                 followersEl.innerText = '0';
                 followingEl.innerText = '0';
+                if (profilePostsContainer) {
+                    profilePostsContainer.innerHTML = `
+                        <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
+                            <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
+                            <p class="text-xs text-slate-500">Give this space some love.</p>
+                            <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
+                        </div>
+                    `;
+                }
 
-                // When NOT logged in -> Show Login button instead of Logout
                 if (settingsActions) {
                     settingsActions.innerHTML = `
                         <button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
@@ -1042,9 +1081,7 @@
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById('page-public-profile').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderPlayStoreCategories() {
+        }        function renderPlayStoreCategories() {
             const grid = document.getElementById('playstore-categories-grid');
             if (!grid) return;
             const cats = [
@@ -1062,6 +1099,7 @@
             `).join('');
         }
 
+        /* COMPREHENSIVE SEARCH FOR BOTH ACCOUNTS, MULTI-ACCOUNTS & ARTICLES */
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
             if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
@@ -1108,6 +1146,7 @@
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
 
+        /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -1153,6 +1192,7 @@
         function saveAndRender() {
             localStorage.setItem('my_info_articles', JSON.stringify(articles));
             renderArticles(articles);
+            updateProfileSettingsUI();
         }
 
         function isMediaUrl(url, type) {
