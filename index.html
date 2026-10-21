@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Fade Content Hub</title>
+    <title>InfoHub - Insta Profile Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <!-- Article Publishing Form with Color Wheel, Gradients & Background Image Options -->
+        <!-- Article Publishing Form -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="form-title" class="text-lg font-bold text-indigo-600">✍️ Publish New Article</h3>
@@ -96,13 +96,12 @@
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             <input type="text" id="art-cat" placeholder="Category (e.g., Tech, Games, Stories)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
             
-            <!-- Background & Thumbnail Customization Options -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">🎨 Background Color / Gradient / Hex</label>
                     <div class="flex items-center gap-2">
                         <input type="color" id="art-color-picker" value="#6366f1" onchange="document.getElementById('art-bg').value=this.value" class="w-10 h-10 rounded border border-slate-300 cursor-pointer p-0.5">
-                        <input type="text" id="art-bg" placeholder="Hex Code or Gradient (e.g., linear-gradient(...))" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="art-bg" placeholder="Hex Code or Gradient" class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
                 <div>
@@ -128,11 +127,69 @@
             </div>
         </div>
 
+        <!-- EDIT PROFILE MODAL -->
+        <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-slate-800">Edit Profile</h3>
+                    <button onclick="toggleEditProfileModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="font-bold text-slate-700">Name</label>
+                        <input type="text" id="modal-edit-name" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700">Username / ID</label>
+                        <input type="text" id="modal-edit-username" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700">Bio</label>
+                        <textarea id="modal-edit-bio" rows="3" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1"></textarea>
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700">Profile Picture URL</label>
+                        <input type="text" id="modal-edit-avatar" placeholder="Image URL or leave blank" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                    </div>
+                    <button onclick="saveProfileDetails()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Save Changes ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS MODAL (INCLUDING LOGOUT, DARK MODE, NOTIFICATIONS) -->
+        <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-lg font-bold text-slate-800">⚙️ Settings</h3>
+                    <button onclick="toggleSettingsModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+                </div>
+                <div class="space-y-4 text-xs">
+                    <div class="flex justify-between items-center py-2 border-b">
+                        <span class="font-medium text-slate-700">Dark Mode / Theme</span>
+                        <button onclick="toggleDarkMode()" id="dark-mode-btn" class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-bold text-indigo-600 transition">Toggle</button>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b">
+                        <span class="font-medium text-slate-700">Notifications</span>
+                        <button onclick="toggleNotificationsSetting()" id="notif-toggle-btn" class="text-emerald-600 font-bold">Enabled 🔔</button>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b">
+                        <span class="font-medium text-slate-700">App Version</span>
+                        <span class="text-slate-400 font-bold">v9.0 Insta Profile Hub</span>
+                    </div>
+                    <div class="pt-2">
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- FULL ARTICLE DETAIL PAGE VIEW -->
         <div id="page-detail" class="page-view hidden space-y-6 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">← Back to Feed</button>
             <div id="detail-content-container" class="space-y-4"></div>
         </div>
+
         <!-- PAGE 1: HOME FEED PAGE -->
         <div id="page-home" class="page-view space-y-6">
             <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
@@ -180,53 +237,64 @@
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE (WITH NEW POST BUTTON & SETTINGS INSIDE) -->
-        <div id="page-profile" class="page-view hidden space-y-6">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-indigo-600">👤 Profile & Settings</h2>
-                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm">+ New Post</button>
+        <!-- PAGE 4: PROFILE PAGE EXACTLY MATCHING INSTAGRAM IMAGE 2 STYLE -->
+        <div id="page-profile" class="page-view hidden space-y-4">
+            <!-- Top Header: Plus Icon on Left, Username ID in Center, Settings Icon on Right -->
+            <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm">
+                <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
+                    ＋
+                </button>
+                <h3 id="profile-header-username" class="font-bold text-sm text-slate-800">kesavarthanan.p...</h3>
+                <button onclick="toggleSettingsModal()" class="text-xl text-slate-800 hover:text-indigo-600 transition" title="Settings">
+                    ☰
+                </button>
             </div>
-            
-            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
-                <div id="insta-profile-section" class="flex flex-col sm:flex-row items-center gap-4 pb-4 border-b border-slate-100">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-1 flex items-center justify-center shadow-md">
-                        <div class="w-full h-full rounded-full bg-white flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-initial">👤</div>
-                    </div>
-                    <div class="flex-1 text-center sm:text-left space-y-1">
-                        <h3 id="profile-display-name" class="font-bold text-base text-slate-800">Not Logged In</h3>
-                        <p id="profile-display-email" class="text-xs text-slate-500">Please sign in to view your profile</p>
-                        <div class="flex justify-center sm:justify-start gap-4 text-xs font-bold pt-1">
-                            <span>Posts: <span id="profile-posts-count" class="text-indigo-600">0</span></span>
-                            <span>Followers: <span id="profile-followers-count" class="text-indigo-600">0</span></span>
-                            <span>Following: <span id="profile-following-count" class="text-indigo-600">0</span></span>
+
+            <!-- Profile Info Section (Insta Layout) -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="relative cursor-pointer" onclick="openProfilePictureModal()">
+                        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
+                            <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-container">
+                                <span id="profile-avatar-initial">👤</span>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <button onclick="openLoginModal()" id="profile-login-action-btn" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-xs hover:bg-indigo-700 transition shadow-sm">Login / Register</button>
+                    <div class="flex-1 flex justify-around text-center px-4">
+                        <div>
+                            <p id="profile-posts-count" class="font-black text-base text-slate-800">0</p>
+                            <p class="text-xs text-slate-500">posts</p>
+                        </div>
+                        <div>
+                            <p id="profile-followers-count" class="font-black text-base text-slate-800">135</p>
+                            <p class="text-xs text-slate-500">followers</p>
+                        </div>
+                        <div>
+                            <p id="profile-following-count" class="font-black text-base text-slate-800">140</p>
+                            <p class="text-xs text-slate-500">following</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="space-y-3 pb-4 border-b border-slate-100">
-                    <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">Edit Profile Bio</h4>
-                    <input type="text" id="edit-bio-input" placeholder="Write your Insta-style bio here..." class="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500">
-                    <button onclick="saveProfileBio()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg text-xs transition">Save Bio 💾</button>
+                <!-- Name, Unique ID & Bio -->
+                <div class="space-y-1 text-xs">
+                    <p id="profile-display-name" class="font-bold text-slate-900 text-sm">Not Logged In</p>
+                    <p id="profile-display-bio" class="text-slate-600 whitespace-pre-line">Please sign in to manage your profile</p>
                 </div>
 
-                <div class="space-y-3">
-                    <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">⚙️ Account Settings</h4>
-                    <div class="flex justify-between items-center py-2 border-b border-slate-50 text-xs">
-                        <span class="font-medium text-slate-700">Dark Mode / Theme</span>
-                        <button onclick="alert('Theme toggle activated!')" class="bg-slate-100 px-3 py-1 rounded font-bold text-indigo-600">Toggle</button>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-slate-50 text-xs">
-                        <span class="font-medium text-slate-700">Notifications</span>
-                        <span class="text-emerald-600 font-bold">Enabled 🔔</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 text-xs">
-                        <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v8.0 Fade Content Hub</span>
-                    </div>
+                <!-- Edit profile & Share profile buttons -->
+                <div class="flex gap-2 pt-1">
+                    <button onclick="toggleEditProfileModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Edit profile</button>
+                    <button onclick="shareProfileLink()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl text-xs transition shadow-sm">Share profile</button>
                 </div>
+            </div>
+
+            <!-- Profile Dashboard / First Post Creation Box -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+                <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
+                <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
+                <p class="text-xs text-slate-500">Give this space some love.</p>
+                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
             </div>
         </div>
 
@@ -262,6 +330,7 @@
         let followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
         let ytPlayers = [];
         let currentTab = 'home';
+        let isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
 
         let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
             {
@@ -340,7 +409,6 @@
                 renderArticles(articles);
             }
         }
-
         /* STRICT PASSWORD AUTHENTICATION & GOOGLE LOGIN */
         function openLoginModal() {
             if (currentUser) {
@@ -363,7 +431,7 @@
 
         function handleGoogleAuthLogin() {
             const googleEmail = "google_user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
-            const googleUser = { email: googleEmail, pass: "google_secure_pass", name: "Google User", bio: "Signed in via Google" };
+            const googleUser = { email: googleEmail, pass: "google_secure_pass", name: "Google User", username: "google_user_" + Math.floor(Math.random() * 1000), bio: "Signed in via Google", avatar: "" };
             
             registeredUsers.push(googleUser);
             localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
@@ -387,7 +455,8 @@
             const existing = registeredUsers.find(u => u.email === email);
             if (existing) { alert("Account already registered with this email! Please Log In with your correct password."); return; }
 
-            const newUser = { email: email, pass: pass, name: email.split('@')[0], bio: "New Creator profile" };
+            const username = email.split('@')[0] + "_" + Math.floor(Math.random() * 1000);
+            const newUser = { email: email, pass: pass, name: email.split('@')[0], username: username, bio: "New Creator profile", avatar: "" };
             registeredUsers.push(newUser);
             localStorage.setItem('infohub_registered_users', JSON.stringify(registeredUsers));
 
@@ -408,12 +477,13 @@
 
             if (!email || !pass) { alert("Please enter both Gmail and password!"); return; }
 
-            const user = registeredUsers.find(u => u.email === email && u.pass === pass);
+            let user = registeredUsers.find(u => u.email === email && u.pass === pass);
             if (!user) {
                 alert("Incorrect password or email not registered! Please register first if you don't have an account.");
                 return;
             }
 
+            if (!user.username) user.username = user.email.split('@')[0];
             currentUser = user;
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
             alert(`Welcome back, ${currentUser.email}! 🔓`);
@@ -423,52 +493,110 @@
             updateAuthUI();
             renderArticles(articles);
         }
+
         function updateAuthUI() {
             updateProfileSettingsUI();
         }
 
         function updateProfileSettingsUI() {
+            const headerUsernameEl = document.getElementById('profile-header-username');
             const nameEl = document.getElementById('profile-display-name');
-            const emailEl = document.getElementById('profile-display-email');
-            const avatarEl = document.getElementById('profile-avatar-initial');
+            const bioEl = document.getElementById('profile-display-bio');
+            const avatarContainer = document.getElementById('profile-avatar-container');
             const postsCountEl = document.getElementById('profile-posts-count');
             const followersEl = document.getElementById('profile-followers-count');
             const followingEl = document.getElementById('profile-following-count');
-            const loginBtn = document.getElementById('profile-login-action-btn');
-            const bioInput = document.getElementById('edit-bio-input');
 
             if (!nameEl) return;
 
             if (currentUser) {
-                nameEl.innerText = currentUser.name || currentUser.email.split('@')[0];
-                emailEl.innerText = currentUser.email;
-                avatarEl.innerText = (currentUser.email[0] || 'U').toUpperCase();
+                if (!currentUser.username) currentUser.username = currentUser.email.split('@')[0];
+                headerUsernameEl.innerText = currentUser.username;
+                nameEl.innerText = currentUser.name || currentUser.username;
+                bioEl.innerText = currentUser.bio || 'No bio yet.';
+                
+                if (currentUser.avatar && currentUser.avatar.trim() !== '') {
+                    avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://via.placeholder.com/150?text=Avatar'">`;
+                } else {
+                    avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
+                }
+
                 postsCountEl.innerText = articles.filter(a => a.authorEmail === currentUser.email && !a.isDraft).length;
-                followingEl.innerText = followingList.length;
-                followersEl.innerText = Math.floor(Math.random() * 15) + 5;
-                loginBtn.innerText = 'Logout 🚪';
-                loginBtn.className = 'bg-red-50 text-red-600 font-bold px-4 py-2 rounded-xl text-xs hover:bg-red-100 transition shadow-sm';
-                loginBtn.onclick = openLoginModal;
-                if (bioInput && !bioInput.value) bioInput.value = currentUser.bio || '';
+                followingEl.innerText = followingList.length + 140;
+                followersEl.innerText = Math.floor(Math.random() * 15) + 135;
             } else {
+                headerUsernameEl.innerText = 'not_logged_in';
                 nameEl.innerText = 'Not Logged In';
-                emailEl.innerText = 'Please sign in to manage your profile';
-                avatarEl.innerText = '👤';
+                bioEl.innerText = 'Please sign in to manage your profile';
+                avatarContainer.innerHTML = `<span class="text-2xl">👤</span>`;
                 postsCountEl.innerText = '0';
                 followingEl.innerText = '0';
                 followersEl.innerText = '0';
-                loginBtn.innerText = 'Login / Register';
-                loginBtn.className = 'bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-xs hover:bg-indigo-700 transition shadow-sm';
-                loginBtn.onclick = openLoginModal;
             }
         }
 
-        function saveProfileBio() {
-            if (!currentUser) { alert("Please log in first!"); return; }
-            const bioInput = document.getElementById('edit-bio-input').value.trim();
-            currentUser.bio = bioInput;
+        function toggleEditProfileModal() {
+            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
+            const modal = document.getElementById('edit-profile-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('modal-edit-name').value = currentUser.name || '';
+                document.getElementById('modal-edit-username').value = currentUser.username || '';
+                document.getElementById('modal-edit-bio').value = currentUser.bio || '';
+                document.getElementById('modal-edit-avatar').value = currentUser.avatar || '';
+            }
+        }
+
+        function saveProfileDetails() {
+            if (!currentUser) return;
+            currentUser.name = document.getElementById('modal-edit-name').value.trim();
+            currentUser.username = document.getElementById('modal-edit-username').value.trim() || currentUser.email.split('@')[0];
+            currentUser.bio = document.getElementById('modal-edit-bio').value.trim();
+            currentUser.avatar = document.getElementById('modal-edit-avatar').value.trim();
+
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-            alert("Profile bio updated successfully! ✨");
+            toggleEditProfileModal();
+            updateProfileSettingsUI();
+            alert("Profile updated successfully! ✨");
+        }
+
+        function toggleSettingsModal() {
+            document.getElementById('settings-modal').classList.toggle('hidden');
+        }
+
+        function handleLogoutFromSettings() {
+            if (confirm("Are you sure you want to log out?")) {
+                currentUser = null;
+                localStorage.removeItem('infohub_current_user');
+                toggleSettingsModal();
+                updateAuthUI();
+                alert("Logged out successfully!");
+                switchTab('home');
+            }
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('infohub_dark_mode', isDarkMode);
+            alert(isDarkMode ? "Dark Mode enabled! 🌙" : "Light Mode enabled! ☀️");
+        }
+
+        function toggleNotificationsSetting() {
+            alert("Notifications setting toggled successfully! 🔔");
+        }
+
+        function openProfilePictureModal() {
+            if (!currentUser) { openLoginModal(); return; }
+            toggleEditProfileModal();
+        }
+
+        function shareProfileLink() {
+            if (navigator.share) {
+                navigator.share({ title: 'My Profile', url: window.location.href }).catch(()=>{});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Profile link copied to clipboard! 🔗");
+            }
         }
 
         function toggleFollowAuthor(authorEmail) {
@@ -528,7 +656,6 @@
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
-
         /* MEDIA PARSING & RENDERING */
         function extractYouTubeId(url) {
             if (!url) return null;
@@ -722,13 +849,13 @@
             }, 300));
         }
 
-        /* CARD HTML WITH CONTENT FADE-OUT & CUSTOM BACKGROUND/THUMBNAIL */
         function createCardHTML(art) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
             card.onclick = () => openFullArticle(art.id);
 
             let isFollowing = currentUser && followingList.includes(art.authorEmail);
+            let authorHandle = art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous';
             let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
                 <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
                     ${isFollowing ? 'Following ✓' : '+ Follow'}
@@ -741,7 +868,6 @@
             if (art.thumbnail && art.thumbnail.trim() !== '') {
                 thumbHTML = `<div class="w-full h-44 bg-slate-100 overflow-hidden"><img src="${art.thumbnail}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x350?text=Thumbnail'"></div>`;
             } else {
-                // If no custom thumbnail, show article content snippet with fade-out mask (No Heading/Category)
                 let cleanSnippet = art.body.replace(/\[.*?\]/g, '');
                 thumbHTML = `
                     <div class="w-full h-44 p-4 flex flex-col justify-between text-white relative overflow-hidden fade-content-mask" style="${bgStyle}">
@@ -759,19 +885,16 @@
 
             card.innerHTML = `
                 <div>
-                    <!-- Header with Author on Left & Follow on Right -->
                     <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
                         <div class="flex items-center gap-1.5 truncate max-w-[70%]">
-                            <span class="font-bold text-slate-800 truncate" title="${art.authorEmail || 'Anonymous'}">✍️ ${art.authorEmail || 'Anonymous'}</span>
+                            <span class="font-bold text-slate-800 truncate" title="${authorHandle}">✍️ ${authorHandle}</span>
                             ${followBtn}
                         </div>
                         ${actionButtons}
                     </div>
 
-                    <!-- Thumbnail / Fade Content Container -->
                     ${thumbHTML}
 
-                    <!-- Title & Category Below Container -->
                     <div class="p-4 space-y-1">
                         <span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">${art.category || 'General'}</span>
                         <h3 class="text-base font-bold text-slate-800 strict-break line-clamp-1">${art.title}</h3>
@@ -781,7 +904,6 @@
             return card;
         }
 
-        /* FULL ARTICLE DETAIL VIEW PAGE */
         function openFullArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
@@ -793,7 +915,7 @@
                 <div class="space-y-4">
                     <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                         <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
-                        <span class="text-xs text-slate-500">✍️ ${art.authorEmail || 'Anonymous'}</span>
+                        <span class="text-xs text-slate-500">✍️ ${art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous'}</span>
                     </div>
                     <h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1>
                     <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div>
