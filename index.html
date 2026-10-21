@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Firebase Cloud Pro</title>
+    <title>InfoHub - Complete Pro Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -38,30 +38,48 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Real Firebase Authentication Modal -->
+        <!-- Professional Login Modal -->
         <div id="auth-modal" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-200 mb-8 w-full max-w-md mx-auto overflow-hidden">
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h3 class="text-xl font-bold text-slate-900">Sign in to InfoHub</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Firebase Cloud Authentication</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Choose an account or continue with email</p>
                 </div>
                 <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1 text-lg">✕</button>
             </div>
             <div class="space-y-4">
-                <button onclick="loginWithGoogleFirebase()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
+                <button onclick="openGoogleAccountChooser()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
                     <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                    <span>Sign in with Google Popup</span>
+                    <span>Sign in with Google</span>
                 </button>
                 <div class="relative flex py-2 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-4 text-slate-400 text-xs font-medium">or email password</span>
+                    <span class="flex-shrink mx-4 text-slate-400 text-xs font-medium">or continue with email</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
                 <input type="email" id="auth-email" placeholder="name@gmail.com" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
                 <input type="password" id="auth-pass" placeholder="Enter password" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
                 <div class="flex gap-2 w-full pt-2">
-                    <button onclick="loginWithEmailFirebase()" class="w-1/2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition text-sm shadow-md">Log In 🔓</button>
-                    <button onclick="registerWithEmailFirebase()" class="w-1/2 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-sm shadow-md">Register ✨</button>
+                    <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition text-sm shadow-md">Log In 🔓</button>
+                    <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-sm shadow-md">Register ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PINTEREST STYLE GOOGLE ACCOUNT CHOOSER MODAL -->
+        <div id="google-chooser-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                        <span class="font-bold text-slate-800 text-base">Continue with google.com</span>
+                    </div>
+                    <button onclick="document.getElementById('google-chooser-modal').classList.add('hidden')" class="text-slate-400 font-bold text-lg">✕</button>
+                </div>
+                <p class="text-xs text-slate-600">Choose an account to continue to <b>infohub.app</b></p>
+                <div id="google-accounts-list-container" class="space-y-2"></div>
+                <div class="pt-2 border-t text-[11px] text-slate-500 leading-relaxed">
+                    To continue, Google will share your name, email address, and profile picture with InfoHub. <a href="#" class="text-indigo-600 underline">Privacy Policy</a> & <a href="#" class="text-indigo-600 underline">Terms</a>.
                 </div>
             </div>
         </div>
@@ -72,10 +90,11 @@
                     <h3 class="text-lg font-bold text-indigo-600">➕ Add Another Account</h3>
                     <button onclick="toggleAddAccountModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
                 </div>
+                <p class="text-xs text-slate-600">You can create unlimited accounts using the same email address!</p>
                 <div class="space-y-3 text-xs">
                     <input type="text" id="new-acc-name" placeholder="Full Name" class="w-full p-2.5 border border-slate-300 rounded-lg">
-                    <input type="text" id="new-acc-username" placeholder="Unique Username ID" class="w-full p-2.5 border border-slate-300 rounded-lg">
-                    <button onclick="createNewSubAccount()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Create & Switch ✨</button>
+                    <input type="text" id="new-acc-username" placeholder="e.g. kesava_sub" class="w-full p-2.5 border border-slate-300 rounded-lg">
+                    <button onclick="createNewSubAccount()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition">Create & Switch Account ✨</button>
                 </div>
             </div>
         </div>
@@ -88,45 +107,68 @@
             </div>
             <input type="hidden" id="editing-id" value="">
             <input type="text" id="art-title" placeholder="Article Title *" class="w-full p-3 border border-slate-300 rounded-lg mb-3 text-sm">
-            <input type="text" id="art-cat" placeholder="Category (e.g., Tech, Stories)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 text-sm">
-            <input type="text" id="art-thumb" placeholder="Thumbnail URL" class="w-full p-3 border border-slate-300 rounded-lg mb-3 text-sm">
-            <textarea id="art-body" rows="5" placeholder="Write content here..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm strict-break"></textarea>
+            <input type="text" id="art-cat" placeholder="Category (e.g., Tech, Tamil Literature)" class="w-full p-3 border border-slate-300 rounded-lg mb-3 text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <input type="color" id="art-color-picker" value="#6366f1" onchange="document.getElementById('art-bg').value=this.value" class="w-10 h-10 rounded border cursor-pointer p-0.5">
+                <input type="text" id="art-thumb" placeholder="Thumbnail Image URL" class="w-full p-2.5 border rounded-lg text-xs">
+            </div>
+            <input type="hidden" id="art-bg" value="#6366f1">
+            <textarea id="art-body" rows="6" placeholder="Write content here... Supports [carousel: url1, url2], [image: url], [youtube: url]" class="w-full p-3 border border-slate-300 rounded-lg mb-4 text-sm strict-break"></textarea>
             <div class="flex gap-2 w-full">
                 <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-2.5 rounded-lg font-bold text-xs">Save Draft 💾</button>
-                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold text-xs">Publish Cloud 🚀</button>
+                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold text-xs">Publish 🚀</button>
             </div>
         </div>
+
         <!-- EDIT PROFILE MODAL -->
         <div id="edit-profile-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4 text-xs">
                 <div class="flex justify-between items-center"><h3 class="text-base font-bold text-slate-800">Edit Profile</h3><button onclick="toggleEditProfileModal()" class="font-bold">✕</button></div>
                 <input type="text" id="modal-edit-name" placeholder="Name" class="w-full p-2.5 border rounded-lg">
-                <input type="text" id="modal-edit-username" placeholder="Username" class="w-full p-2.5 border rounded-lg">
+                <input type="text" id="modal-edit-username" placeholder="Username" onkeyup="checkUsernameAvailability()" class="w-full p-2.5 border rounded-lg">
+                <span id="username-availability-indicator" class="font-bold"></span>
                 <textarea id="modal-edit-bio" placeholder="Bio" rows="2" class="w-full p-2.5 border rounded-lg"></textarea>
                 <input type="file" accept="image/*" onchange="handleProfileFileUpload(event)" class="w-full p-2 border rounded-lg">
                 <input type="hidden" id="modal-edit-avatar-url" value="">
                 <button onclick="saveProfileDetails()" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl">Save Changes ✨</button>
             </div>
         </div>
-
         <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4 text-xs">
                 <div class="flex justify-between items-center border-b pb-3"><h3 class="text-base font-bold text-slate-800">⚙️ Settings</h3><button onclick="toggleSettingsModal()" class="font-bold">✕</button></div>
                 <div class="flex justify-between items-center py-2 border-b"><span>Dark Mode</span><button onclick="toggleDarkMode()" id="dark-mode-toggle-btn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold">Enable</button></div>
                 <div class="flex justify-between items-center py-2 border-b"><span>Notifications</span><button onclick="toggleNotificationsSetting()" id="notif-onoff-btn" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-bold">Enabled 🔔</button></div>
+                <div class="flex justify-between items-center py-2 border-b"><span>Account Status</span><button onclick="toggleDeactivateAccount()" id="deactivate-status-btn" class="bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold">Deactivate ⚠️</button></div>
                 <div class="space-y-2 pt-2" id="settings-action-buttons"></div>
+            </div>
+        </div>
+
+        <!-- PROFILE PICTURE FULL VIEW MODAL -->
+        <div id="profile-pic-view-modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+            <div class="bg-white p-4 rounded-2xl max-w-xs text-center space-y-3" onclick="event.stopPropagation()">
+                <h4 class="font-bold text-sm text-slate-800">Profile Picture</h4>
+                <div id="view-modal-avatar-box" class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-indigo-600 flex items-center justify-center bg-slate-100 text-4xl">👤</div>
+                <button onclick="document.getElementById('profile-pic-view-modal').classList.add('hidden')" class="bg-slate-200 text-slate-800 font-bold px-4 py-1.5 rounded-xl text-xs">Close</button>
+            </div>
+        </div>
+
+        <!-- FOLLOWERS / FOLLOWING LIST MODAL -->
+        <div id="follow-list-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-2"><h3 id="follow-modal-title" class="text-base font-bold">Connections</h3><button onclick="document.getElementById('follow-list-modal').classList.add('hidden')" class="font-bold">✕</button></div>
+                <div id="follow-modal-items" class="space-y-3"></div>
             </div>
         </div>
 
         <!-- PAGE VIEWS -->
         <div id="page-detail" class="page-view hidden space-y-6 bg-white p-5 rounded-xl border shadow-sm">
-            <button onclick="switchTab('home')" class="bg-slate-100 font-bold px-4 py-2 rounded-xl text-xs">← Back</button>
+            <button onclick="switchTab('home')" class="bg-slate-100 font-bold px-4 py-2 rounded-xl text-xs">← Back to Feed</button>
             <div id="detail-content-container" class="space-y-4"></div>
         </div>
 
         <div id="page-public-profile" class="page-view hidden space-y-4">
-            <button onclick="switchTab('home')" class="bg-slate-100 font-bold px-4 py-2 rounded-xl text-xs">← Back</button>
+            <button onclick="switchTab('home')" class="bg-slate-100 font-bold px-4 py-2 rounded-xl text-xs">← Back to Feed</button>
             <div id="public-profile-container" class="bg-white p-5 rounded-xl border shadow-sm space-y-4"></div>
             <div id="public-user-articles" class="grid gap-6 md:grid-cols-2 w-full"></div>
         </div>
@@ -137,7 +179,7 @@
         </div>
 
         <div id="page-search" class="page-view hidden space-y-6">
-            <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search accounts, articles..." class="w-full p-3.5 border rounded-xl text-sm">
+            <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search accounts, articles, usernames..." class="w-full p-3.5 border rounded-xl text-sm">
             <div id="search-users-list" class="space-y-2"></div>
             <div id="playstore-categories-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
@@ -145,9 +187,9 @@
 
         <div id="page-notifications" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600">🔔 Notifications</h2>
-            <div class="bg-white p-4 rounded-xl border shadow-sm text-xs"><p class="font-bold">Firestore Cloud Notifications Active</p></div>
+            <div class="bg-white p-4 rounded-xl border shadow-sm text-xs"><p class="font-bold">Admin liked your post 2 hours ago</p></div>
         </div>
-        <!-- PROFILE PAGE WITH CLOUD USER POSTS GRID -->
+        <!-- PAGE PROFILE WITH USER POSTS GRID -->
         <div id="page-profile" class="page-view hidden space-y-4 relative">
             <div class="flex justify-between items-center bg-white px-4 py-3 border-b rounded-xl shadow-sm">
                 <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold hover:text-indigo-600">＋</button>
@@ -165,7 +207,7 @@
 
             <div class="bg-white p-5 rounded-xl border shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md cursor-pointer" onclick="openProfilePictureModal()">
                         <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600" id="profile-avatar-container"><span>👤</span></div>
                     </div>
                     <div class="flex-1 flex justify-around text-center px-4">
@@ -178,13 +220,17 @@
                     <p id="profile-display-name" class="font-bold text-slate-900 text-sm">Not Logged In</p>
                     <p id="profile-display-bio" class="text-slate-600">Please sign in to manage profile</p>
                 </div>
+                <div class="flex gap-2 pt-1">
+                    <button onclick="toggleEditProfileModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 font-bold py-2 rounded-xl text-xs transition">Edit profile</button>
+                    <button onclick="shareProfileLink()" class="flex-1 bg-slate-100 hover:bg-slate-200 font-bold py-2 rounded-xl text-xs transition">Share profile</button>
+                </div>
             </div>
 
             <!-- Profile User Posts Grid -->
             <div id="profile-user-posts-container" class="space-y-4">
                 <div class="bg-white p-6 rounded-xl border shadow-sm text-center space-y-3">
                     <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
-                    <h4 class="font-bold text-base">Create your first cloud post</h4>
+                    <h4 class="font-bold text-base">Create your first post</h4>
                     <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Create</button>
                 </div>
             </div>
@@ -201,127 +247,121 @@
             <button onclick="switchTab('profile')" class="w-12 h-12 rounded-full text-xl text-white bg-indigo-600 flex items-center justify-center shadow-lg">👤</button>
         </div>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCH4uZBG4eOCoR596rTYM9ilwYcnmS3OdA",
-            authDomain: "infohub-pro.firebaseapp.com",
-            projectId: "infohub-pro",
-            storageBucket: "infohub-pro.firebasestorage.app",
-            messagingSenderId: "1016432134120",
-            appId: "1:1016432134120:web:05cc22b98ec54542bb065d",
-            measurementId: "G-CGNZ005MHV"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        window.auth = auth;
-        window.db = db;
-        window.GoogleAuthProvider = GoogleAuthProvider;
-        window.signInWithPopup = signInWithPopup;
-        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-        window.signOut = signOut;
-        window.collection = collection;
-        window.addDoc = addDoc;
-        window.getDocs = getDocs;
-        window.doc = doc;
-        window.deleteDoc = deleteDoc;
-
-        window.accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || [];
-        window.currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
-        window.currentUser = window.accountsList[window.currentAccountIndex] || null;
-        window.articles = [];
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.currentUser = {
-                    email: user.email,
-                    username: user.email.split('@')[0],
-                    name: user.displayName || user.email.split('@')[0],
-                    avatar: user.photoURL || "",
-                    isDeactivated: false
-                };
-                updateProfileSettingsUI();
-                fetchFirestoreArticles();
-            }
-        });
-    </script>
     <script>
+        let accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || [];
+        let currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
+        let currentUser = accountsList[currentAccountIndex] || null;
+
+        let followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
+        let followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {};
+        let ytPlayers = [];
+        let currentTab = 'home';
+        let isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
+        let notificationsEnabled = localStorage.getItem('infohub_notifications_enabled') !== 'false';
+
+        let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
+            {
+                id: 1,
+                title: "முல்லைப்பாட்டு Demo",
+                category: "Tamil Literature",
+                authorEmail: "admin@gmail.com",
+                authorUsername: "admin",
+                thumbnail: "",
+                bgColor: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+                isDraft: false,
+                body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும்.\n\n[carousel: https://picsum.photos/id/1018/800/400, https://picsum.photos/id/1015/800/400]"
+            }
+        ];
+
         function toggleNavMenu() { document.getElementById('floating-nav-bar').classList.toggle('hidden'); }
 
         function switchTab(tabName) {
+            currentTab = tabName;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            if (tabName === 'home') { document.getElementById('page-home').classList.remove('hidden'); fetchFirestoreArticles(); }
-            else if (tabName === 'search') { document.getElementById('page-search').classList.remove('hidden'); filterArticlesByCatSearch(''); }
+            if (tabName === 'home') { document.getElementById('page-home').classList.remove('hidden'); renderArticles(articles); }
+            else if (tabName === 'search') { document.getElementById('page-search').classList.remove('hidden'); renderPlayStoreCategories(); filterArticlesByCatSearch(''); }
             else if (tabName === 'notifications') { document.getElementById('page-notifications').classList.remove('hidden'); }
             else if (tabName === 'profile') { document.getElementById('page-profile').classList.remove('hidden'); updateProfileSettingsUI(); }
         }
 
-        async function loginWithGoogleFirebase() {
-            try {
-                const provider = new window.GoogleAuthProvider();
-                const result = await window.signInWithPopup(window.auth, provider);
-                const user = result.user;
-                window.currentUser = { email: user.email, username: user.email.split('@')[0], name: user.displayName, avatar: user.photoURL, isDeactivated: false };
-                window.accountsList.push(window.currentUser);
-                localStorage.setItem('infohub_accounts_list', JSON.stringify(window.accountsList));
-                toggleAuthModal();
-                alert(`Firebase Google Login Successful as @${window.currentUser.username}! 🎉`);
-                updateProfileSettingsUI();
-                fetchFirestoreArticles();
-                switchTab('profile');
-            } catch(e) { alert("Google Popup Error: " + e.message); }
+        function handleAccountDeletionFlow() {
+            if (!currentUser) return;
+            for (let i = 1; i <= 3; i++) {
+                if (!confirm(`[Confirmation ${i}/3] Permanently delete account "@${currentUser.username}"?`)) return;
+            }
+            articles = articles.filter(a => a.authorEmail !== currentUser.email);
+            accountsList.splice(currentAccountIndex, 1);
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            currentAccountIndex = 0;
+            currentUser = accountsList[0] || null;
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            saveAndRender();
+            toggleSettingsModal();
+            alert("Account successfully deleted.");
+            switchTab('home');
         }
 
-        async function loginWithEmailFirebase() {
-            let email = document.getElementById('auth-email').value.trim();
-            let pass = document.getElementById('auth-pass').value.trim();
-            try {
-                let res = await window.signInWithEmailAndPassword(window.auth, email, pass);
-                window.currentUser = { email: res.user.email, username: email.split('@')[0], name: email.split('@')[0], avatar: "", isDeactivated: false };
-                toggleAuthModal();
-                updateProfileSettingsUI();
-                fetchFirestoreArticles();
-                alert("Logged in successfully via Firebase! 🔓");
-            } catch(e) { alert("Login Failed: " + e.message); }
+        function toggleDeactivateAccount() {
+            if (!currentUser) return;
+            currentUser.isDeactivated = !currentUser.isDeactivated;
+            accountsList[currentAccountIndex] = currentUser;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            alert(currentUser.isDeactivated ? "Account deactivated." : "Account reactivated!");
+            toggleSettingsModal();
+            updateProfileSettingsUI();
         }
 
-        async function registerWithEmailFirebase() {
-            let email = document.getElementById('auth-email').value.trim();
-            let pass = document.getElementById('auth-pass').value.trim();
-            try {
-                let res = await window.createUserWithEmailAndPassword(window.auth, email, pass);
-                window.currentUser = { email: res.user.email, username: email.split('@')[0], name: email.split('@')[0], avatar: "", isDeactivated: false };
-                toggleAuthModal();
-                updateProfileSettingsUI();
-                fetchFirestoreArticles();
-                alert("Registered & logged in via Firebase! ✨");
-            } catch(e) { alert("Registration Failed: " + e.message); }
+        function toggleAccountDropdown() {
+            const menu = document.getElementById('account-dropdown-menu');
+            menu.classList.toggle('hidden');
+            if (!menu.classList.contains('hidden')) renderDropdownAccounts();
         }
 
-        async function fetchFirestoreArticles() {
-            try {
-                const querySnapshot = await window.getDocs(window.collection(window.db, "articles"));
-                window.articles = [];
-                querySnapshot.forEach((docSnap) => {
-                    window.articles.push({ firebaseId: docSnap.id, ...docSnap.data() });
-                });
-                renderArticles(window.articles);
-            } catch(e) { console.error("Error fetching articles:", e); }
+        function renderDropdownAccounts() {
+            const container = document.getElementById('dropdown-accounts-list');
+            if (!container) return;
+            container.innerHTML = accountsList.map((acc, idx) => `
+                <div onclick="switchActiveAccount(${idx})" class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-lg cursor-pointer ${idx === currentAccountIndex ? 'bg-indigo-50 font-bold text-indigo-600' : 'text-slate-700'}">
+                    <span class="text-xs truncate">@${acc.username}</span>
+                    ${idx === currentAccountIndex ? '<span>✓</span>' : ''}
+                </div>
+            `).join('');
         }
-    </script>
-    <script>
+
+        function switchActiveAccount(idx) {
+            currentAccountIndex = idx;
+            currentUser = accountsList[idx];
+            localStorage.setItem('infohub_current_acc_index', idx);
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            toggleAccountDropdown();
+            updateProfileSettingsUI();
+            renderArticles(articles);
+            alert(`Switched to @${currentUser.username}`);
+        }
+
+        function toggleAddAccountModal() { document.getElementById('add-account-modal').classList.toggle('hidden'); }
+
+        function createNewSubAccount() {
+            if (!currentUser) { openLoginModal(); return; }
+            let name = document.getElementById('new-acc-name').value.trim();
+            let username = document.getElementById('new-acc-username').value.trim().toLowerCase();
+            if (!name || !username) { alert("Fill all fields!"); return; }
+            let newSub = { email: currentUser.email, username, name, bio: "Sub account", avatar: "", isDeactivated: false };
+            accountsList.push(newSub);
+            currentAccountIndex = accountsList.length - 1;
+            currentUser = newSub;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
+            toggleAddAccountModal();
+            updateProfileSettingsUI();
+            alert(`New account @${username} created! ✨`);
+        }
         function openLoginModal() {
-            if (window.currentUser) {
-                if (confirm(`Logged in as ${window.currentUser.email}. Log out?`)) {
-                    window.signOut(window.auth);
-                    window.currentUser = null;
+            if (currentUser) {
+                if (confirm(`Logged in as ${currentUser.email}. Log out?`)) {
+                    currentUser = null;
+                    localStorage.removeItem('infohub_current_user');
                     updateProfileSettingsUI();
                     alert("Logged out!");
                     switchTab('home');
@@ -331,82 +371,118 @@
 
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
 
-        async function saveArticle(isDraft) {
-            let title = document.getElementById('art-title').value.trim();
-            let body = document.getElementById('art-body').value.trim();
-            let category = document.getElementById('art-cat').value.trim() || "General";
-            let thumbnail = document.getElementById('art-thumb').value.trim();
-            if (!title || !body) { alert("Fill title and body!"); return; }
+        function openGoogleAccountChooser() {
+            const modal = document.getElementById('google-chooser-modal');
+            const container = document.getElementById('google-accounts-list-container');
+            const sampleEmails = [
+                { name: "Kesavarthanan G", email: "kuralmozhitamizh@gmail.com", avatarBg: "bg-amber-600" },
+                { name: "Kesavarthanan QualityCheck", email: "kesavarthananqualitycheck@gmail.com", avatarBg: "bg-indigo-600" },
+                { name: "Kesavarthanan", email: "kesavarthanan360@gmail.com", avatarBg: "bg-purple-600" },
+                { name: "Kural Kadhalan", email: "kuralkadhalan@gmail.com", avatarBg: "bg-blue-600" }
+            ];
 
-            let newArt = { title, body, category, thumbnail, isDraft, authorEmail: window.currentUser.email, authorUsername: window.currentUser.username, createdAt: Date.now() };
-            try {
-                await window.addDoc(window.collection(window.db, "articles"), newArt);
-                document.getElementById('admin-panel').classList.add('hidden');
-                fetchFirestoreArticles();
-                updateProfileSettingsUI();
-                alert(isDraft ? "Draft Saved to Cloud!" : "Published live to Firestore! 🚀");
-            } catch(e) { alert("Error saving to cloud: " + e.message); }
+            container.innerHTML = sampleEmails.map(acc => `
+                <div onclick="selectGoogleAccount('${acc.name}', '${acc.email}')" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer border transition shadow-sm">
+                    <div class="w-10 h-10 rounded-full ${acc.avatarBg} text-white font-bold flex items-center justify-center text-sm">${acc.name[0]}</div>
+                    <div class="flex-1 truncate">
+                        <p class="font-bold text-xs text-slate-800">${acc.name}</p>
+                        <p class="text-[11px] text-slate-500 truncate">${acc.email}</p>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Select →</span>
+                </div>
+            `).join('') + `
+                <div onclick="promptCustomGoogleEmail()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer border border-dashed transition">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-sm">➕</div>
+                    <div class="flex-1"><p class="font-bold text-xs">Use Another account</p><p class="text-[11px] text-slate-500">Sign in with any Gmail</p></div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
         }
 
-        function renderArticles(data) {
-            const list = document.getElementById('articles-list');
-            if (!list) return;
-            list.innerHTML = '';
-            let published = data.filter(a => !a.isDraft);
-            if (published.length === 0) { list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No cloud posts yet!</div>'; return; }
-            published.forEach(art => list.appendChild(createCardHTML(art)));
+        function selectGoogleAccount(name, email) {
+            document.getElementById('google-chooser-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.add('hidden');
+            let username = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            let existing = accountsList.find(a => a.email === email);
+            if (!existing) {
+                existing = { email, username, name, bio: "Signed in via Google", avatar: "", isDeactivated: false };
+                accountsList.push(existing);
+            }
+            currentAccountIndex = accountsList.indexOf(existing);
+            currentUser = existing;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
+            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
+            alert(`Successfully signed in with Google as @${currentUser.username}! 🎉`);
+            updateProfileSettingsUI();
+            renderArticles(articles);
+            switchTab('profile');
         }
 
-        function createCardHTML(art) {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-sm border p-4 flex flex-col justify-between cursor-pointer hover:shadow-md transition';
-            card.onclick = () => openFullArticle(art.firebaseId);
-            card.innerHTML = `<div><p class="text-xs font-bold text-indigo-600 mb-2">✍️ @${art.authorUsername || 'Anonymous'}</p><h3 class="text-base font-bold mb-2">${art.title}</h3><p class="text-xs text-slate-600 line-clamp-2">${art.body}</p></div>`;
-            return card;
+        function promptCustomGoogleEmail() {
+            let email = prompt("Enter Gmail address:");
+            if (email && email.includes('@')) selectGoogleAccount(email.split('@')[0], email.toLowerCase());
         }
 
-        function openFullArticle(id) {
-            const art = window.articles.find(a => a.firebaseId === id);
-            if (!art) return;
-            document.getElementById('detail-content-container').innerHTML = `<h1 class="text-2xl font-black">${art.title}</h1><p class="text-sm whitespace-pre-line">${art.body}</p>`;
-            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-detail').classList.remove('hidden');
+        function handleUserRegister() {
+            let email = document.getElementById('auth-email').value.trim().toLowerCase();
+            let pass = document.getElementById('auth-pass').value.trim();
+            if (!email || !pass) { alert("Enter email and password!"); return; }
+            let newAcc = { email, pass, username: email.split('@')[0], name: email.split('@')[0], bio: "User", avatar: "", isDeactivated: false };
+            accountsList.push(newAcc);
+            currentAccountIndex = accountsList.length - 1;
+            currentUser = newAcc;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            toggleAuthModal();
+            updateProfileSettingsUI();
+            alert(`Registered as @${currentUser.username}! ✨`);
         }
 
-        function openPublishIfLoggedIn() {
-            if (!window.currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            document.getElementById('admin-panel').classList.toggle('hidden');
+        function handleUserLogin() {
+            let email = document.getElementById('auth-email').value.trim().toLowerCase();
+            let pass = document.getElementById('auth-pass').value.trim();
+            let found = accountsList.find(a => a.email === email);
+            if (!found) {
+                found = { email, pass, username: email.split('@')[0], name: email.split('@')[0], bio: "User", avatar: "", isDeactivated: false };
+                accountsList.push(found);
+            }
+            currentAccountIndex = accountsList.indexOf(found);
+            currentUser = found;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            toggleAuthModal();
+            updateProfileSettingsUI();
+            alert(`Welcome back @${currentUser.username}! 🔓`);
         }
-
         function updateProfileSettingsUI() {
             const headerUsernameEl = document.getElementById('profile-header-username');
             const nameEl = document.getElementById('profile-display-name');
             const bioEl = document.getElementById('profile-display-bio');
             const avatarContainer = document.getElementById('profile-avatar-container');
             const postsCountEl = document.getElementById('profile-posts-count');
+            const followersEl = document.getElementById('profile-followers-count');
+            const followingEl = document.getElementById('profile-following-count');
             const settingsActions = document.getElementById('settings-action-buttons');
             const profilePostsContainer = document.getElementById('profile-user-posts-container');
             if (!nameEl) return;
 
-            if (window.currentUser) {
-                headerUsernameEl.innerText = window.currentUser.username;
-                nameEl.innerText = window.currentUser.name;
-                bioEl.innerText = window.currentUser.bio || "Firebase Cloud User";
-                if (window.currentUser.avatar) avatarContainer.innerHTML = `<img src="${window.currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
+            if (currentUser && !currentUser.isDeactivated) {
+                headerUsernameEl.innerText = currentUser.username;
+                nameEl.innerText = currentUser.name;
+                bioEl.innerText = currentUser.bio;
+                if (currentUser.avatar) avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
+                else avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${currentUser.username[0].toUpperCase()}</span>`;
                 
-                let myPosts = window.articles.filter(a => a.authorEmail === window.currentUser.email && !a.isDraft);
+                let myPosts = articles.filter(a => a.authorEmail === currentUser.email && !a.isDraft);
                 postsCountEl.innerText = myPosts.length;
+                followingEl.innerText = followingList.length;
+                followersEl.innerText = (followersMap[currentUser.email] || []).length;
 
                 if (profilePostsContainer) {
-                    if (myPosts.length > 0) {
-                        profilePostsContainer.innerHTML = `<h3 class="font-bold text-sm mb-3">Your Cloud Posts (${myPosts.length})</h3><div class="grid gap-6 md:grid-cols-2 w-full" id="profile-user-posts-grid"></div>`;
-                        const grid = document.getElementById('profile-user-posts-grid');
-                        myPosts.forEach(art => grid.appendChild(createCardHTML(art)));
-                    } else {
-                        profilePostsContainer.innerHTML = `<div class="bg-white p-6 rounded-xl border shadow-sm text-center space-y-3"><h4 class="font-bold text-base">Create your first cloud post</h4><button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Create</button></div>`;
-                    }
+                    profilePostsContainer.innerHTML = `<h3 class="font-bold text-sm mb-3">Your Posts (${myPosts.length})</h3><div class="grid gap-6 md:grid-cols-2 w-full" id="profile-user-posts-grid"></div>`;
+                    const grid = document.getElementById('profile-user-posts-grid');
+                    myPosts.forEach(art => grid.appendChild(createCardHTML(art)));
                 }
-                if (settingsActions) settingsActions.innerHTML = `<button onclick="openLoginModal()" class="w-full bg-slate-100 font-bold py-2.5 rounded-xl">🚪 Logout</button>`;
+                if (settingsActions) settingsActions.innerHTML = `<button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl">🗑️ Delete Account</button><button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 font-bold py-2.5 rounded-xl">🚪 Logout</button>`;
             } else {
                 headerUsernameEl.innerText = 'not_logged_in';
                 nameEl.innerText = 'Not Logged In';
@@ -418,20 +494,87 @@
             }
         }
 
-        function toggleSettingsModal() { document.getElementById('settings-modal').classList.toggle('hidden'); }
-        function toggleDarkMode() { document.getElementById('main-body').classList.toggle('dark-mode'); }
-        function toggleNotificationsSetting() { alert("Cloud notifications toggled!"); }
-        function filterArticlesByCatSearch(q) { renderArticles(window.articles); }
-        function toggleAddAccountModal() { document.getElementById('add-account-modal').classList.toggle('hidden'); }
-        function createNewSubAccount() { alert("Sub account created!"); }
-        function handleProfileFileUpload(e) { alert("File upload ready!"); }
-        function saveProfileDetails() { alert("Profile saved!"); toggleEditProfileModal(); }
-        function toggleEditProfileModal() { document.getElementById('edit-profile-modal').classList.toggle('hidden'); }
-        function openFollowersList() { alert("Followers list"); }
-        function openFollowingList() { alert("Following list"); }
+        function extractYouTubeId(url) {
+            let match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
 
-        fetchFirestoreArticles();
+        function renderMediaItem(url) {
+            url = url.trim();
+            let ytId = extractYouTubeId(url);
+            if (ytId) return `<div class="w-full aspect-video rounded-xl overflow-hidden"><iframe src="https://www.youtube.com/embed/${ytId}" class="w-full h-full" allowfullscreen></iframe></div>`;
+            return `<img src="${url}" class="w-full rounded-xl shadow-sm" onerror="this.src='https://via.placeholder.com/600x300'">`;
+        }
+
+        function parseContent(text) {
+            if (!text) return '';
+            text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, urls) => {
+                let list = urls.split(',').map(u => `<div class="flex-shrink-0 w-full snap-center">${renderMediaItem(u)}</div>`).join('');
+                return `<div class="flex overflow-x-auto snap-x gap-3 rounded-xl">${list}</div>`;
+            });
+            return text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => renderMediaItem(u));
+        }
+
+        function renderArticles(data) {
+            const list = document.getElementById('articles-list');
+            if (!list) return;
+            list.innerHTML = '';
+            let published = data.filter(a => !a.isDraft);
+            if (published.length === 0) { list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No posts yet!</div>'; return; }
+            published.forEach(art => list.appendChild(createCardHTML(art)));
+        }
+
+        function createCardHTML(art) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl shadow-sm border p-4 flex flex-col justify-between cursor-pointer hover:shadow-md transition';
+            card.onclick = () => openFullArticle(art.id);
+            card.innerHTML = `<div><p class="text-xs font-bold text-indigo-600 mb-2">✍️ @${art.authorUsername || 'Anonymous'}</p><h3 class="text-base font-bold mb-2">${art.title}</h3><p class="text-xs text-slate-600 line-clamp-2">${art.body}</p></div>`;
+            return card;
+        }
+
+        function openFullArticle(id) {
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+            document.getElementById('detail-content-container').innerHTML = `<h1 class="text-2xl font-black">${art.title}</h1><div class="text-sm whitespace-pre-line">${parseContent(art.body)}</div>`;
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-detail').classList.remove('hidden');
+        }
+
+        function openPublishIfLoggedIn() {
+            if (!currentUser) { alert("Please log in!"); openLoginModal(); return; }
+            document.getElementById('admin-panel').classList.toggle('hidden');
+        }
+
+        function saveArticle(isDraft) {
+            let title = document.getElementById('art-title').value.trim();
+            let body = document.getElementById('art-body').value.trim();
+            if (!title || !body) { alert("Fill title and body!"); return; }
+            articles.unshift({ id: Date.now(), title, body, isDraft, authorEmail: currentUser.email, authorUsername: currentUser.username });
+            saveAndRender();
+            document.getElementById('admin-panel').classList.add('hidden');
+            alert(isDraft ? "Draft Saved!" : "Published successfully! 🚀");
+        }
+
+        function saveAndRender() { localStorage.setItem('my_info_articles', JSON.stringify(articles)); renderArticles(articles); updateProfileSettingsUI(); }
+        function toggleSettingsModal() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+        function toggleDarkMode() { isDarkMode = !isDarkMode; localStorage.setItem('infohub_dark_mode', isDarkMode); applyTheme(); }
+        function applyTheme() { if (isDarkMode) document.getElementById('main-body').classList.add('dark-mode'); else document.getElementById('main-body').classList.remove('dark-mode'); }
+        function handleLogoutFromSettings() { currentUser = null; localStorage.removeItem('infohub_current_user'); toggleSettingsModal(); updateProfileSettingsUI(); switchTab('home'); }
+        function toggleNotificationsSetting() { notificationsEnabled = !notificationsEnabled; alert("Notifications toggled!"); }
+        function filterArticlesByCatSearch(q) { renderArticles(articles); }
+        function renderPlayStoreCategories() {}
+        function handleProfileFileUpload(e) { let file = e.target.files[0]; if(file){ let r=new FileReader(); r.onload=(evt)=>document.getElementById('modal-edit-avatar-url').value=evt.target.result; r.readAsDataURL(file); } }
+        function saveProfileDetails() { currentUser.name = document.getElementById('modal-edit-name').value; currentUser.username = document.getElementById('modal-edit-username').value; currentUser.bio = document.getElementById('modal-edit-bio').value; let av = document.getElementById('modal-edit-avatar-url').value; if(av) currentUser.avatar = av; saveAndRender(); toggleEditProfileModal(); alert("Profile updated!"); }
+        function toggleEditProfileModal() { document.getElementById('edit-profile-modal').classList.toggle('hidden'); }
+        function openProfilePictureModal() { document.getElementById('profile-pic-view-modal').classList.remove('hidden'); }
+        function openFollowersList() { alert("Followers modal"); }
+        function openFollowingList() { alert("Following modal"); }
+        function shareProfileLink() { navigator.clipboard.writeText(window.location.href); alert("Profile link copied!"); }
+        function checkUsernameAvailability() {}
+
+        applyTheme();
         updateProfileSettingsUI();
+        renderArticles(articles);
     </script>
 </body>
 </html>
