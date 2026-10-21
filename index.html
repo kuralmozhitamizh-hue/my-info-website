@@ -75,7 +75,7 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Professional Google Sign-In & Auth Modal (Matching Reference Images) -->
+        <!-- Professional Login Modal -->
         <div id="auth-modal" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-200 mb-8 w-full max-w-md mx-auto overflow-hidden">
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -85,7 +85,7 @@
                 <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1 text-lg">✕</button>
             </div>
             <div class="space-y-4">
-                <button onclick="handleGoogleAuthLogin()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
+                <button onclick="openGoogleAccountChooser()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
                     <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
                     <span>Sign in with Google</span>
                 </button>
@@ -109,6 +109,25 @@
             </div>
         </div>
 
+        <!-- GOOGLE ACCOUNT CHOOSER POPUP MODAL (Pinterest Style) -->
+        <div id="google-chooser-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                        <span class="font-bold text-slate-800 text-base">Continue with google.com</span>
+                    </div>
+                    <button onclick="document.getElementById('google-chooser-modal').classList.add('hidden')" class="text-slate-400 font-bold text-lg">✕</button>
+                </div>
+                <p class="text-xs text-slate-600">Choose an account to continue to <b>infohub.app</b></p>
+                <div id="google-accounts-list-container" class="space-y-2">
+                    <!-- Dynamic Gmail Accounts List -->
+                </div>
+                <div class="pt-2 border-t text-[11px] text-slate-500 leading-relaxed">
+                    To continue, Google will share your name, email address, and profile picture with InfoHub. <a href="#" class="text-indigo-600 underline">Privacy Policy</a> & <a href="#" class="text-indigo-600 underline">Terms</a>.
+                </div>
+            </div>
+        </div>
         <!-- Add Multiple Account Modal -->
         <div id="add-account-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
@@ -130,6 +149,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Article Publishing Form -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
@@ -195,7 +215,6 @@
                 </div>
             </div>
         </div>
-
         <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
@@ -376,7 +395,7 @@
 
     </main>
 
-    <!-- TRANSPARENT FLOATING TOGGLE NAVIGATION SYSTEM -->
+    <!-- Floating Navigation -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
         <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100" title="Toggle Navigation">
             🧭
@@ -493,17 +512,14 @@
             }
         }
 
-        /* ACCOUNT DELETION & DEACTIVATION WITH 3-TIME CONFIRMATION */
+        /* ACCOUNT DELETION & DEACTIVATION */
         function handleAccountDeletionFlow() {
             if (!currentUser) { alert("Please log in first!"); return; }
-            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot be deleted directly. Please activate first."); return; }
+            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot be deleted directly."); return; }
 
             for (let i = 1; i <= 3; i++) {
-                let conf = confirm(`[Confirmation ${i}/3] Are you sure you want to permanently delete your account "${currentUser.username}"?\n\nWARNING: All your posts will be permanently deleted and cannot be recovered!`);
-                if (!conf) {
-                    alert("Account deletion cancelled.");
-                    return;
-                }
+                let conf = confirm(`[Confirmation ${i}/3] Are you sure you want to permanently delete your account "${currentUser.username}"?\n\nWARNING: All your posts will be permanently deleted!`);
+                if (!conf) { alert("Account deletion cancelled."); return; }
             }
 
             articles = articles.filter(a => a.authorEmail !== currentUser.email && a.authorUsername !== currentUser.username);
@@ -522,14 +538,14 @@
 
             saveAndRender();
             toggleSettingsModal();
-            alert("Account and all associated posts have been successfully and permanently deleted!");
+            alert("Account and posts successfully deleted!");
             switchTab('home');
         }
 
         function toggleDeactivateAccount() {
             if (!currentUser) { alert("Please log in first!"); return; }
             if (!currentUser.isDeactivated) {
-                if (confirm("Deactivating your account will hide your posts, disable notifications, and you won't be able to post new content until you reactivate. Proceed?")) {
+                if (confirm("Deactivating your account will hide your posts. Proceed?")) {
                     currentUser.isDeactivated = true;
                     accountsList[currentAccountIndex] = currentUser;
                     localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
@@ -555,9 +571,7 @@
         function toggleAccountDropdown() {
             const menu = document.getElementById('account-dropdown-menu');
             menu.classList.toggle('hidden');
-            if (!menu.classList.contains('hidden')) {
-                renderDropdownAccounts();
-            }
+            if (!menu.classList.contains('hidden')) { renderDropdownAccounts(); }
         }
 
         function renderDropdownAccounts() {
@@ -600,21 +614,10 @@
 
             if (!name || !username) { alert("Please fill in both name and unique username!"); return; }
 
-            let conflict = accountsList.find(a => a.username.toLowerCase() === username) || registeredUsers.find(u => u.username && u.username.toLowerCase() === username);
-            if (conflict) {
-                alert("Username is already taken! Please choose another unique username.");
-                return;
-            }
+            let conflict = accountsList.find(a => a.username.toLowerCase() === username);
+            if (conflict) { alert("Username is already taken!"); return; }
 
-            const newSubAcc = {
-                email: currentUser.email,
-                username: username,
-                name: name,
-                bio: "New sub-account",
-                avatar: "",
-                isDeactivated: false
-            };
-
+            const newSubAcc = { email: currentUser.email, username: username, name: name, bio: "New sub-account", avatar: "", isDeactivated: false };
             accountsList.push(newSubAcc);
             localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
 
@@ -626,20 +629,16 @@
             toggleAddAccountModal();
             updateProfileSettingsUI();
             renderArticles(articles);
-            alert(`New account @${username} created and switched successfully! 🚀`);
+            alert(`New account @${username} created successfully! 🚀`);
         }
 
         function checkUsernameAvailability() {
             const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
             const indicator = document.getElementById('username-availability-indicator');
             if (!inputVal) { indicator.innerHTML = ''; return; }
-
             let existing = accountsList.find(u => u.username && u.username.toLowerCase() === inputVal && (!currentUser || u.username !== currentUser.username));
-            if (existing) {
-                indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>';
-            } else {
-                indicator.innerHTML = '<span class="text-emerald-600 font-bold">✅ Available</span>';
-            }
+            if (existing) { indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>'; }
+            else { indicator.innerHTML = '<span class="text-emerald-600 font-bold">✅ Available</span>'; }
         }
 
         function handleProfileFileUpload(event) {
@@ -652,7 +651,7 @@
             };
             reader.readAsDataURL(file);
         }
-        /* AUTHENTICATION & GOOGLE LOGIN */
+        /* AUTHENTICATION & GOOGLE ACCOUNT CHOOSER LOGIC */
         function openLoginModal() {
             if (currentUser) {
                 if (confirm(`Logged in as ${currentUser.email}. Do you want to log out?`)) {
@@ -670,22 +669,72 @@
 
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
 
-        function handleGoogleAuthLogin() {
-            const googleEmail = "google_user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
-            const googleAcc = { email: googleEmail, username: "google_user_" + Math.floor(Math.random() * 1000), name: "Google User", bio: "Signed in via Google", avatar: "", isDeactivated: false };
+        // Open Pinterest-style Google Account Chooser
+        function openGoogleAccountChooser() {
+            const chooserModal = document.getElementById('google-chooser-modal');
+            const container = document.getElementById('google-accounts-list-container');
             
-            accountsList.push(googleAcc);
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
+            // Sample Google Accounts List for selection
+            const sampleGoogleEmails = [
+                { name: "Kesavarthanan G", email: "kuralmozhitamizh@gmail.com", avatarBg: "bg-amber-600" },
+                { name: "Kesavarthanan QualityCheck", email: "kesavarthananqualitycheck@gmail.com", avatarBg: "bg-indigo-600" },
+                { name: "Kesavarthanan", email: "kesavarthanan360@gmail.com", avatarBg: "bg-purple-600" },
+                { name: "Kural Kadhalan", email: "kuralkadhalan@gmail.com", avatarBg: "bg-blue-600" }
+            ];
 
-            currentAccountIndex = accountsList.length - 1;
-            currentUser = googleAcc;
+            container.innerHTML = sampleGoogleEmails.map(acc => `
+                <div onclick="selectGoogleAccount('${acc.name}', '${acc.email}')" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer border border-slate-100 transition shadow-sm">
+                    <div class="w-10 h-10 rounded-full ${acc.avatarBg} text-white font-bold flex items-center justify-center text-sm">
+                        ${acc.name[0]}
+                    </div>
+                    <div class="flex-1 truncate">
+                        <p class="font-bold text-xs text-slate-800">${acc.name}</p>
+                        <p class="text-[11px] text-slate-500 truncate">${acc.email}</p>
+                    </div>
+                    <span class="text-xs text-indigo-600 font-bold">Select →</span>
+                </div>
+            `).join('') + `
+                <div onclick="promptCustomGoogleEmail()" class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer border border-dashed border-slate-300 transition">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-sm">➕</div>
+                    <div class="flex-1">
+                        <p class="font-bold text-xs text-slate-800">Use Another account</p>
+                        <p class="text-[11px] text-slate-500">Sign in with any other Gmail</p>
+                    </div>
+                </div>
+            `;
+
+            chooserModal.classList.remove('hidden');
+        }
+
+        function selectGoogleAccount(name, email) {
+            document.getElementById('google-chooser-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.add('hidden');
+
+            const username = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            let existing = accountsList.find(a => a.email === email);
+
+            if (!existing) {
+                existing = { email: email, username: username, name: name, bio: "Signed in via Google", avatar: "", isDeactivated: false };
+                accountsList.push(existing);
+            }
+
+            currentAccountIndex = accountsList.indexOf(existing);
+            currentUser = existing;
+            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
             localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
             localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
 
-            alert(`Successfully signed in with Google as @${googleAcc.username}! 🎉`);
-            toggleAuthModal();
+            alert(`Successfully signed in with Google as @${currentUser.username}! 🎉`);
             updateAuthUI();
             renderArticles(articles);
+            switchTab('profile');
+        }
+
+        function promptCustomGoogleEmail() {
+            let customEmail = prompt("Enter your Gmail address:");
+            if (!customEmail || !customEmail.includes('@')) { alert("Invalid email!"); return; }
+            let customName = customEmail.split('@')[0];
+            selectGoogleAccount(customName, customEmail.toLowerCase());
         }
 
         function handleUserRegister() {
@@ -741,7 +790,6 @@
         }
 
         function updateAuthUI() { updateProfileSettingsUI(); }
-
         /* UPDATE PROFILE & RENDER USER POSTS ON PROFILE PAGE */
         function updateProfileSettingsUI() {
             const headerUsernameEl = document.getElementById('profile-header-username');
@@ -774,7 +822,6 @@
                 let myFollowers = followersMap[currentUser.email] || [];
                 followersEl.innerText = myFollowers.length;
 
-                // Render user posts in profile page
                 if (profilePostsContainer) {
                     if (myPosts.length > 0) {
                         profilePostsContainer.innerHTML = `<h3 class="font-bold text-sm text-slate-800 mb-3">Your Posts (${myPosts.length})</h3><div class="grid gap-6 md:grid-cols-2 w-full" id="profile-user-posts-grid"></div>`;
@@ -794,21 +841,15 @@
 
                 if (settingsActions) {
                     settingsActions.innerHTML = `
-                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🗑️ Delete Account Permanently
-                        </button>
-                        <button onclick="toggleDeactivateAccount()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            ⚠️ Deactivate Account
-                        </button>
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🚪 Logout
-                        </button>
+                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">🗑️ Delete Account Permanently</button>
+                        <button onclick="toggleDeactivateAccount()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">⚠️ Deactivate Account</button>
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">🚪 Logout</button>
                     `;
                 }
             } else if (currentUser && currentUser.isDeactivated) {
                 headerUsernameEl.innerText = currentUser.username + " (Deactivated)";
                 nameEl.innerText = currentUser.name;
-                bioEl.innerText = "⚠️ Account is Deactivated. Reactivate in Settings.";
+                bioEl.innerText = "⚠️ Account is Deactivated.";
                 postsCountEl.innerText = '0';
                 followersEl.innerText = '0';
                 followingEl.innerText = '0';
@@ -816,12 +857,8 @@
 
                 if (settingsActions) {
                     settingsActions.innerHTML = `
-                        <button onclick="toggleDeactivateAccount()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            ✨ Reactivate Account
-                        </button>
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🚪 Logout
-                        </button>
+                        <button onclick="toggleDeactivateAccount()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">✨ Reactivate Account</button>
+                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">🚪 Logout</button>
                     `;
                 }
             } else {
@@ -845,9 +882,7 @@
 
                 if (settingsActions) {
                     settingsActions.innerHTML = `
-                        <button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🔓 Login / Register
-                        </button>
+                        <button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">🔓 Login / Register</button>
                     `;
                 }
             }
@@ -874,17 +909,12 @@
         function saveProfileDetails() {
             if (!currentUser) return;
             const newUsername = document.getElementById('modal-edit-username').value.trim().toLowerCase();
-            
             let conflict = accountsList.find(u => u.username.toLowerCase() === newUsername && u.username !== currentUser.username);
-            if (conflict) {
-                alert("Username is already taken by another account!");
-                return;
-            }
+            if (conflict) { alert("Username is already taken!"); return; }
 
             currentUser.name = document.getElementById('modal-edit-name').value.trim();
             currentUser.username = newUsername || currentUser.email.split('@')[0];
             currentUser.bio = document.getElementById('modal-edit-bio').value.trim();
-            
             const fileAvatar = document.getElementById('modal-edit-avatar-url').value.trim();
             if (fileAvatar) currentUser.avatar = fileAvatar;
 
@@ -948,34 +978,20 @@
             else { navigator.clipboard.writeText(window.location.href); alert("Profile link copied! 🔗"); }
         }
 
-        /* FOLLOWERS & FOLLOWING LIST MODALS */
+        /* FOLLOWERS & FOLLOWING */
         function openFollowersList() {
             if (!currentUser) { openLoginModal(); return; }
             const modal = document.getElementById('follow-list-modal');
             const titleEl = document.getElementById('follow-modal-title');
             const itemsContainer = document.getElementById('follow-modal-items');
             titleEl.innerText = "Followers";
-
             let followers = followersMap[currentUser.email] || [];
             if (followers.length === 0) {
                 itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">No followers yet.</div>';
             } else {
                 itemsContainer.innerHTML = followers.map(email => {
                     let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
-                    return `
-                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
-                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
-                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs text-indigo-600 font-bold">View →</span>
-                        </div>
-                    `;
+                    return `<div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}</div><div><p class="font-bold text-xs text-slate-800">@${acc.username}</p><p class="text-[10px] text-slate-500">${acc.name}</p></div></div><span class="text-xs text-indigo-600 font-bold">View →</span></div>`;
                 }).join('');
             }
             modal.classList.remove('hidden');
@@ -987,26 +1003,12 @@
             const titleEl = document.getElementById('follow-modal-title');
             const itemsContainer = document.getElementById('follow-modal-items');
             titleEl.innerText = "Following";
-
             if (followingList.length === 0) {
                 itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">Not following anyone yet.</div>';
             } else {
                 itemsContainer.innerHTML = followingList.map(email => {
                     let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
-                    return `
-                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
-                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
-                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
-                                </div>
-                            </div>
-                            <button onclick="event.stopPropagation(); toggleFollowAuthor('${email}'); openFollowingList();" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg font-bold">Unfollow</button>
-                        </div>
-                    `;
+                    return `<div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}</div><div><p class="font-bold text-xs text-slate-800">@${acc.username}</p><p class="text-[10px] text-slate-500">${acc.name}</p></div></div><button onclick="event.stopPropagation(); toggleFollowAuthor('${email}'); openFollowingList();" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg font-bold">Unfollow</button></div>`;
                 }).join('');
             }
             modal.classList.remove('hidden');
@@ -1015,10 +1017,8 @@
         function toggleFollowAuthor(authorEmail) {
             if (!currentUser) { alert("Please log in!"); openLoginModal(); return; }
             if (currentUser.email === authorEmail) { alert("Cannot follow yourself!"); return; }
-
             const idx = followingList.indexOf(authorEmail);
             if (!followersMap[authorEmail]) followersMap[authorEmail] = [];
-
             if (idx > -1) {
                 followingList.splice(idx, 1);
                 followersMap[authorEmail] = followersMap[authorEmail].filter(e => e !== currentUser.email);
@@ -1037,51 +1037,20 @@
             const container = document.getElementById('public-profile-container');
             const articlesContainer = document.getElementById('public-user-articles');
             articlesContainer.innerHTML = '';
-
             let userPosts = articles.filter(a => a.authorEmail === authorEmail && !a.isDraft);
             let userFollowers = followersMap[authorEmail] || [];
             let isFollowing = currentUser && followingList.includes(authorEmail);
-            let followBtn = (currentUser && currentUser.email !== authorEmail) ? `
-                <button onclick="toggleFollowAuthor('${authorEmail}'); viewPublicProfile('${authorEmail}');" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs transition">
-                    ${isFollowing ? 'Following ✓' : '+ Follow'}
-                </button>
-            ` : '';
+            let followBtn = (currentUser && currentUser.email !== authorEmail) ? `<button onclick="toggleFollowAuthor('${authorEmail}'); viewPublicProfile('${authorEmail}');" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs transition">${isFollowing ? 'Following ✓' : '+ Follow'}</button>` : '';
 
-            container.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
-                        <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600">
-                            ${user.avatar ? `<img src="${user.avatar}" class="w-full h-full object-cover">` : (user.username[0] || 'U').toUpperCase()}
-                        </div>
-                    </div>
-                    <div class="flex-1 flex justify-around text-center">
-                        <div>
-                            <p class="font-black text-base text-slate-800">${userPosts.length}</p>
-                            <p class="text-xs text-slate-500">posts</p>
-                        </div>
-                        <div>
-                            <p class="font-black text-base text-slate-800">${userFollowers.length}</p>
-                            <p class="text-xs text-slate-500">followers</p>
-                        </div>
-                        <div>
-                            <p class="font-black text-base text-slate-800">0</p>
-                            <p class="text-xs text-slate-500">following</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-1 text-xs">
-                    <p class="font-bold text-slate-900 text-sm">@${user.username}</p>
-                    <p class="font-semibold text-slate-700">${user.name}</p>
-                    <p class="text-slate-600">${user.bio || 'No bio.'}</p>
-                </div>
-                ${followBtn}
-            `;
-
+            container.innerHTML = `<div class="flex items-center gap-4"><div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md"><div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600">${user.avatar ? `<img src="${user.avatar}" class="w-full h-full object-cover">` : (user.username[0] || 'U').toUpperCase()}</div></div><div class="flex-1 flex justify-around text-center"><div><p class="font-black text-base text-slate-800">${userPosts.length}</p><p class="text-xs text-slate-500">posts</p></div><div><p class="font-black text-base text-slate-800">${userFollowers.length}</p><p class="text-xs text-slate-500">followers</p></div><div><p class="font-black text-base text-slate-800">0</p><p class="text-xs text-slate-500">following</p></div></div></div><div class="space-y-1 text-xs"><p class="font-bold text-slate-900 text-sm">@${user.username}</p><p class="font-semibold text-slate-700">${user.name}</p><p class="text-slate-600">${user.bio || 'No bio.'}</p></div>${followBtn}`;
             userPosts.forEach(art => articlesContainer.appendChild(createCardHTML(art)));
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById('page-public-profile').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }        function renderPlayStoreCategories() {
+        }
+
+        /* SEARCH & CATEGORIES */
+        function renderPlayStoreCategories() {
             const grid = document.getElementById('playstore-categories-grid');
             if (!grid) return;
             const cats = [
@@ -1090,16 +1059,9 @@
                 { name: "Stories & Art", icon: "🎨", color: "bg-rose-50 text-rose-700 border-rose-200" },
                 { name: "Science & Tech", icon: "🔬", color: "bg-emerald-50 text-emerald-700 border-emerald-200" }
             ];
-
-            grid.innerHTML = cats.map(c => `
-                <div onclick="filterArticlesByCatSearch('${c.name}')" class="${c.color} border p-3 rounded-xl cursor-pointer hover:shadow-md transition flex flex-col items-center text-center gap-1">
-                    <span class="text-2xl">${c.icon}</span>
-                    <span class="text-xs font-bold">${c.name}</span>
-                </div>
-            `).join('');
+            grid.innerHTML = cats.map(c => `<div onclick="filterArticlesByCatSearch('${c.name}')" class="${c.color} border p-3 rounded-xl cursor-pointer hover:shadow-md transition flex flex-col items-center text-center gap-1"><span class="text-2xl">${c.icon}</span><span class="text-xs font-bold">${c.name}</span></div>`).join('');
         }
 
-        /* COMPREHENSIVE SEARCH FOR BOTH ACCOUNTS, MULTI-ACCOUNTS & ARTICLES */
         function filterArticlesByCatSearch(catQuery) {
             const searchInput = document.getElementById('cat-search-input');
             if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
@@ -1113,35 +1075,15 @@
             if (query.trim() !== '') {
                 let matchedAccounts = accountsList.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
                 if (matchedAccounts.length > 0 && usersListContainer) {
-                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Accounts Found</h4>` + matchedAccounts.map(u => `
-                        <div onclick="viewPublicProfile('${u.email}')" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-50">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
-                                    ${(u.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${u.username}</p>
-                                    <p class="text-[10px] text-slate-500">${u.name}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs text-indigo-600 font-bold">View Profile →</span>
-                        </div>
-                    `).join('');
+                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Accounts Found</h4>` + matchedAccounts.map(u => `<div onclick="viewPublicProfile('${u.email}')" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-50"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">${(u.username[0] || 'U').toUpperCase()}</div><div><p class="font-bold text-xs text-slate-800">@${u.username}</p><p class="text-[10px] text-slate-500">${u.name}</p></div></div><span class="text-xs text-indigo-600 font-bold">View Profile →</span></div>`).join('');
                 }
             }
 
-            const filtered = articles.filter(a => !a.isDraft && (
-                a.title.toLowerCase().includes(query) ||
-                (a.category || 'General').toLowerCase().includes(query) ||
-                (a.authorUsername || '').toLowerCase().includes(query) ||
-                a.body.toLowerCase().includes(query)
-            ));
-
+            const filtered = articles.filter(a => !a.isDraft && (a.title.toLowerCase().includes(query) || (a.category || 'General').toLowerCase().includes(query) || (a.authorUsername || '').toLowerCase().includes(query) || a.body.toLowerCase().includes(query)));
             if (filtered.length === 0 && (!usersListContainer || usersListContainer.innerHTML === '')) {
                 resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching articles or accounts found!</div>';
                 return;
             }
-
             filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
             requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
@@ -1156,24 +1098,15 @@
 
         function initYouTubePlayers() {
             if (ytPlayers && ytPlayers.length > 0) {
-                ytPlayers.forEach(p => {
-                    try { if (p && p.destroy) p.destroy(); } catch(e) {}
-                });
+                ytPlayers.forEach(p => { try { if (p && p.destroy) p.destroy(); } catch(e) {} });
             }
             ytPlayers = [];
-
             const containers = document.querySelectorAll('.yt-player-container');
             containers.forEach(container => {
                 const ytId = container.getAttribute('data-yt-id');
                 if (ytId && window.YT && window.YT.Player) {
                     try {
-                        let player = new YT.Player(container, {
-                            height: '100%',
-                            width: '100%',
-                            videoId: ytId,
-                            playerVars: { 'enablejsapi': 1, 'rel': 0 },
-                            events: { 'onStateChange': onPlayerStateChange }
-                        });
+                        let player = new YT.Player(container, { height: '100%', width: '100%', videoId: ytId, playerVars: { 'enablejsapi': 1, 'rel': 0 }, events: { 'onStateChange': onPlayerStateChange } });
                         ytPlayers.push(player);
                     } catch(e) {}
                 }
@@ -1182,10 +1115,7 @@
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                try {
-                    const iframe = event.target.getIframe();
-                    pauseAllMedia(iframe);
-                } catch(e) {}
+                try { const iframe = event.target.getIframe(); pauseAllMedia(iframe); } catch(e) {}
             }
         }
 
@@ -1204,61 +1134,6 @@
             return false;
         }
 
-        function renderPDFViewer(url) {
-            url = url.trim();
-            const containerId = 'pdf_container_' + Math.random().toString(36).substring(2, 9);
-            const infoId = 'pdf_info_' + Math.random().toString(36).substring(2, 9);
-            setTimeout(() => loadPDFIntoContainer(url, containerId, infoId), 100);
-
-            return `
-                <div class="w-full max-w-full bg-slate-800 rounded-xl overflow-hidden border border-slate-700 my-3 shadow-md">
-                    <div class="bg-slate-900 text-white px-3 py-2 flex flex-wrap justify-between items-center text-xs gap-2 border-b border-slate-700">
-                        <span id="${infoId}" class="font-semibold text-slate-300">📄 Loading PDF...</span>
-                        <div class="flex items-center gap-2">
-                            <a href="${url}" download target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">📥 Download</a>
-                            <button onclick="sharePDF('${url}')" class="bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">🔗 Share</button>
-                        </div>
-                    </div>
-                    <div id="${containerId}" class="pdf-viewer-container w-full p-2 flex flex-col items-center">
-                        <div class="text-slate-400 py-10 text-xs">Rendering pages...</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function loadPDFIntoContainer(url, containerId, infoId) {
-            const container = document.getElementById(containerId);
-            const infoSpan = document.getElementById(infoId);
-            if (!container) return;
-
-            try {
-                const loadingTask = pdfjsLib.getDocument(url);
-                const pdfDoc = await loadingTask.promise;
-                const numPages = pdfDoc.numPages;
-                container.innerHTML = '';
-                if (infoSpan) infoSpan.innerText = `📄 Total Pages: ${numPages}`;
-
-                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    const page = await pdfDoc.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: 1.2 });
-                    const canvas = document.createElement('canvas');
-                    canvas.className = 'pdf-canvas rounded';
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    container.appendChild(canvas);
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
-                }
-            } catch (err) {
-                if (container) container.innerHTML = `<div class="text-red-400 p-4 text-xs text-center">Failed to load PDF. <a href="${url}" target="_blank" class="underline text-indigo-300">Open directly</a></div>`;
-            }
-        }
-
-        function sharePDF(url) {
-            if (navigator.share) { navigator.share({ title: 'Shared PDF', url: url }).catch(() => {}); }
-            else { navigator.clipboard.writeText(url); alert("PDF Link copied!"); }
-        }
-
         function renderMediaItem(url) {
             url = url.trim();
             let ytId = extractYouTubeId(url);
@@ -1270,7 +1145,7 @@
             } else if (isMediaUrl(url, 'audio')) {
                 return `<div class="bg-slate-100 p-3 rounded-xl flex items-center max-w-full"><audio controls class="w-full"><source src="${url}"></audio></div>`;
             } else if (isMediaUrl(url, 'pdf')) {
-                return renderPDFViewer(url);
+                return `<div class="text-xs bg-slate-100 p-3 rounded-xl">📄 PDF Document: <a href="${url}" target="_blank" class="text-indigo-600 underline">View PDF</a></div>`;
             } else {
                 return `<img src="${url}" class="w-full h-auto rounded-xl shadow-sm max-w-full" onerror="this.src='https://via.placeholder.com/600x300?text=Image+Load+Error'">`;
             }
@@ -1283,33 +1158,10 @@
                 const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
                 let slidesHTML = urls.map(url => `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(url)}</div>`).join('');
                 let dotsHTML = urls.map((_, idx) => `<button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>`).join('');
-                return `
-                    <div class="relative my-4 w-full max-w-full overflow-hidden">
-                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">${slidesHTML}</div>
-                        <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">${dotsHTML}</div>
-                    </div>
-                `;
+                return `<div class="relative my-4 w-full max-w-full overflow-hidden"><div id="${carouselId}" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">${slidesHTML}</div><div class="flex justify-center items-center gap-1.5 mt-2.5">${dotsHTML}</div></div>`;
             });
             text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
             return text;
-        }
-
-        function scrollToSlide(carouselId, index) {
-            const container = document.getElementById(carouselId);
-            if (container) container.scrollTo({ left: index * container.clientWidth, behavior: 'smooth' });
-        }
-
-        function updateDots(carouselId, totalSlides) {
-            const container = document.getElementById(carouselId);
-            const dotsContainer = document.getElementById(carouselId + '_dots');
-            if (!container || !dotsContainer) return;
-            const activeIndex = Math.round(container.scrollLeft / container.clientWidth);
-            Array.from(dotsContainer.children).forEach((dot, idx) => {
-                dot.className = idx === activeIndex ? "w-4 h-2 rounded-full transition-all duration-300 bg-indigo-600" : "w-2 h-2 rounded-full transition-all duration-300 bg-slate-300";
-            });
         }
 
         function renderArticles(dataToRender) {
@@ -1321,7 +1173,7 @@
             if (draftsList) draftsList.innerHTML = '';
 
             const publishedArts = dataToRender.filter(a => !a.isDraft);
-            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email && a.authorUsername === currentUser.username) : [];
+            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email) : [];
 
             if (currentUser && draftArts.length > 0 && draftsContainer) {
                 draftsContainer.classList.remove('hidden');
@@ -1347,11 +1199,7 @@
 
             let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
             let isFollowing = currentUser && followingList.includes(art.authorEmail);
-            let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
-                <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
-                    ${isFollowing ? 'Following ✓' : '+ Follow'}
-                </button>
-            ` : '';
+            let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `<button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">${isFollowing ? 'Following ✓' : '+ Follow'}</button>` : '';
 
             let thumbHTML = '';
             let bgStyle = art.bgColor ? `background: ${art.bgColor};` : 'background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);';
@@ -1360,62 +1208,23 @@
                 thumbHTML = `<div class="w-full h-44 bg-slate-100 overflow-hidden"><img src="${art.thumbnail}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x350?text=Thumbnail'"></div>`;
             } else {
                 let cleanSnippet = art.body.replace(/\[.*?\]/g, '');
-                thumbHTML = `
-                    <div class="w-full h-44 p-4 flex flex-col justify-between text-white relative overflow-hidden fade-content-mask" style="${bgStyle}">
-                        <p class="text-xs font-medium leading-relaxed opacity-90 strict-break">${cleanSnippet}</p>
-                    </div>
-                `;
+                thumbHTML = `<div class="w-full h-44 p-4 flex flex-col justify-between text-white relative overflow-hidden fade-content-mask" style="${bgStyle}"><p class="text-xs font-medium leading-relaxed opacity-90 strict-break">${cleanSnippet}</p></div>`;
             }
 
-            let actionButtons = (currentUser && currentUser.email === art.authorEmail && currentUser.username === art.authorUsername) ? `
-                <div class="flex gap-1.5" onclick="event.stopPropagation()">
-                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit">✏️</button>
-                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete">🗑</button>
-                </div>
-            ` : '';
+            let actionButtons = (currentUser && currentUser.email === art.authorEmail) ? `<div class="flex gap-1.5" onclick="event.stopPropagation()"><button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit">✏️</button><button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete">🗑</button></div>` : '';
 
-            card.innerHTML = `
-                <div>
-                    <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
-                        <div class="flex items-center gap-1.5 truncate max-w-[70%]">
-                            <span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${followBtn}
-                            ${actionButtons}
-                        </div>
-                    </div>
-
-                    ${thumbHTML}
-
-                    <div class="p-4 space-y-1">
-                        <span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">${art.category || 'General'}</span>
-                        <h3 class="text-base font-bold text-slate-800 strict-break line-clamp-1">${art.title}</h3>
-                    </div>
-                </div>
-            `;
+            card.innerHTML = `<div><div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs"><div class="flex items-center gap-1.5 truncate max-w-[70%]"><span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span></div><div class="flex items-center gap-2">${followBtn}${actionButtons}</div></div>${thumbHTML}<div class="p-4 space-y-1"><span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">${art.category || 'General'}</span><h3 class="text-base font-bold text-slate-800 strict-break line-clamp-1">${art.title}</h3></div></div>`;
             return card;
         }
 
         function openFullArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
-
             const container = document.getElementById('detail-content-container');
             const parsedBody = parseContent(art.body);
             let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
 
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
-                        <span onclick="viewPublicProfile('${art.authorEmail}')" class="text-xs text-indigo-600 font-bold hover:underline cursor-pointer">✍️ @${authorHandle}</span>
-                    </div>
-                    <h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1>
-                    <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div>
-                </div>
-            `;
-
+            container.innerHTML = `<div class="space-y-4"><div class="flex justify-between items-center pb-3 border-b border-slate-100"><span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span><span onclick="viewPublicProfile('${art.authorEmail}')" class="text-xs text-indigo-600 font-bold hover:underline cursor-pointer">✍️ @${authorHandle}</span></div><h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1><div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div></div>`;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById('page-detail').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1423,7 +1232,7 @@
 
         function openPublishIfLoggedIn() {
             if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            if (currentUser.isDeactivated) { alert("Your account is deactivated. Activate it in settings to post."); return; }
+            if (currentUser.isDeactivated) { alert("Your account is deactivated."); return; }
             toggleAdmin();
         }
 
@@ -1434,7 +1243,7 @@
 
         function saveArticle(isDraft) {
             if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot publish posts."); return; }
+            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot publish."); return; }
 
             const title = document.getElementById('art-title').value.trim();
             const category = document.getElementById('art-cat').value.trim();
@@ -1447,21 +1256,9 @@
 
             if (editingId) {
                 const idx = articles.findIndex(a => a.id == editingId);
-                if (idx !== -1) {
-                    articles[idx] = { ...articles[idx], title, category, thumbnail, bgColor, body, isDraft };
-                }
+                if (idx !== -1) { articles[idx] = { ...articles[idx], title, category, thumbnail, bgColor, body, isDraft }; }
             } else {
-                articles.unshift({
-                    id: Date.now(),
-                    title,
-                    category,
-                    thumbnail,
-                    bgColor,
-                    body,
-                    isDraft,
-                    authorEmail: currentUser.email,
-                    authorUsername: currentUser.username
-                });
+                articles.unshift({ id: Date.now(), title, category, thumbnail, bgColor, body, isDraft, authorEmail: currentUser.email, authorUsername: currentUser.username });
             }
 
             saveAndRender();
@@ -1474,7 +1271,6 @@
         function editArticle(id) {
             const art = articles.find(a => a.id === id);
             if (!art) return;
-
             document.getElementById('editing-id').value = art.id;
             document.getElementById('art-title').value = art.title;
             document.getElementById('art-cat').value = art.category;
