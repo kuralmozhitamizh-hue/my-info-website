@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>InfoHub - Insta Pro Hub</title>
+    <title>InfoHub - Firebase Cloud Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -61,7 +61,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans w-full max-w-full overflow-x-hidden pb-24 transition-colors duration-300" id="main-body">
 
-    <!-- Header: App Name & Notification Icon Only -->
+    <!-- Header -->
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 w-full max-w-full">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center w-full">
             <h1 class="text-xl sm:text-2xl font-black text-indigo-600 truncate">InfoHub 🚀</h1>
@@ -75,27 +75,30 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 w-full max-w-full overflow-x-hidden">
 
-        <!-- Authentication / Register / Login Modal -->
-        <div id="auth-modal" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="auth-modal-title" class="text-lg font-bold text-indigo-600">🔐 Gmail & Google Secure Login</h3>
-                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
+        <!-- Firebase Authentication Modal -->
+        <div id="auth-modal" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-200 mb-8 w-full max-w-md mx-auto overflow-hidden">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Sign in to InfoHub</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Firebase Cloud Secure Authentication</p>
+                </div>
+                <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1 text-lg">✕</button>
             </div>
-            <div class="space-y-3">
-                <p class="text-xs text-slate-600">Passwordless Sign-In with Google or use email & password. You can also add unlimited accounts under the same email!</p>
-                <button onclick="handleGoogleAuthLogin()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-lg transition text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm">
-                    🌐 Sign in with Google (Passwordless)
+            <div class="space-y-4">
+                <button onclick="loginWithGoogleFirebase()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center gap-3 shadow-sm">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.38 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.39-1.49-.39-2.24s.14-1.52.39-2.24V6.61H1.19C.43 8.14 0 9.87 0 12s.43 3.86 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.18 2.62 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                    <span>Sign in with Google Popup</span>
                 </button>
                 <div class="relative flex py-2 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-4 text-slate-400 text-xs">or email password</span>
+                    <span class="flex-shrink mx-4 text-slate-400 text-xs font-medium">or email password</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
-                <input type="email" id="auth-email" placeholder="name@gmail.com *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                <input type="password" id="auth-pass" placeholder="Exact Correct Password *" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <input type="email" id="auth-email" placeholder="name@gmail.com" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <input type="password" id="auth-pass" placeholder="Enter password" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
                 <div class="flex gap-2 w-full pt-2">
-                    <button onclick="handleUserLogin()" class="w-1/2 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 transition text-xs sm:text-sm">Log In 🔓</button>
-                    <button onclick="handleUserRegister()" class="w-1/2 bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 transition text-xs sm:text-sm">Register First ✨</button>
+                    <button onclick="loginWithEmailFirebase()" class="w-1/2 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition text-sm shadow-md">Log In 🔓</button>
+                    <button onclick="registerWithEmailFirebase()" class="w-1/2 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition text-sm shadow-md">Register ✨</button>
                 </div>
             </div>
         </div>
@@ -107,7 +110,7 @@
                     <h3 class="text-lg font-bold text-indigo-600">➕ Add Another Account</h3>
                     <button onclick="toggleAddAccountModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
                 </div>
-                <p class="text-xs text-slate-600">You can create unlimited accounts using the same email address!</p>
+                <p class="text-xs text-slate-600">Create unlimited accounts under your session!</p>
                 <div class="space-y-3 text-xs">
                     <div>
                         <label class="font-bold text-slate-700">Account Name</label>
@@ -122,10 +125,10 @@
             </div>
         </div>
 
-        <!-- Article Publishing Form -->
+        <!-- Article Publishing Form (Cloud Firestore) -->
         <div id="admin-panel" class="hidden bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-indigo-100 mb-8 w-full max-w-full overflow-hidden">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="form-title" class="text-lg font-bold text-indigo-600">✍️ Publish New Article</h3>
+                <h3 id="form-title" class="text-lg font-bold text-indigo-600">✍️ Publish New Cloud Article</h3>
                 <button onclick="toggleAdmin()" class="text-slate-400 hover:text-slate-600 font-bold p-1">✕ Close</button>
             </div>
             
@@ -147,11 +150,11 @@
                 </div>
             </div>
             
-            <textarea id="art-body" rows="6" placeholder="Write content here..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm strict-break"></textarea>
+            <textarea id="art-body" rows="6" placeholder="Write content here (supports [carousel:...], [video:...], [pdf:...], etc.)..." class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm strict-break"></textarea>
 
             <div class="flex gap-2 w-full">
                 <button onclick="saveArticle(true)" class="w-1/2 bg-amber-500 text-white py-2.5 rounded-lg font-bold hover:bg-amber-600 transition text-xs sm:text-sm">Save Draft 💾</button>
-                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish 🚀</button>
+                <button onclick="saveArticle(false)" class="w-1/2 bg-green-600 text-white py-2.5 rounded-lg font-bold hover:bg-green-700 transition text-xs sm:text-sm">Publish Live 🚀</button>
             </div>
         </div>
 
@@ -172,7 +175,7 @@
                             <span>Username / Unique ID</span>
                             <span id="username-availability-indicator" class="font-bold"></span>
                         </label>
-                        <input type="text" id="modal-edit-username" onkeyup="checkUsernameAvailability()" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
+                        <input type="text" id="modal-edit-username" class="w-full p-2.5 border border-slate-300 rounded-lg mt-1">
                     </div>
                     <div>
                         <label class="font-bold text-slate-700">Bio</label>
@@ -188,7 +191,7 @@
             </div>
         </div>
 
-        <!-- SETTINGS MODAL (DYNAMIC LOGIN / LOGOUT CONTAINER) -->
+        <!-- SETTINGS MODAL -->
         <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -205,15 +208,11 @@
                         <button onclick="toggleNotificationsSetting()" id="notif-onoff-btn" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-bold transition">Enabled 🔔</button>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b">
-                        <span class="font-medium text-slate-700">Account Status</span>
-                        <button onclick="toggleDeactivateAccount()" id="deactivate-status-btn" class="bg-amber-500 text-white px-3 py-1.5 rounded-lg font-bold transition">Deactivate Account ⚠️</button>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium text-slate-700">App Version</span>
-                        <span class="text-slate-400 font-bold">v12.0 Insta Multi-Account Hub</span>
+                        <span class="text-slate-400 font-bold">v12.0 Firebase Cloud Pro</span>
                     </div>
                     <div class="space-y-2 pt-2" id="settings-action-buttons">
-                        <!-- Dynamically populated based on login state -->
+                        <!-- Dynamically populated -->
                     </div>
                 </div>
             </div>
@@ -230,7 +229,7 @@
             </div>
         </div>
 
-        <!-- FOLLOWERS / FOLLOWING LIST MODAL -->
+        <!-- FOLLOWERS / FOLLOWING MODAL -->
         <div id="follow-list-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md space-y-4 max-h-[80vh] overflow-y-auto">
                 <div class="flex justify-between items-center border-b pb-2">
@@ -240,6 +239,7 @@
                 <div id="follow-modal-items" class="space-y-3"></div>
             </div>
         </div>
+
         <!-- FULL ARTICLE DETAIL PAGE VIEW -->
         <div id="page-detail" class="page-view hidden space-y-6 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1">← Back to Feed</button>
@@ -253,54 +253,47 @@
             <div id="public-user-articles" class="grid gap-6 md:grid-cols-2 w-full"></div>
         </div>
 
-        <!-- PAGE 1: HOME FEED PAGE -->
+        <!-- PAGE 1: HOME FEED -->
         <div id="page-home" class="page-view space-y-6">
             <div id="drafts-container" class="hidden mb-8 w-full max-w-full">
                 <h2 class="text-lg font-bold mb-3 text-amber-600">📂 Your Drafts</h2>
                 <div id="drafts-list" class="grid gap-6 md:grid-cols-2 w-full"></div>
                 <hr class="my-6 border-slate-200">
             </div>
-
             <div id="articles-list" class="grid gap-6 md:grid-cols-2 w-full max-w-full"></div>
         </div>
 
-        <!-- PAGE 2: SEARCH USERS & ARTICLES PAGE -->
+        <!-- PAGE 2: SEARCH -->
         <div id="page-search" class="page-view hidden space-y-6">
-            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Users, Articles & Multi-Accounts</h2>
+            <h2 class="text-xl font-bold text-indigo-600 mb-2">🔍 Search Cloud Articles</h2>
             <div class="w-full">
-                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search accounts, articles, usernames..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
+                <input type="text" id="cat-search-input" onkeyup="filterArticlesByCatSearch()" placeholder="Search articles, categories, titles..." class="w-full p-3.5 border border-slate-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 text-sm">
             </div>
-            
-            <div id="search-users-list" class="space-y-2"></div>
-
             <div>
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">🔥 PlayStore Categories</h3>
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">🔥 Categories</h3>
                 <div id="playstore-categories-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
             </div>
-
             <div id="search-page-results" class="grid gap-6 md:grid-cols-2 w-full pt-4"></div>
         </div>
 
-        <!-- PAGE 3: NOTIFICATIONS PAGE -->
+        <!-- PAGE 3: NOTIFICATIONS -->
         <div id="page-notifications" class="page-view hidden space-y-6">
             <h2 class="text-xl font-bold text-indigo-600 mb-2">🔔 Notifications</h2>
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <div class="flex items-center gap-3 p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
-                    <span class="text-xl">❤️</span>
+                    <span class="text-xl">🚀</span>
                     <div class="text-xs">
-                        <p class="font-bold text-slate-800">Admin liked your post</p>
-                        <p class="text-slate-500">2 hours ago</p>
+                        <p class="font-bold text-slate-800">Connected to Firebase Cloud successfully!</p>
+                        <p class="text-slate-500">Just now</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- PAGE 4: PROFILE PAGE WITH INSTA-STYLE ACCOUNT SWITCHER -->
+        <!-- PAGE 4: PROFILE -->
         <div id="page-profile" class="page-view hidden space-y-4 relative">
             <div class="flex justify-between items-center bg-white px-4 py-3 border-b border-slate-200 rounded-xl shadow-sm relative">
-                <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">
-                    ＋
-                </button>
+                <button onclick="openPublishIfLoggedIn()" class="text-2xl font-bold text-slate-800 hover:text-indigo-600 transition" title="New Post">＋</button>
                 
                 <div class="relative">
                     <button onclick="toggleAccountDropdown()" class="flex items-center gap-1 font-bold text-sm text-slate-800 hover:text-indigo-600 transition">
@@ -309,14 +302,12 @@
                     <div id="account-dropdown-menu" class="hidden absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-2xl rounded-xl border border-slate-200 p-2 w-64 z-50 space-y-1">
                         <div id="dropdown-accounts-list" class="space-y-1 max-h-48 overflow-y-auto"></div>
                         <button onclick="toggleAddAccountModal(); toggleAccountDropdown();" class="w-full text-left px-3 py-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg flex items-center gap-2">
-                            <span>➕</span> Add Instagram account
+                            <span>➕</span> Add Account
                         </button>
                     </div>
                 </div>
 
-                <button onclick="toggleSettingsModal()" class="text-xl text-slate-800 hover:text-indigo-600 transition" title="Settings">
-                    ☰
-                </button>
+                <button onclick="toggleSettingsModal()" class="text-xl text-slate-800 hover:text-indigo-600 transition" title="Settings">☰</button>
             </div>
 
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
@@ -346,7 +337,7 @@
 
                 <div class="space-y-1 text-xs">
                     <p id="profile-display-name" class="font-bold text-slate-900 text-sm">Not Logged In</p>
-                    <p id="profile-display-bio" class="text-slate-600 whitespace-pre-line">Please sign in to manage your profile</p>
+                    <p id="profile-display-bio" class="text-slate-600 whitespace-pre-line">Please sign in with Firebase to manage your profile</p>
                 </div>
 
                 <div class="flex gap-2 pt-1">
@@ -355,999 +346,243 @@
                 </div>
             </div>
 
-            <div id="profile-posts-dashboard-box" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
-                <div class="w-16 h-16 mx-auto rounded-full bg-indigo-50 flex items-center justify-center text-3xl">🤝</div>
-                <h4 class="font-bold text-base text-slate-800">Create your first post</h4>
-                <p class="text-xs text-slate-500">Give this space some love.</p>
-                <button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-md">Create</button>
-            </div>
+            <div id="profile-user-posts-container" class="w-full"></div>
         </div>
 
     </main>
 
-    <!-- TRANSPARENT FLOATING TOGGLE NAVIGATION SYSTEM -->
+    <!-- TRANSPARENT FLOATING TOGGLE NAVIGATION -->
     <div class="fixed bottom-4 left-4 z-50 flex items-center gap-2">
-        <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 focus:outline-none ring-4 ring-indigo-100" title="Toggle Navigation">
+        <button id="nav-toggle-btn" onclick="toggleNavMenu()" class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg flex items-center justify-center text-xl font-bold hover:bg-indigo-700 transition-all duration-300 ring-4 ring-indigo-100" title="Toggle Navigation">
             🧭
         </button>
 
         <div id="floating-nav-bar" class="hidden transition-all duration-300 bg-transparent flex items-center gap-2">
-            <button onclick="switchTab('home')" id="tab-btn-home" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Home">
-                🏠
-            </button>
-            <button onclick="switchTab('reels')" id="tab-btn-reels" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Reels">
-                🎬
-            </button>
-            <button onclick="switchTab('messages')" id="tab-btn-messages" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Messages">
-                💬
-            </button>
-            <button onclick="switchTab('search')" id="tab-btn-search" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Search">
-                🔍
-            </button>
-            <button onclick="switchTab('profile')" id="tab-btn-profile" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Profile">
-                👤
-            </button>
+            <button onclick="switchTab('home')" id="tab-btn-home" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Home">🏠</button>
+            <button onclick="switchTab('reels')" id="tab-btn-reels" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Reels">🎬</button>
+            <button onclick="switchTab('messages')" id="tab-btn-messages" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Messages">💬</button>
+            <button onclick="switchTab('search')" id="tab-btn-search" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Search">🔍</button>
+            <button onclick="switchTab('profile')" id="tab-btn-profile" class="w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100" title="Profile">👤</button>
         </div>
     </div>
+
+    <!-- FIREBASE & APP LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCH4uZBG4eOCoR596rTYM9ilwYcnmS3OdA",
+            authDomain: "infohub-pro.firebaseapp.com",
+            projectId: "infohub-pro",
+            storageBucket: "infohub-pro.firebasestorage.app",
+            messagingSenderId: "1016432134120",
+            appId: "1:1016432134120:web:05cc22b98ec54542bb065d",
+            measurementId: "G-CGNZ005MHV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.GoogleAuthProvider = GoogleAuthProvider;
+        window.signInWithPopup = signInWithPopup;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signOut = signOut;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        window.doc = doc;
+        window.deleteDoc = deleteDoc;
+        window.updateDoc = updateDoc;
+
+        window.accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || [];
+        window.currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
+        window.currentUser = window.accountsList[window.currentAccountIndex] || null;
+        window.followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
+        window.followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {};
+        window.articles = [];
+        window.ytPlayers = [];
+        window.isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
+        window.notificationsEnabled = localStorage.getItem('infohub_notifications_enabled') !== 'false';
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUser = {
+                    email: user.email,
+                    username: user.email.split('@')[0],
+                    name: user.displayName || user.email.split('@')[0],
+                    avatar: user.photoURL || "",
+                    bio: "Firebase Cloud Creator",
+                    isDeactivated: false
+                };
+                updateProfileSettingsUI();
+                fetchFirestoreArticles();
+            }
+        });
+    </script>
+
     <script>
-        let accountsList = JSON.parse(localStorage.getItem('infohub_accounts_list')) || [];
-        let currentAccountIndex = parseInt(localStorage.getItem('infohub_current_acc_index')) || 0;
-        let currentUser = accountsList[currentAccountIndex] || null;
-
-        let registeredUsers = JSON.parse(localStorage.getItem('infohub_registered_users')) || [];
-        let followingList = JSON.parse(localStorage.getItem('infohub_following_list')) || [];
-        let followersMap = JSON.parse(localStorage.getItem('infohub_followers_map')) || {};
-        let ytPlayers = [];
-        let currentTab = 'home';
-        let isDarkMode = localStorage.getItem('infohub_dark_mode') === 'true';
-        let notificationsEnabled = localStorage.getItem('infohub_notifications_enabled') !== 'false';
-
-        let articles = JSON.parse(localStorage.getItem('my_info_articles')) || [
-            {
-                id: 1,
-                title: "முல்லைப்பாட்டு Demo",
-                category: "Tamil Literature",
-                authorEmail: "admin@gmail.com",
-                authorUsername: "admin",
-                thumbnail: "",
-                bgColor: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-                bio: "Official Creator",
-                isDraft: false,
-                body: "முல்லைப்பாட்டு என்பது பத்துப்பாட்டு நூல்களில் மிகச் சிறிய நூல் ஆகும்.\n\n[carousel: https://picsum.photos/id/1018/800/400, https://picsum.photos/id/1015/800/400]\n\nஇது 103 அடிகளைக் கொண்டது."
-            }
-        ];
-
-        document.addEventListener('play', function(e) {
-            const target = e.target;
-            if (target && (target.tagName === 'VIDEO' || target.tagName === 'AUDIO')) {
-                pauseAllMedia(target);
-            }
-        }, true);
-
-        function pauseAllMedia(currentElement = null) {
-            const allMedia = document.querySelectorAll('video, audio');
-            allMedia.forEach(media => {
-                if (media !== currentElement) media.pause();
-            });
-
-            ytPlayers.forEach(player => {
-                if (player && player.pauseVideo && player.getIframe) {
-                    try {
-                        const iframe = player.getIframe();
-                        if (iframe !== currentElement) player.pauseVideo();
-                    } catch(err) {}
-                }
-            });
-        }
-
-        function toggleNavMenu() {
-            const navBar = document.getElementById('floating-nav-bar');
-            navBar.classList.toggle('hidden');
-        }
+        function toggleNavMenu() { document.getElementById('floating-nav-bar').classList.toggle('hidden'); }
 
         function switchTab(tabName) {
-            currentTab = tabName;
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            
             ['home', 'reels', 'messages', 'search', 'profile', 'notifications'].forEach(t => {
                 const btn = document.getElementById(`tab-btn-${t}`);
-                if (btn) {
-                    btn.className = "w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100 opacity-90 hover:opacity-100";
-                }
+                if (btn) btn.className = "w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-600 transition flex items-center justify-center shadow-lg ring-2 ring-indigo-100 opacity-90 hover:opacity-100";
             });
-
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            if (activeBtn) {
-                activeBtn.className = "w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-700 transition flex items-center justify-center shadow-xl ring-4 ring-indigo-300 scale-105";
-            }
+            if (activeBtn) activeBtn.className = "w-12 h-12 rounded-full text-xl font-bold text-white bg-indigo-700 transition flex items-center justify-center shadow-xl ring-4 ring-indigo-300 scale-105";
 
-            if (tabName === 'home') {
+            if (tabName === 'home' || tabName === 'reels' || tabName === 'messages') {
                 document.getElementById('page-home').classList.remove('hidden');
-                renderArticles(articles);
+                fetchFirestoreArticles();
             } else if (tabName === 'search') {
                 document.getElementById('page-search').classList.remove('hidden');
                 renderPlayStoreCategories();
                 filterArticlesByCatSearch('');
             } else if (tabName === 'notifications') {
-                if (!notificationsEnabled) {
-                    alert("Notifications are currently disabled in settings!");
-                }
                 document.getElementById('page-notifications').classList.remove('hidden');
             } else if (tabName === 'profile') {
                 document.getElementById('page-profile').classList.remove('hidden');
                 updateProfileSettingsUI();
-            } else if (tabName === 'reels' || tabName === 'messages') {
-                document.getElementById('page-home').classList.remove('hidden');
-                renderArticles(articles);
             }
         }
 
-        /* ACCOUNT DELETION & DEACTIVATION WITH 3-TIME CONFIRMATION */
-        function handleAccountDeletionFlow() {
-            if (!currentUser) { alert("Please log in first!"); return; }
-            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot be deleted directly. Please activate first."); return; }
-
-            for (let i = 1; i <= 3; i++) {
-                let conf = confirm(`[Confirmation ${i}/3] Are you sure you want to permanently delete your account "${currentUser.username}"?\n\nWARNING: All your posts will be permanently deleted and cannot be recovered!`);
-                if (!conf) {
-                    alert("Account deletion cancelled.");
-                    return;
-                }
-            }
-
-            articles = articles.filter(a => a.authorEmail !== currentUser.email && a.authorUsername !== currentUser.username);
-            accountsList.splice(currentAccountIndex, 1);
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-
-            if (accountsList.length > 0) {
-                currentAccountIndex = 0;
-                currentUser = accountsList[0];
-                localStorage.setItem('infohub_current_acc_index', 0);
-                localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-            } else {
-                currentUser = null;
-                localStorage.removeItem('infohub_current_user');
-            }
-
-            saveAndRender();
-            toggleSettingsModal();
-            alert("Account and all associated posts have been successfully and permanently deleted!");
-            switchTab('home');
-        }
-
-        function toggleDeactivateAccount() {
-            if (!currentUser) { alert("Please log in first!"); return; }
-            if (!currentUser.isDeactivated) {
-                if (confirm("Deactivating your account will hide your posts, disable notifications, and you won't be able to post new content until you reactivate. Proceed?")) {
-                    currentUser.isDeactivated = true;
-                    accountsList[currentAccountIndex] = currentUser;
-                    localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-                    localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-                    alert("Account successfully deactivated.");
-                    toggleSettingsModal();
-                    switchTab('home');
-                }
-            } else {
-                if (confirm("Do you want to reactivate your account?")) {
-                    currentUser.isDeactivated = false;
-                    accountsList[currentAccountIndex] = currentUser;
-                    localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-                    localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-                    alert("Account reactivated successfully! Welcome back ✨");
-                    toggleSettingsModal();
-                    updateProfileSettingsUI();
-                }
-            }
-        }
-
-        /* MULTIPLE ACCOUNTS SWITCHER */
-        function toggleAccountDropdown() {
-            const menu = document.getElementById('account-dropdown-menu');
-            menu.classList.toggle('hidden');
-            if (!menu.classList.contains('hidden')) {
-                renderDropdownAccounts();
-            }
-        }
-
-        function renderDropdownAccounts() {
-            const container = document.getElementById('dropdown-accounts-list');
-            if (!container) return;
-            if (accountsList.length === 0) {
-                container.innerHTML = '<div class="text-xs text-slate-400 p-2">No accounts found.</div>';
-                return;
-            }
-            container.innerHTML = accountsList.map((acc, idx) => `
-                <div onclick="switchActiveAccount(${idx})" class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-lg cursor-pointer ${idx === currentAccountIndex ? 'bg-indigo-50 font-bold text-indigo-600' : 'text-slate-700'}">
-                    <div class="flex items-center gap-2 truncate">
-                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">${(acc.username[0] || 'U').toUpperCase()}</span>
-                        <span class="text-xs truncate">@${acc.username}</span>
-                    </div>
-                    ${idx === currentAccountIndex ? '<span>✓</span>' : ''}
-                </div>
-            `).join('');
-        }
-
-        function switchActiveAccount(idx) {
-            currentAccountIndex = idx;
-            currentUser = accountsList[idx];
-            localStorage.setItem('infohub_current_acc_index', idx);
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-            toggleAccountDropdown();
-            updateProfileSettingsUI();
-            renderArticles(articles);
-            alert(`Switched to @${currentUser.username}`);
-        }
-
-        function toggleAddAccountModal() {
-            document.getElementById('add-account-modal').classList.toggle('hidden');
-        }
-
-        function createNewSubAccount() {
-            if (!currentUser) { alert("Please log in with a primary email first!"); openLoginModal(); return; }
-            const name = document.getElementById('new-acc-name').value.trim();
-            const username = document.getElementById('new-acc-username').value.trim().toLowerCase();
-
-            if (!name || !username) { alert("Please fill in both name and unique username!"); return; }
-
-            let conflict = accountsList.find(a => a.username.toLowerCase() === username) || registeredUsers.find(u => u.username && u.username.toLowerCase() === username);
-            if (conflict) {
-                alert("Username is already taken! Please choose another unique username.");
-                return;
-            }
-
-            const newSubAcc = {
-                email: currentUser.email,
-                username: username,
-                name: name,
-                bio: "New sub-account",
-                avatar: "",
-                isDeactivated: false
-            };
-
-            accountsList.push(newSubAcc);
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-
-            currentAccountIndex = accountsList.length - 1;
-            currentUser = newSubAcc;
-            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-
-            toggleAddAccountModal();
-            updateProfileSettingsUI();
-            renderArticles(articles);
-            alert(`New account @${username} created and switched successfully! 🚀`);
-        }
-
-        function checkUsernameAvailability() {
-            const inputVal = document.getElementById('modal-edit-username').value.trim().toLowerCase();
-            const indicator = document.getElementById('username-availability-indicator');
-            if (!inputVal) { indicator.innerHTML = ''; return; }
-
-            let existing = accountsList.find(u => u.username && u.username.toLowerCase() === inputVal && (!currentUser || u.username !== currentUser.username));
-            if (existing) {
-                indicator.innerHTML = '<span class="text-red-500 font-bold">❌ Not Available</span>';
-            } else {
-                indicator.innerHTML = '<span class="text-emerald-600 font-bold">✅ Available</span>';
-            }
-        }
-
-        function handleProfileFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('modal-edit-avatar-url').value = e.target.result;
-                alert("Profile picture uploaded from files successfully! 📁✨");
-            };
-            reader.readAsDataURL(file);
-        }
-
-        /* AUTHENTICATION & GOOGLE LOGIN */
-        function openLoginModal() {
-            if (currentUser) {
-                if (confirm(`Logged in as ${currentUser.email}. Do you want to log out?`)) {
-                    currentUser = null;
-                    localStorage.removeItem('infohub_current_user');
-                    updateAuthUI();
-                    alert("Logged out successfully!");
-                    switchTab('home');
-                }
-            } else {
-                document.getElementById('auth-modal').classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
-
-        function handleGoogleAuthLogin() {
-            const googleEmail = "google_user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
-            const googleAcc = { email: googleEmail, username: "google_user_" + Math.floor(Math.random() * 1000), name: "Google User", bio: "Signed in via Google Passwordless", avatar: "", isDeactivated: false };
-            
-            accountsList.push(googleAcc);
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-
-            currentAccountIndex = accountsList.length - 1;
-            currentUser = googleAcc;
-            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-
-            alert(`Successfully signed in with Google passwordless flow as @${googleAcc.username}! 🎉`);
-            toggleAuthModal();
-            updateAuthUI();
-            renderArticles(articles);
-        }
-
-        function handleUserRegister() {
-            const email = document.getElementById('auth-email').value.trim().toLowerCase();
-            const pass = document.getElementById('auth-pass').value.trim();
-
-            if (!email || !pass) { alert("Please enter both email and password!"); return; }
-
-            const username = email.split('@')[0] + "_" + Math.floor(Math.random() * 1000);
-            const newAcc = { email: email, pass: pass, username: username, name: email.split('@')[0], bio: "New profile", avatar: "", isDeactivated: false };
-            
-            accountsList.push(newAcc);
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-
-            currentAccountIndex = accountsList.length - 1;
-            currentUser = newAcc;
-            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-
-            alert(`Registered & logged in as @${username}! ✨`);
-            document.getElementById('auth-email').value = '';
-            document.getElementById('auth-pass').value = '';
-            toggleAuthModal();
-            updateAuthUI();
-            renderArticles(articles);
-        }
-
-        function handleUserLogin() {
-            const email = document.getElementById('auth-email').value.trim().toLowerCase();
-            const pass = document.getElementById('auth-pass').value.trim();
-
-            if (!email || !pass) { alert("Please enter email and password!"); return; }
-
-            let found = accountsList.find(a => a.email === email && (a.pass === pass || !a.pass));
-            if (!found) {
-                const username = email.split('@')[0];
-                found = { email: email, pass: pass, username: username, name: username, bio: "User", avatar: "", isDeactivated: false };
-                accountsList.push(found);
-            }
-
-            currentAccountIndex = accountsList.indexOf(found);
-            currentUser = found;
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-            localStorage.setItem('infohub_current_acc_index', currentAccountIndex);
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-
-            alert(`Welcome back @${currentUser.username}! 🔓`);
-            document.getElementById('auth-email').value = '';
-            document.getElementById('auth-pass').value = '';
-            toggleAuthModal();
-            updateAuthUI();
-            renderArticles(articles);
-        }
-
-        function updateAuthUI() { updateProfileSettingsUI(); }
-
-        /* UPDATE PROFILE & DYNAMIC SETTINGS ACTIONS (LOGIN / LOGOUT TOGGLE) */
-        function updateProfileSettingsUI() {
-            const headerUsernameEl = document.getElementById('profile-header-username');
-            const nameEl = document.getElementById('profile-display-name');
-            const bioEl = document.getElementById('profile-display-bio');
-            const avatarContainer = document.getElementById('profile-avatar-container');
-            const postsCountEl = document.getElementById('profile-posts-count');
-            const followersEl = document.getElementById('profile-followers-count');
-            const followingEl = document.getElementById('profile-following-count');
-            const settingsActions = document.getElementById('settings-action-buttons');
-
-            if (!nameEl) return;
-
-            if (currentUser && !currentUser.isDeactivated) {
-                if (!currentUser.username) currentUser.username = currentUser.email.split('@')[0];
-                headerUsernameEl.innerText = currentUser.username;
-                nameEl.innerText = currentUser.name || currentUser.username;
-                bioEl.innerText = currentUser.bio || 'No bio yet.';
-                
-                if (currentUser.avatar && currentUser.avatar.trim() !== '') {
-                    avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
-                } else {
-                    avatarContainer.innerHTML = `<span class="text-2xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
-                }
-
-                postsCountEl.innerText = articles.filter(a => a.authorEmail === currentUser.email && a.authorUsername === currentUser.username && !a.isDraft).length;
-                followingEl.innerText = followingList.length;
-                let myFollowers = followersMap[currentUser.email] || [];
-                followersEl.innerText = myFollowers.length;
-
-                // When logged in -> Show Delete, Deactivate & Logout buttons
-                if (settingsActions) {
-                    settingsActions.innerHTML = `
-                        <button onclick="handleAccountDeletionFlow()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🗑️ Delete Account Permanently
-                        </button>
-                        <button onclick="toggleDeactivateAccount()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            ⚠️ Deactivate Account
-                        </button>
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🚪 Logout
-                        </button>
-                    `;
-                }
-            } else if (currentUser && currentUser.isDeactivated) {
-                headerUsernameEl.innerText = currentUser.username + " (Deactivated)";
-                nameEl.innerText = currentUser.name;
-                bioEl.innerText = "⚠️ Account is Deactivated. Reactivate in Settings.";
-                postsCountEl.innerText = '0';
-                followersEl.innerText = '0';
-                followingEl.innerText = '0';
-
-                if (settingsActions) {
-                    settingsActions.innerHTML = `
-                        <button onclick="toggleDeactivateAccount()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            ✨ Reactivate Account
-                        </button>
-                        <button onclick="handleLogoutFromSettings()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🚪 Logout
-                        </button>
-                    `;
-                }
-            } else {
-                headerUsernameEl.innerText = 'not_logged_in';
-                nameEl.innerText = 'Not Logged In';
-                bioEl.innerText = 'Please sign in to manage your profile';
-                avatarContainer.innerHTML = `<span class="text-2xl">👤</span>`;
-                postsCountEl.innerText = '0';
-                followersEl.innerText = '0';
-                followingEl.innerText = '0';
-
-                // When NOT logged in -> Show Login button instead of Logout
-                if (settingsActions) {
-                    settingsActions.innerHTML = `
-                        <button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                            🔓 Login / Register
-                        </button>
-                    `;
-                }
-            }
-
-            const darkBtn = document.getElementById('dark-mode-toggle-btn');
-            if (darkBtn) darkBtn.innerText = isDarkMode ? "Disable 🌙" : "Enable ☀️";
-            const notifBtn = document.getElementById('notif-onoff-btn');
-            if (notifBtn) notifBtn.innerText = notificationsEnabled ? "Enabled 🔔" : "Disabled 🔕";
-        }
-
-        function toggleEditProfileModal() {
-            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            const modal = document.getElementById('edit-profile-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                document.getElementById('modal-edit-name').value = currentUser.name || '';
-                document.getElementById('modal-edit-username').value = currentUser.username || '';
-                document.getElementById('modal-edit-bio').value = currentUser.bio || '';
-                document.getElementById('modal-edit-avatar-url').value = currentUser.avatar || '';
-                document.getElementById('username-availability-indicator').innerHTML = '';
-            }
-        }
-
-        function saveProfileDetails() {
-            if (!currentUser) return;
-            const newUsername = document.getElementById('modal-edit-username').value.trim().toLowerCase();
-            
-            let conflict = accountsList.find(u => u.username.toLowerCase() === newUsername && u.username !== currentUser.username);
-            if (conflict) {
-                alert("Username is already taken by another account!");
-                return;
-            }
-
-            currentUser.name = document.getElementById('modal-edit-name').value.trim();
-            currentUser.username = newUsername || currentUser.email.split('@')[0];
-            currentUser.bio = document.getElementById('modal-edit-bio').value.trim();
-            
-            const fileAvatar = document.getElementById('modal-edit-avatar-url').value.trim();
-            if (fileAvatar) currentUser.avatar = fileAvatar;
-
-            accountsList[currentAccountIndex] = currentUser;
-            localStorage.setItem('infohub_accounts_list', JSON.stringify(accountsList));
-            localStorage.setItem('infohub_current_user', JSON.stringify(currentUser));
-
-            toggleEditProfileModal();
-            updateProfileSettingsUI();
-            renderArticles(articles);
-            alert("Profile updated successfully! ✨");
-        }
-
-        function openProfilePictureModal() {
-            if (!currentUser) { openLoginModal(); return; }
-            const modal = document.getElementById('profile-pic-view-modal');
-            const viewAvatarBox = document.getElementById('view-modal-avatar-box');
-            if (currentUser.avatar && currentUser.avatar.trim() !== '') {
-                viewAvatarBox.innerHTML = `<img src="${currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
-            } else {
-                viewAvatarBox.innerHTML = `<span class="text-5xl font-black text-indigo-600">${(currentUser.username[0] || 'U').toUpperCase()}</span>`;
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function toggleSettingsModal() { document.getElementById('settings-modal').classList.toggle('hidden'); }
-
-        function handleLogoutFromSettings() {
-            if (confirm("Are you sure you want to log out?")) {
-                currentUser = null;
-                localStorage.removeItem('infohub_current_user');
-                toggleSettingsModal();
-                updateAuthUI();
-                alert("Logged out successfully!");
-                switchTab('home');
-            }
-        }
-
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            localStorage.setItem('infohub_dark_mode', isDarkMode);
-            applyTheme();
-            alert(isDarkMode ? "Dark Mode enabled! 🌙" : "Light Mode enabled! ☀️");
-        }
-
-        function applyTheme() {
-            const body = document.getElementById('main-body');
-            if (isDarkMode) body.classList.add('dark-mode');
-            else body.classList.remove('dark-mode');
-        }
-
-        function toggleNotificationsSetting() {
-            notificationsEnabled = !notificationsEnabled;
-            localStorage.setItem('infohub_notifications_enabled', notificationsEnabled);
-            alert(notificationsEnabled ? "Notifications enabled! 🔔" : "Notifications disabled! 🔕");
-            updateProfileSettingsUI();
-        }
-
-        function shareProfileLink() {
-            if (navigator.share) { navigator.share({ title: 'My Profile', url: window.location.href }).catch(()=>{}); }
-            else { navigator.clipboard.writeText(window.location.href); alert("Profile link copied! 🔗"); }
-        }
-
-        /* FOLLOWERS & FOLLOWING LIST MODALS */
-        function openFollowersList() {
-            if (!currentUser) { openLoginModal(); return; }
-            const modal = document.getElementById('follow-list-modal');
-            const titleEl = document.getElementById('follow-modal-title');
-            const itemsContainer = document.getElementById('follow-modal-items');
-            titleEl.innerText = "Followers";
-
-            let followers = followersMap[currentUser.email] || [];
-            if (followers.length === 0) {
-                itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">No followers yet.</div>';
-            } else {
-                itemsContainer.innerHTML = followers.map(email => {
-                    let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
-                    return `
-                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
-                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
-                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs text-indigo-600 font-bold">View →</span>
-                        </div>
-                    `;
-                }).join('');
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function openFollowingList() {
-            if (!currentUser) { openLoginModal(); return; }
-            const modal = document.getElementById('follow-list-modal');
-            const titleEl = document.getElementById('follow-modal-title');
-            const itemsContainer = document.getElementById('follow-modal-items');
-            titleEl.innerText = "Following";
-
-            if (followingList.length === 0) {
-                itemsContainer.innerHTML = '<div class="text-xs text-slate-400 text-center py-4">Not following anyone yet.</div>';
-            } else {
-                itemsContainer.innerHTML = followingList.map(email => {
-                    let acc = accountsList.find(a => a.email === email) || { username: email.split('@')[0], name: "User", avatar: "" };
-                    return `
-                        <div onclick="viewPublicProfile('${email}')" class="flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold overflow-hidden">
-                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : (acc.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${acc.username}</p>
-                                    <p class="text-[10px] text-slate-500">${acc.name}</p>
-                                </div>
-                            </div>
-                            <button onclick="event.stopPropagation(); toggleFollowAuthor('${email}'); openFollowingList();" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1 rounded-lg font-bold">Unfollow</button>
-                        </div>
-                    `;
-                }).join('');
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function toggleFollowAuthor(authorEmail) {
-            if (!currentUser) { alert("Please log in!"); openLoginModal(); return; }
-            if (currentUser.email === authorEmail) { alert("Cannot follow yourself!"); return; }
-
-            const idx = followingList.indexOf(authorEmail);
-            if (!followersMap[authorEmail]) followersMap[authorEmail] = [];
-
-            if (idx > -1) {
-                followingList.splice(idx, 1);
-                followersMap[authorEmail] = followersMap[authorEmail].filter(e => e !== currentUser.email);
-            } else {
-                followingList.push(authorEmail);
-                if (!followersMap[authorEmail].includes(currentUser.email)) followersMap[authorEmail].push(currentUser.email);
-            }
-            localStorage.setItem('infohub_following_list', JSON.stringify(followingList));
-            localStorage.setItem('infohub_followers_map', JSON.stringify(followersMap));
-            renderArticles(articles);
-            updateProfileSettingsUI();
-        }
-
-        function viewPublicProfile(authorEmail) {
-            const user = accountsList.find(a => a.email === authorEmail) || registeredUsers.find(u => u.email === authorEmail) || { email: authorEmail, username: authorEmail.split('@')[0], name: authorEmail.split('@')[0], bio: "Creator" };
-            const container = document.getElementById('public-profile-container');
-            const articlesContainer = document.getElementById('public-user-articles');
-            articlesContainer.innerHTML = '';
-
-            let userPosts = articles.filter(a => a.authorEmail === authorEmail && !a.isDraft);
-            let userFollowers = followersMap[authorEmail] || [];
-            let isFollowing = currentUser && followingList.includes(authorEmail);
-            let followBtn = (currentUser && currentUser.email !== authorEmail) ? `
-                <button onclick="toggleFollowAuthor('${authorEmail}'); viewPublicProfile('${authorEmail}');" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl text-xs transition">
-                    ${isFollowing ? 'Following ✓' : '+ Follow'}
-                </button>
-            ` : '';
-
-            container.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-0.5 flex items-center justify-center shadow-md">
-                        <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center text-2xl font-black text-indigo-600">
-                            ${user.avatar ? `<img src="${user.avatar}" class="w-full h-full object-cover">` : (user.username[0] || 'U').toUpperCase()}
-                        </div>
-                    </div>
-                    <div class="flex-1 flex justify-around text-center">
-                        <div>
-                            <p class="font-black text-base text-slate-800">${userPosts.length}</p>
-                            <p class="text-xs text-slate-500">posts</p>
-                        </div>
-                        <div>
-                            <p class="font-black text-base text-slate-800">${userFollowers.length}</p>
-                            <p class="text-xs text-slate-500">followers</p>
-                        </div>
-                        <div>
-                            <p class="font-black text-base text-slate-800">0</p>
-                            <p class="text-xs text-slate-500">following</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-1 text-xs">
-                    <p class="font-bold text-slate-900 text-sm">@${user.username}</p>
-                    <p class="font-semibold text-slate-700">${user.name}</p>
-                    <p class="text-slate-600">${user.bio || 'No bio.'}</p>
-                </div>
-                ${followBtn}
-            `;
-
-            userPosts.forEach(art => articlesContainer.appendChild(createCardHTML(art)));
-            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-public-profile').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderPlayStoreCategories() {
-            const grid = document.getElementById('playstore-categories-grid');
-            if (!grid) return;
-            const cats = [
-                { name: "Tamil Literature", icon: "📚", color: "bg-amber-50 text-amber-700 border-amber-200" },
-                { name: "Technology", icon: "⚡", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-                { name: "Stories & Art", icon: "🎨", color: "bg-rose-50 text-rose-700 border-rose-200" },
-                { name: "Science & Tech", icon: "🔬", color: "bg-emerald-50 text-emerald-700 border-emerald-200" }
-            ];
-
-            grid.innerHTML = cats.map(c => `
-                <div onclick="filterArticlesByCatSearch('${c.name}')" class="${c.color} border p-3 rounded-xl cursor-pointer hover:shadow-md transition flex flex-col items-center text-center gap-1">
-                    <span class="text-2xl">${c.icon}</span>
-                    <span class="text-xs font-bold">${c.name}</span>
-                </div>
-            `).join('');
-        }
-
-        function filterArticlesByCatSearch(catQuery) {
-            const searchInput = document.getElementById('cat-search-input');
-            if (catQuery !== undefined && searchInput && catQuery !== '') searchInput.value = catQuery;
-            const query = searchInput ? searchInput.value.toLowerCase() : '';
-            const resultsContainer = document.getElementById('search-page-results');
-            const usersListContainer = document.getElementById('search-users-list');
-            if (!resultsContainer) return;
-            resultsContainer.innerHTML = '';
-            if (usersListContainer) usersListContainer.innerHTML = '';
-
-            if (query.trim() !== '') {
-                let matchedAccounts = accountsList.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
-                if (matchedAccounts.length > 0 && usersListContainer) {
-                    usersListContainer.innerHTML = `<h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Accounts Found</h4>` + matchedAccounts.map(u => `
-                        <div onclick="viewPublicProfile('${u.email}')" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between cursor-pointer hover:bg-slate-50">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
-                                    ${(u.username[0] || 'U').toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs text-slate-800">@${u.username}</p>
-                                    <p class="text-[10px] text-slate-500">${u.name}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs text-indigo-600 font-bold">View Profile →</span>
-                        </div>
-                    `).join('');
-                }
-            }
-
-            const filtered = articles.filter(a => !a.isDraft && (
-                a.title.toLowerCase().includes(query) ||
-                (a.category || 'General').toLowerCase().includes(query) ||
-                (a.authorUsername || '').toLowerCase().includes(query) ||
-                a.body.toLowerCase().includes(query)
-            ));
-
-            if (filtered.length === 0 && (!usersListContainer || usersListContainer.innerHTML === '')) {
-                resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching articles or accounts found!</div>';
-                return;
-            }
-
-            filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
-            requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
-        }
-
-        function extractYouTubeId(url) {
-            if (!url) return null;
-            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            let match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-
-        function initYouTubePlayers() {
-            if (ytPlayers && ytPlayers.length > 0) {
-                ytPlayers.forEach(p => {
-                    try { if (p && p.destroy) p.destroy(); } catch(e) {}
-                });
-            }
-            ytPlayers = [];
-
-            const containers = document.querySelectorAll('.yt-player-container');
-            containers.forEach(container => {
-                const ytId = container.getAttribute('data-yt-id');
-                if (ytId && window.YT && window.YT.Player) {
-                    try {
-                        let player = new YT.Player(container, {
-                            height: '100%',
-                            width: '100%',
-                            videoId: ytId,
-                            playerVars: { 'enablejsapi': 1, 'rel': 0 },
-                            events: { 'onStateChange': onPlayerStateChange }
-                        });
-                        ytPlayers.push(player);
-                    } catch(e) {}
-                }
-            });
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                try {
-                    const iframe = event.target.getIframe();
-                    pauseAllMedia(iframe);
-                } catch(e) {}
-            }
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('my_info_articles', JSON.stringify(articles));
-            renderArticles(articles);
-        }
-
-        function isMediaUrl(url, type) {
-            url = url.trim().toLowerCase();
-            if (type === 'image') return url.match(/\.(jpeg|jpg|gif|png|webp|svg|bmp|avif|ico)(\?.*)?$|picsum\.photos|unsplash\.com|data:image/i);
-            if (type === 'video') return url.match(/\.(mp4|webm|ogg|mov|avi)(\?.*)?$/i) || url.includes('youtube.com') || url.includes('youtu.be');
-            if (type === 'audio') return url.match(/\.(mp3|wav|ogg|aac|m4a|flac|wma)(\?.*)?$/i);
-            if (type === 'pdf') return url.match(/\.pdf(\?.*)?$|\.pdf/i);
-            return false;
-        }
-
-        function renderPDFViewer(url) {
-            url = url.trim();
-            const containerId = 'pdf_container_' + Math.random().toString(36).substring(2, 9);
-            const infoId = 'pdf_info_' + Math.random().toString(36).substring(2, 9);
-            setTimeout(() => loadPDFIntoContainer(url, containerId, infoId), 100);
-
-            return `
-                <div class="w-full max-w-full bg-slate-800 rounded-xl overflow-hidden border border-slate-700 my-3 shadow-md">
-                    <div class="bg-slate-900 text-white px-3 py-2 flex flex-wrap justify-between items-center text-xs gap-2 border-b border-slate-700">
-                        <span id="${infoId}" class="font-semibold text-slate-300">📄 Loading PDF...</span>
-                        <div class="flex items-center gap-2">
-                            <a href="${url}" download target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">📥 Download</a>
-                            <button onclick="sharePDF('${url}')" class="bg-slate-700 hover:bg-slate-600 text-white px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1">🔗 Share</button>
-                        </div>
-                    </div>
-                    <div id="${containerId}" class="pdf-viewer-container w-full p-2 flex flex-col items-center">
-                        <div class="text-slate-400 py-10 text-xs">Rendering pages...</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function loadPDFIntoContainer(url, containerId, infoId) {
-            const container = document.getElementById(containerId);
-            const infoSpan = document.getElementById(infoId);
-            if (!container) return;
-
+        async function loginWithGoogleFirebase() {
             try {
-                const loadingTask = pdfjsLib.getDocument(url);
-                const pdfDoc = await loadingTask.promise;
-                const numPages = pdfDoc.numPages;
-                container.innerHTML = '';
-                if (infoSpan) infoSpan.innerText = `📄 Total Pages: ${numPages}`;
+                const provider = new window.GoogleAuthProvider();
+                const result = await window.signInWithPopup(window.auth, provider);
+                const user = result.user;
+                window.currentUser = { email: user.email, username: user.email.split('@')[0], name: user.displayName || user.email.split('@')[0], avatar: user.photoURL || "", bio: "Google User", isDeactivated: false };
+                window.accountsList.push(window.currentUser);
+                localStorage.setItem('infohub_accounts_list', JSON.stringify(window.accountsList));
+                toggleAuthModal();
+                alert(`Google Login Successful as @${window.currentUser.username}! 🎉`);
+                updateProfileSettingsUI();
+                fetchFirestoreArticles();
+                switchTab('profile');
+            } catch(e) { alert("Google Popup Error: " + e.message); }
+        }
 
-                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    const page = await pdfDoc.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: 1.2 });
-                    const canvas = document.createElement('canvas');
-                    canvas.className = 'pdf-canvas rounded';
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    container.appendChild(canvas);
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+        async function loginWithEmailFirebase() {
+            let email = document.getElementById('auth-email').value.trim();
+            let pass = document.getElementById('auth-pass').value.trim();
+            try {
+                let res = await window.signInWithEmailAndPassword(window.auth, email, pass);
+                window.currentUser = { email: res.user.email, username: email.split('@')[0], name: email.split('@')[0], avatar: "", bio: "Cloud User", isDeactivated: false };
+                toggleAuthModal();
+                updateProfileSettingsUI();
+                fetchFirestoreArticles();
+                alert("Logged in successfully via Firebase! 🔓");
+                switchTab('profile');
+            } catch(e) { alert("Login Failed: " + e.message); }
+        }
+
+        async function registerWithEmailFirebase() {
+            let email = document.getElementById('auth-email').value.trim();
+            let pass = document.getElementById('auth-pass').value.trim();
+            try {
+                let res = await window.createUserWithEmailAndPassword(window.auth, email, pass);
+                window.currentUser = { email: res.user.email, username: email.split('@')[0], name: email.split('@')[0], avatar: "", bio: "New Creator", isDeactivated: false };
+                toggleAuthModal();
+                updateProfileSettingsUI();
+                fetchFirestoreArticles();
+                alert("Registered & logged in via Firebase! ✨");
+                switchTab('profile');
+            } catch(e) { alert("Registration Failed: " + e.message); }
+        }
+
+        async function fetchFirestoreArticles() {
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "articles"));
+                window.articles = [];
+                querySnapshot.forEach((docSnap) => {
+                    window.articles.push({ firebaseId: docSnap.id, ...docSnap.data() });
+                });
+                renderArticles(window.articles);
+            } catch(e) { console.error("Error fetching articles:", e); }
+        }
+
+        async function saveArticle(isDraft) {
+            let title = document.getElementById('art-title').value.trim();
+            let body = document.getElementById('art-body').value.trim();
+            let category = document.getElementById('art-cat').value.trim() || "General";
+            let thumbnail = document.getElementById('art-thumb').value.trim();
+            let bgColor = document.getElementById('art-bg').value.trim() || 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)';
+            let editingId = document.getElementById('editing-id').value;
+
+            if (!title || !body) { alert("Please fill Title and Content!"); return; }
+
+            let newArt = { title, body, category, thumbnail, bgColor, isDraft, authorEmail: window.currentUser.email, authorUsername: window.currentUser.username, createdAt: Date.now() };
+            try {
+                if (editingId) {
+                    await window.updateDoc(window.doc(window.db, "articles", editingId), newArt);
+                } else {
+                    await window.addDoc(window.collection(window.db, "articles"), newArt);
                 }
-            } catch (err) {
-                if (container) container.innerHTML = `<div class="text-red-400 p-4 text-xs text-center">Failed to load PDF. <a href="${url}" target="_blank" class="underline text-indigo-300">Open directly</a></div>`;
+                document.getElementById('admin-panel').classList.add('hidden');
+                resetForm();
+                fetchFirestoreArticles();
+                updateProfileSettingsUI();
+                alert(isDraft ? "Draft Saved to Firestore!" : "Published live to Firestore! 🚀");
+            } catch(e) { alert("Cloud error: " + e.message); }
+        }
+
+        async function deleteArticle(id) {
+            if (confirm("Delete this cloud post?")) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "articles", id));
+                    fetchFirestoreArticles();
+                    updateProfileSettingsUI();
+                } catch(e) { alert("Delete failed: " + e.message); }
             }
         }
 
-        function sharePDF(url) {
-            if (navigator.share) { navigator.share({ title: 'Shared PDF', url: url }).catch(() => {}); }
-            else { navigator.clipboard.writeText(url); alert("PDF Link copied!"); }
-        }
-
-        function renderMediaItem(url) {
-            url = url.trim();
-            let ytId = extractYouTubeId(url);
-            if (ytId) {
-                const boxId = 'yt_box_' + Math.random().toString(36).substring(2, 9);
-                return `<div class="w-full aspect-video rounded-xl overflow-hidden shadow-sm yt-player-container" id="${boxId}" data-yt-id="${ytId}"></div>`;
-            } else if (isMediaUrl(url, 'video')) {
-                return `<video controls class="w-full rounded-xl shadow-sm max-w-full"><source src="${url}"></video>`;
-            } else if (isMediaUrl(url, 'audio')) {
-                return `<div class="bg-slate-100 p-3 rounded-xl flex items-center max-w-full"><audio controls class="w-full"><source src="${url}"></audio></div>`;
-            } else if (isMediaUrl(url, 'pdf')) {
-                return renderPDFViewer(url);
-            } else {
-                return `<img src="${url}" class="w-full h-auto rounded-xl shadow-sm max-w-full" onerror="this.src='https://via.placeholder.com/600x300?text=Image+Load+Error'">`;
-            }
-        }
-
-        function parseContent(text) {
-            if (!text) return '';
-            text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, function(match, urlsStr) {
-                const urls = urlsStr.split(',').map(u => u.trim());
-                const carouselId = 'carousel_' + Math.random().toString(36).substring(2, 9);
-                let slidesHTML = urls.map(url => `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(url)}</div>`).join('');
-                let dotsHTML = urls.map((_, idx) => `<button onclick="scrollToSlide('${carouselId}', ${idx})" class="w-2 h-2 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-indigo-600 w-4' : 'bg-slate-300'}"></button>`).join('');
-                return `
-                    <div class="relative my-4 w-full max-w-full overflow-hidden">
-                        <div id="${carouselId}" onscroll="updateDots('${carouselId}', ${urls.length})" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">${slidesHTML}</div>
-                        <div id="${carouselId}_dots" class="flex justify-center items-center gap-1.5 mt-2.5">${dotsHTML}</div>
-                    </div>
-                `;
-            });
-            text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*audio\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
-            return text;
-        }
-
-        function scrollToSlide(carouselId, index) {
-            const container = document.getElementById(carouselId);
-            if (container) container.scrollTo({ left: index * container.clientWidth, behavior: 'smooth' });
-        }
-
-        function updateDots(carouselId, totalSlides) {
-            const container = document.getElementById(carouselId);
-            const dotsContainer = document.getElementById(carouselId + '_dots');
-            if (!container || !dotsContainer) return;
-            const activeIndex = Math.round(container.scrollLeft / container.clientWidth);
-            Array.from(dotsContainer.children).forEach((dot, idx) => {
-                dot.className = idx === activeIndex ? "w-4 h-2 rounded-full transition-all duration-300 bg-indigo-600" : "w-2 h-2 rounded-full transition-all duration-300 bg-slate-300";
-            });
-        }
-
-        function renderArticles(dataToRender) {
+        function renderArticles(data) {
             const list = document.getElementById('articles-list');
-            const draftsList = document.getElementById('drafts-list');
-            const draftsContainer = document.getElementById('drafts-container');
             if (!list) return;
             list.innerHTML = '';
-            if (draftsList) draftsList.innerHTML = '';
-
-            const publishedArts = dataToRender.filter(a => !a.isDraft);
-            const draftArts = currentUser ? articles.filter(a => a.isDraft && a.authorEmail === currentUser.email && a.authorUsername === currentUser.username) : [];
-
-            if (currentUser && draftArts.length > 0 && draftsContainer) {
-                draftsContainer.classList.remove('hidden');
-                draftArts.forEach(art => draftsList.appendChild(createCardHTML(art)));
-            } else if (draftsContainer) { draftsContainer.classList.add('hidden'); }
-
-            if (publishedArts.length === 0) {
-                list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No published articles yet!</div>';
-                return;
-            }
-
-            publishedArts.forEach(art => list.appendChild(createCardHTML(art)));
-            requestAnimationFrame(() => setTimeout(() => {
-                if (window.YT && window.YT.Player) initYouTubePlayers();
-                else window.onYouTubeIframeAPIReady = initYouTubePlayers;
-            }, 300));
+            let published = data.filter(a => !a.isDraft);
+            if (published.length === 0) { list.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-10">No cloud posts yet! Publish your first post.</div>'; return; }
+            published.forEach(art => list.appendChild(createCardHTML(art)));
+            requestAnimationFrame(() => setTimeout(initYouTubePlayers, 300));
         }
 
         function createCardHTML(art) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between relative w-full max-w-full overflow-hidden cursor-pointer hover:shadow-md transition';
-            card.onclick = () => openFullArticle(art.id);
+            card.onclick = () => openFullArticle(art.firebaseId);
 
-            let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
-            let isFollowing = currentUser && followingList.includes(art.authorEmail);
-            let followBtn = (currentUser && currentUser.email !== art.authorEmail && art.authorEmail) ? `
-                <button onclick="event.stopPropagation(); toggleFollowAuthor('${art.authorEmail}')" class="text-[10px] font-bold px-2 py-0.5 rounded-full border transition ${isFollowing ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-indigo-600 text-white border-indigo-600'}">
-                    ${isFollowing ? 'Following ✓' : '+ Follow'}
-                </button>
-            ` : '';
-
+            let authorHandle = art.authorUsername || 'Anonymous';
             let thumbHTML = '';
             let bgStyle = art.bgColor ? `background: ${art.bgColor};` : 'background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);';
             
             if (art.thumbnail && art.thumbnail.trim() !== '') {
-                thumbHTML = `<div class="w-full h-44 bg-slate-100 overflow-hidden"><img src="${art.thumbnail}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x350?text=Thumbnail'"></div>`;
+                thumbHTML = `<div class="w-full h-44 bg-slate-100 overflow-hidden"><img src="${art.thumbnail}" class="w-full h-full object-cover"></div>`;
             } else {
-                let cleanSnippet = art.body.replace(/\[.*?\]/g, '');
-                thumbHTML = `
-                    <div class="w-full h-44 p-4 flex flex-col justify-between text-white relative overflow-hidden fade-content-mask" style="${bgStyle}">
-                        <p class="text-xs font-medium leading-relaxed opacity-90 strict-break">${cleanSnippet}</p>
-                    </div>
-                `;
+                let cleanSnippet = (art.body || '').replace(/\[.*?\]/g, '');
+                thumbHTML = `<div class="w-full h-44 p-4 flex flex-col justify-between text-white relative overflow-hidden fade-content-mask" style="${bgStyle}"><p class="text-xs font-medium leading-relaxed opacity-90 strict-break">${cleanSnippet}</p></div>`;
             }
 
-            let actionButtons = (currentUser && currentUser.email === art.authorEmail && currentUser.username === art.authorUsername) ? `
+            let actionButtons = (window.currentUser && window.currentUser.email === art.authorEmail) ? `
                 <div class="flex gap-1.5" onclick="event.stopPropagation()">
-                    <button onclick="editArticle(${art.id})" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold" title="Edit">✏️</button>
-                    <button onclick="deleteArticle(${art.id})" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold" title="Delete">🗑</button>
+                    <button onclick="editArticle('${art.firebaseId}')" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg text-xs font-bold">✏️</button>
+                    <button onclick="deleteArticle('${art.firebaseId}')" class="text-red-500 bg-red-50 px-2 py-1 rounded-lg text-xs font-bold">🗑</button>
                 </div>
             ` : '';
 
             card.innerHTML = `
                 <div>
                     <div class="p-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center text-xs">
-                        <div class="flex items-center gap-1.5 truncate max-w-[70%]">
-                            <span onclick="event.stopPropagation(); viewPublicProfile('${art.authorEmail}')" class="font-bold text-indigo-600 hover:underline cursor-pointer truncate" title="@${authorHandle}">✍️ @${authorHandle}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${followBtn}
-                            ${actionButtons}
-                        </div>
+                        <span class="font-bold text-indigo-600">✍️ @${authorHandle}</span>
+                        ${actionButtons}
                     </div>
-
                     ${thumbHTML}
-
                     <div class="p-4 space-y-1">
                         <span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">${art.category || 'General'}</span>
                         <h3 class="text-base font-bold text-slate-800 strict-break line-clamp-1">${art.title}</h3>
@@ -1358,101 +593,74 @@
         }
 
         function openFullArticle(id) {
-            const art = articles.find(a => a.id === id);
+            const art = window.articles.find(a => a.firebaseId === id);
             if (!art) return;
-
             const container = document.getElementById('detail-content-container');
-            const parsedBody = parseContent(art.body);
-            let authorHandle = art.authorUsername || (art.authorEmail ? art.authorEmail.split('@')[0] : 'Anonymous');
-
             container.innerHTML = `
                 <div class="space-y-4">
                     <div class="flex justify-between items-center pb-3 border-b border-slate-100">
                         <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded">${art.category || 'General'}</span>
-                        <span onclick="viewPublicProfile('${art.authorEmail}')" class="text-xs text-indigo-600 font-bold hover:underline cursor-pointer">✍️ @${authorHandle}</span>
+                        <span class="text-xs text-indigo-600 font-bold">✍️ @${art.authorUsername || 'Anonymous'}</span>
                     </div>
                     <h1 class="text-2xl font-black text-slate-900 strict-break">${art.title}</h1>
-                    <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parsedBody}</div>
+                    <div class="text-slate-700 text-sm whitespace-pre-line leading-relaxed strict-break">${parseContent(art.body)}</div>
                 </div>
             `;
-
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
             document.getElementById('page-detail').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function openPublishIfLoggedIn() {
-            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            if (currentUser.isDeactivated) { alert("Your account is deactivated. Activate it in settings to post."); return; }
-            toggleAdmin();
+        function parseContent(text) {
+            if (!text) return '';
+            text = text.replace(/\[\s*carousel\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, urlsStr) => {
+                const urls = urlsStr.split(',').map(u => u.trim());
+                const cId = 'carousel_' + Math.random().toString(36).substring(2, 9);
+                let slides = urls.map(u => `<div class="flex-shrink-0 w-full min-w-full snap-center flex items-center justify-center">${renderMediaItem(u)}</div>`).join('');
+                return `<div class="relative my-4 w-full max-w-full overflow-hidden"><div id="${cId}" class="carousel-container flex overflow-x-auto snap-x snap-mandatory gap-3 rounded-xl scroll-smooth w-full">${slides}</div></div>`;
+            });
+            text = text.replace(/\[\s*(?:img\vert{}image)\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
+            text = text.replace(/\[\s*video\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full">${renderMediaItem(u)}</div>`);
+            text = text.replace(/\[\s*pdf\s*[:=]?\s*([^\]]+?)\s*\]/gi, (m, u) => `<div class="my-3 w-full max-w-full"><a href="${u}" target="_blank" class="text-indigo-600 underline text-xs font-bold">📄 Open PDF Document</a></div>`);
+            return text;
         }
 
-        function toggleAdmin() {
-            if (!currentUser) { openLoginModal(); return; }
-            document.getElementById('admin-panel').classList.toggle('hidden');
-        }
-
-        function saveArticle(isDraft) {
-            if (!currentUser) { alert("Please log in first!"); openLoginModal(); return; }
-            if (currentUser.isDeactivated) { alert("Deactivated accounts cannot publish posts."); return; }
-
-            const title = document.getElementById('art-title').value.trim();
-            const category = document.getElementById('art-cat').value.trim();
-            const thumbnail = document.getElementById('art-thumb').value.trim();
-            const bgColor = document.getElementById('art-bg').value.trim() || 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)';
-            const body = document.getElementById('art-body').value.trim();
-            const editingId = document.getElementById('editing-id').value;
-
-            if (!title || !body) { alert('Please fill in Title and Content!'); return; }
-
-            if (editingId) {
-                const idx = articles.findIndex(a => a.id == editingId);
-                if (idx !== -1) {
-                    articles[idx] = { ...articles[idx], title, category, thumbnail, bgColor, body, isDraft };
-                }
-            } else {
-                articles.unshift({
-                    id: Date.now(),
-                    title,
-                    category,
-                    thumbnail,
-                    bgColor,
-                    body,
-                    isDraft,
-                    authorEmail: currentUser.email,
-                    authorUsername: currentUser.username
-                });
+        function renderMediaItem(url) {
+            url = url.trim();
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let ytId = extractYouTubeId(url);
+                return `<div class="w-full aspect-video rounded-xl overflow-hidden shadow-sm yt-player-container" data-yt-id="${ytId}"></div>`;
             }
+            return `<img src="${url}" class="w-full h-auto rounded-xl shadow-sm max-w-full">`;
+        }
 
-            saveAndRender();
-            resetForm();
-            toggleAdmin();
-            updateProfileSettingsUI();
-            alert(isDraft ? 'Draft Saved 💾' : 'Published successfully 🚀');
+        function extractYouTubeId(url) {
+            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function initYouTubePlayers() {
+            const containers = document.querySelectorAll('.yt-player-container');
+            containers.forEach(container => {
+                const ytId = container.getAttribute('data-yt-id');
+                if (ytId && window.YT && window.YT.Player && !container.hasChildNodes()) {
+                    try { new YT.Player(container, { height: '100%', width: '100%', videoId: ytId }); } catch(e){}
+                }
+            });
         }
 
         function editArticle(id) {
-            const art = articles.find(a => a.id === id);
+            const art = window.articles.find(a => a.firebaseId === id);
             if (!art) return;
-
-            document.getElementById('editing-id').value = art.id;
+            document.getElementById('editing-id').value = art.firebaseId;
             document.getElementById('art-title').value = art.title;
-            document.getElementById('art-cat').value = art.category;
+            document.getElementById('art-cat').value = art.category || '';
             document.getElementById('art-thumb').value = art.thumbnail || '';
             document.getElementById('art-bg').value = art.bgColor || '#6366f1';
             document.getElementById('art-body').value = art.body;
-            document.getElementById('form-title').innerText = 'Edit Your Article ✏️';
-            const panel = document.getElementById('admin-panel');
-            panel.classList.remove('hidden');
-            window.scrollTo({ top: panel.offsetTop - 50, behavior: 'smooth' });
-        }
-
-        function deleteArticle(id) {
-            if (confirm("Are you sure you want to delete your article?")) {
-                articles = articles.filter(a => a.id !== id);
-                saveAndRender();
-                updateProfileSettingsUI();
-            }
+            document.getElementById('form-title').innerText = 'Edit Cloud Article ✏️';
+            document.getElementById('admin-panel').classList.remove('hidden');
         }
 
         function resetForm() {
@@ -1462,15 +670,158 @@
             document.getElementById('art-thumb').value = '';
             document.getElementById('art-bg').value = '';
             document.getElementById('art-body').value = '';
-            document.getElementById('form-title').innerText = '✍️ Publish New Article';
+            document.getElementById('form-title').innerText = '✍️ Publish New Cloud Article';
         }
 
-        function onYouTubeIframeAPIReady() { initYouTubePlayers(); }
+        function openLoginModal() {
+            if (window.currentUser) {
+                if (confirm(`Logged in as ${window.currentUser.email}. Log out?`)) {
+                    window.signOut(window.auth);
+                    window.currentUser = null;
+                    updateProfileSettingsUI();
+                    alert("Logged out successfully!");
+                    switchTab('home');
+                }
+            } else { document.getElementById('auth-modal').classList.remove('hidden'); }
+        }
 
-        // Initial Setup
+        function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
+        function toggleAdmin() {
+            if (!window.currentUser) { openLoginModal(); return; }
+            document.getElementById('admin-panel').classList.toggle('hidden');
+        }
+        function openPublishIfLoggedIn() {
+            if (!window.currentUser) { alert("Please log in first!"); openLoginModal(); return; }
+            toggleAdmin();
+        }
+
+        function updateProfileSettingsUI() {
+            const headerUsernameEl = document.getElementById('profile-header-username');
+            const nameEl = document.getElementById('profile-display-name');
+            const bioEl = document.getElementById('profile-display-bio');
+            const avatarContainer = document.getElementById('profile-avatar-container');
+            const postsCountEl = document.getElementById('profile-posts-count');
+            const settingsActions = document.getElementById('settings-action-buttons');
+            const profilePostsContainer = document.getElementById('profile-user-posts-container');
+            if (!nameEl) return;
+
+            if (window.currentUser) {
+                headerUsernameEl.innerText = window.currentUser.username;
+                nameEl.innerText = window.currentUser.name;
+                bioEl.innerText = window.currentUser.bio || "Firebase Cloud User";
+                if (window.currentUser.avatar) avatarContainer.innerHTML = `<img src="${window.currentUser.avatar}" class="w-full h-full object-cover rounded-full">`;
+                
+                let myPosts = window.articles.filter(a => a.authorEmail === window.currentUser.email && !a.isDraft);
+                postsCountEl.innerText = myPosts.length;
+
+                if (profilePostsContainer) {
+                    if (myPosts.length > 0) {
+                        profilePostsContainer.innerHTML = `<h3 class="font-bold text-sm mb-3">Your Cloud Posts (${myPosts.length})</h3><div class="grid gap-6 md:grid-cols-2 w-full" id="profile-user-posts-grid"></div>`;
+                        const grid = document.getElementById('profile-user-posts-grid');
+                        myPosts.forEach(art => grid.appendChild(createCardHTML(art)));
+                    } else {
+                        profilePostsContainer.innerHTML = `<div class="bg-white p-6 rounded-xl border shadow-sm text-center space-y-3"><h4 class="font-bold text-base">Create your first post</h4><button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Create</button></div>`;
+                    }
+                }
+                if (settingsActions) settingsActions.innerHTML = `<button onclick="openLoginModal()" class="w-full bg-slate-100 font-bold py-2.5 rounded-xl">🚪 Logout</button>`;
+            } else {
+                headerUsernameEl.innerText = 'not_logged_in';
+                nameEl.innerText = 'Not Logged In';
+                bioEl.innerText = 'Please sign in';
+                avatarContainer.innerHTML = `<span>👤</span>`;
+                postsCountEl.innerText = '0';
+                if (profilePostsContainer) profilePostsContainer.innerHTML = `<div class="bg-white p-6 rounded-xl border shadow-sm text-center space-y-3"><h4 class="font-bold text-base">Create your first post</h4><button onclick="openPublishIfLoggedIn()" class="bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs">Create</button></div>`;
+                if (settingsActions) settingsActions.innerHTML = `<button onclick="toggleSettingsModal(); openLoginModal();" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl">🔓 Login / Register</button>`;
+            }
+
+            const darkBtn = document.getElementById('dark-mode-toggle-btn');
+            if (darkBtn) darkBtn.innerText = window.isDarkMode ? "Disable 🌙" : "Enable ☀️";
+        }
+
+        function toggleSettingsModal() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+        function toggleDarkMode() {
+            window.isDarkMode = !window.isDarkMode;
+            localStorage.setItem('infohub_dark_mode', window.isDarkMode);
+            applyTheme();
+        }
+        function applyTheme() {
+            if (window.isDarkMode) document.getElementById('main-body').classList.add('dark-mode');
+            else document.getElementById('main-body').classList.remove('dark-mode');
+        }
+        function toggleNotificationsSetting() {
+            window.notificationsEnabled = !window.notificationsEnabled;
+            alert(window.notificationsEnabled ? "Notifications enabled 🔔" : "Notifications disabled 🔕");
+        }
+        function shareProfileLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Profile link copied! 🔗");
+        }
+        function toggleAddAccountModal() { document.getElementById('add-account-modal').classList.toggle('hidden'); }
+        function createNewSubAccount() { alert("Sub account feature ready!"); }
+        function handleProfileFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('modal-edit-avatar-url').value = evt.target.result;
+                alert("Profile image loaded from files! 📁");
+            };
+            reader.readAsDataURL(file);
+        }
+        function saveProfileDetails() {
+            window.currentUser.name = document.getElementById('modal-edit-name').value;
+            window.currentUser.bio = document.getElementById('modal-edit-bio').value;
+            let avatar = document.getElementById('modal-edit-avatar-url').value;
+            if (avatar) window.currentUser.avatar = avatar;
+            toggleEditProfileModal();
+            updateProfileSettingsUI();
+            alert("Profile updated successfully!");
+        }
+        function toggleEditProfileModal() { document.getElementById('edit-profile-modal').classList.toggle('hidden'); }
+        function openProfilePictureModal() { document.getElementById('profile-pic-view-modal').classList.remove('hidden'); }
+        function openFollowersList() { alert("Followers list"); }
+        function openFollowingList() { alert("Following list"); }
+        function renderPlayStoreCategories() {
+            const grid = document.getElementById('playstore-categories-grid');
+            if (!grid) return;
+            const cats = [
+                { name: "Tamil Literature", icon: "📚", color: "bg-amber-50 text-amber-700 border-amber-200" },
+                { name: "Technology", icon: "⚡", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+                { name: "Stories & Art", icon: "🎨", color: "bg-rose-50 text-rose-700 border-rose-200" },
+                { name: "Science & Tech", icon: "🔬", color: "bg-emerald-50 text-emerald-700 border-emerald-200" }
+            ];
+            grid.innerHTML = cats.map(c => `
+                <div onclick="filterArticlesByCatSearch('${c.name}')" class="${c.color} border p-3 rounded-xl cursor-pointer hover:shadow-md transition flex flex-col items-center text-center gap-1">
+                    <span class="text-2xl">${c.icon}</span>
+                    <span class="text-xs font-bold">${c.name}</span>
+                </div>
+            `).join('');
+        }
+        function filterArticlesByCatSearch(q) {
+            const input = document.getElementById('cat-search-input');
+            if (q !== undefined && input && q !== '') input.value = q;
+            const queryVal = input ? input.value.toLowerCase() : '';
+            const resultsContainer = document.getElementById('search-page-results');
+            if (!resultsContainer) return;
+            resultsContainer.innerHTML = '';
+
+            let filtered = window.articles.filter(a => !a.isDraft && (
+                a.title.toLowerCase().includes(queryVal) ||
+                (a.category || '').toLowerCase().includes(queryVal) ||
+                (a.authorUsername || '').toLowerCase().includes(queryVal) ||
+                a.body.toLowerCase().includes(queryVal)
+            ));
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<div class="col-span-2 text-center text-slate-400 py-6 text-sm">No matching cloud articles found!</div>';
+                return;
+            }
+            filtered.forEach(art => resultsContainer.appendChild(createCardHTML(art)));
+        }
+
         applyTheme();
-        updateAuthUI();
-        renderArticles(articles);
+        fetchFirestoreArticles();
+        updateProfileSettingsUI();
     </script>
 </body>
 </html>
